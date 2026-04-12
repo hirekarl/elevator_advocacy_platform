@@ -233,6 +233,7 @@ function MainDashboard() {
                       setUsername(data.username);
                       if (data.primary_building) {
                         localStorage.setItem('primary_building_bin', data.primary_building.bin);
+                        navigate(`/building/${data.primary_building.bin}`);
                       }
                     }} />
                   )}

@@ -203,17 +203,17 @@ class BuildingViewSet(viewsets.ReadOnlyModelViewSet):
         building = self.get_object()
         now = timezone.now()
         
-        # TEMPORARILY DISABLED: Enforce 24-hour cooldown
-        # if building.last_news_refresh and (now - building.last_news_refresh) < timedelta(hours=24):
-        #     remaining_seconds = int((timedelta(hours=24) - (now - building.last_news_refresh)).total_seconds())
-        #     remaining_hours = remaining_seconds // 3600
-        #     remaining_minutes = (remaining_seconds % 3600) // 60
-        #     
-        #     return Response({
-        #         "error": "Cooldown in effect.",
-        #         "message": f"News can only be refreshed once every 24 hours. Please try again in {remaining_hours}h {remaining_minutes}m.",
-        #         "cooldown_remaining": remaining_seconds
-        #     }, status=status.HTTP_429_TOO_MANY_REQUESTS)
+        # Enforce 24-hour cooldown
+        if building.last_news_refresh and (now - building.last_news_refresh) < timedelta(hours=24):
+            remaining_seconds = int((timedelta(hours=24) - (now - building.last_news_refresh)).total_seconds())
+            remaining_hours = remaining_seconds // 3600
+            remaining_minutes = (remaining_seconds % 3600) // 60
+            
+            return Response({
+                "error": "Cooldown in effect.",
+                "message": f"News can only be refreshed once every 24 hours. Please try again in {remaining_hours}h {remaining_minutes}m.",
+                "cooldown_remaining": remaining_seconds
+            }, status=status.HTTP_429_TOO_MANY_REQUESTS)
 
         from .tasks import fetch_building_news
         

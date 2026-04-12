@@ -20,13 +20,11 @@ class ConsensusManagerTests(TestCase):
         # Mock Geoclient to avoid external API calls
         self.mock_geoclient = MagicMock(spec=GeoclientService)
         self.manager = ConsensusManager(geoclient=self.mock_geoclient)
-        
+
         self.building = Building.objects.create(
-            bin="1234567",
-            address="123 Broadway",
-            borough="Manhattan"
+            bin="1234567", address="123 Broadway", borough="Manhattan"
         )
-        
+
         # Create test users
         self.user1 = User.objects.create_user(username="user1")
         self.user2 = User.objects.create_user(username="user2")
@@ -65,15 +63,12 @@ class ConsensusManagerTests(TestCase):
         # Create an old report
         old_time = timezone.now() - timedelta(minutes=130)
         ElevatorReport.objects.create(
-            building=self.building,
-            user=self.user1,
-            status="DOWN",
-            reported_at=old_time
+            building=self.building, user=self.user1, status="DOWN", reported_at=old_time
         )
-        
+
         # Create a new report
         self.manager.report_status(self.building, self.user2, "DOWN")
-        
+
         status = self.manager.get_verified_status(self.building)
         self.assertEqual(status, "UNVERIFIED")
 
@@ -85,6 +80,6 @@ class ConsensusManagerTests(TestCase):
         self.manager.report_status(self.building, self.user1, "UP")
         self.manager.report_status(self.building, self.user2, "DOWN")
         self.assertEqual(self.manager.get_verified_status(self.building), "UNVERIFIED")
-        
+
         self.manager.report_status(self.building, self.user3, "DOWN")
         self.assertEqual(self.manager.get_verified_status(self.building), "DOWN")

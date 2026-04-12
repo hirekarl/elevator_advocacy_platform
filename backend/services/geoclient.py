@@ -15,7 +15,9 @@ class GeoclientService:
     def __init__(self, api_key: Optional[str] = None):
         self.api_key = api_key or os.getenv("NYC_API_KEY")
 
-    def get_bin_with_coordinates(self, house_number: str, street: str, borough: str) -> Dict[str, Any]:
+    def get_bin_with_coordinates(
+        self, house_number: str, street: str, borough: str
+    ) -> Dict[str, Any]:
         """
         Geocodes a street address and returns the BIN and latitude/longitude.
         """
@@ -24,19 +26,19 @@ class GeoclientService:
             "street": street,
             "borough": borough,
         }
-        headers = {
-            "Ocp-Apim-Subscription-Key": self.api_key
-        }
+        headers = {"Ocp-Apim-Subscription-Key": self.api_key}
 
         try:
-            response = requests.get(self.BASE_URL, params=params, headers=headers, timeout=10)
+            response = requests.get(
+                self.BASE_URL, params=params, headers=headers, timeout=10
+            )
             response.raise_for_status()
-            data = response.json().get('address', {})
-            
+            data = response.json().get("address", {})
+
             return {
-                "bin": data.get('buildingIdentificationNumber'),
-                "latitude": data.get('latitude'),
-                "longitude": data.get('longitude')
+                "bin": data.get("buildingIdentificationNumber"),
+                "latitude": data.get("latitude"),
+                "longitude": data.get("longitude"),
             }
         except (requests.RequestException, KeyError) as e:
             print(f"Geoclient Error: {e}")
@@ -48,7 +50,7 @@ class GeoclientService:
         """
         bin_url = f"https://api.nyc.gov/geo/geoclient/v2/bin/{bin}.json"
         headers = {"Ocp-Apim-Subscription-Key": self.api_key}
-        
+
         try:
             response = requests.get(bin_url, headers=headers, timeout=10)
             response.raise_for_status()

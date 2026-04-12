@@ -6,35 +6,49 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('buildings_app', '0001_initial'),
+        ("buildings_app", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='elevatorreport',
-            name='user_id',
+            model_name="elevatorreport",
+            name="user_id",
         ),
         migrations.AddField(
-            model_name='building',
-            name='latitude',
+            model_name="building",
+            name="latitude",
             field=models.FloatField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='building',
-            name='longitude',
+            model_name="building",
+            name="longitude",
             field=models.FloatField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='elevatorreport',
-            name='user',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='elevator_reports', to=settings.AUTH_USER_MODEL),
+            model_name="elevatorreport",
+            name="user",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="elevator_reports",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='elevatorreport',
-            name='status',
-            field=models.CharField(choices=[('UP', 'Back in Service'), ('DOWN', 'Out of Service / Inoperative'), ('TRAPPED', 'Entrapment (People inside)'), ('SLOW', 'Slow or Intermittent Operation'), ('UNSAFE', 'Unsafe (Doors, leveling, or noise)')], max_length=10),
+            model_name="elevatorreport",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("UP", "Back in Service"),
+                    ("DOWN", "Out of Service / Inoperative"),
+                    ("TRAPPED", "Entrapment (People inside)"),
+                    ("SLOW", "Slow or Intermittent Operation"),
+                    ("UNSAFE", "Unsafe (Doors, leveling, or noise)"),
+                ],
+                max_length=10,
+            ),
         ),
     ]

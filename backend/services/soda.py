@@ -16,7 +16,9 @@ class SODAService:
     def __init__(self, app_token: Optional[str] = None):
         self.app_token = app_token or os.getenv("SODA_APP_TOKEN")
 
-    def get_elevator_complaints(self, bin: str, limit: int = 50) -> List[Dict[str, Any]]:
+    def get_elevator_complaints(
+        self, bin: str, limit: int = 50
+    ) -> List[Dict[str, Any]]:
         """
         Fetches complaints for a specific BIN, filtered by elevator-related descriptors.
         """
@@ -43,7 +45,10 @@ class SODAService:
         """
         # SODA floating timestamp format: YYYY-MM-DDTHH:MM:SS
         from datetime import timedelta
-        limit_date = (datetime.now() - timedelta(hours=hours)).strftime("%Y-%m-%dT%H:%M:%S")
+
+        limit_date = (datetime.now() - timedelta(hours=hours)).strftime(
+            "%Y-%m-%dT%H:%M:%S"
+        )
 
         where_clause = f"descriptor IN ('81', '63') AND created_date > '{limit_date}'"
         params: Dict[str, Any] = {"$where": where_clause, "$$app_token": self.app_token}

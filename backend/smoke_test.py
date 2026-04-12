@@ -20,34 +20,41 @@ def run_smoke_test():
     # Load .env from project root
     root_dir = Path(__file__).resolve().parent.parent
     load_dotenv(root_dir / ".env")
-    
+
     # Check for Mock Mode
     mock_mode = os.getenv("USE_MOCK_GEOCLIENT", "False") == "True"
     print(f"--- 🚀 Initializing Smoke Test (Mock Mode: {mock_mode}) ---")
-    
+
     manager = ConsensusManager()
     soda = SODAService()
-    
+
     # 1. Test Geoclient (120 Broadway, Manhattan)
     print("\n1. Testing Geoclient (Address -> BIN)...")
     building = manager.get_or_create_building("120", "Broadway", "Manhattan")
-    
+
     if building:
         print(f"✅ Success! Building for 120 Broadway: {building.bin}")
         bin_id = building.bin
     else:
-        print("❌ Geoclient Failed. Check your NYC_API_KEY or set USE_MOCK_GEOCLIENT=True in .env")
+        print(
+            "❌ Geoclient Failed. Check your NYC_API_KEY or set USE_MOCK_GEOCLIENT=True in .env"
+        )
         return
 
     # 2. Test SODA (Check for complaints at this BIN)
     print("\n2. Testing SODA (Elevator Complaints)...")
     complaints = soda.get_elevator_complaints(bin_id)
-    
-    print(f"✅ Success! Found {len(complaints)} elevator-related records for this building.")
+
+    print(
+        f"✅ Success! Found {len(complaints)} elevator-related records for this building."
+    )
     if complaints:
-        print(f"   Latest Complaint: {complaints[0].get('created_date')} - {complaints[0].get('descriptor')}")
+        print(
+            f"   Latest Complaint: {complaints[0].get('created_date')} - {complaints[0].get('descriptor')}"
+        )
 
     print("\n--- ✨ Smoke Test Complete: System is Wired! ---")
+
 
 if __name__ == "__main__":
     run_smoke_test()

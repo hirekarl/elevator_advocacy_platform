@@ -6,35 +6,76 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies: list[tuple[str, str]] = [
-    ]
+    dependencies: list[tuple[str, str]] = []
 
     operations = [
         migrations.CreateModel(
-            name='Building',
+            name="Building",
             fields=[
-                ('bin', models.CharField(max_length=7, primary_key=True, serialize=False, unique=True)),
-                ('address', models.TextField()),
-                ('borough', models.CharField(max_length=20)),
-                ('created_at', models.DateTimeField(db_default=django.db.models.functions.datetime.Now())),
+                (
+                    "bin",
+                    models.CharField(
+                        max_length=7, primary_key=True, serialize=False, unique=True
+                    ),
+                ),
+                ("address", models.TextField()),
+                ("borough", models.CharField(max_length=20)),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        db_default=django.db.models.functions.datetime.Now()
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='ElevatorReport',
+            name="ElevatorReport",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('user_id', models.CharField(max_length=255)),
-                ('status', models.CharField(choices=[('UP', 'Up'), ('DOWN', 'Down')], max_length=10)),
-                ('reported_at', models.DateTimeField(db_default=django.db.models.functions.datetime.Now())),
-                ('is_official', models.BooleanField(default=False)),
-                ('soda_unique_key', models.CharField(blank=True, max_length=50, null=True)),
-                ('building', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='reports', to='buildings_app.building')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("user_id", models.CharField(max_length=255)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[("UP", "Up"), ("DOWN", "Down")], max_length=10
+                    ),
+                ),
+                (
+                    "reported_at",
+                    models.DateTimeField(
+                        db_default=django.db.models.functions.datetime.Now()
+                    ),
+                ),
+                ("is_official", models.BooleanField(default=False)),
+                (
+                    "soda_unique_key",
+                    models.CharField(blank=True, max_length=50, null=True),
+                ),
+                (
+                    "building",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="reports",
+                        to="buildings_app.building",
+                    ),
+                ),
             ],
             options={
-                'indexes': [models.Index(fields=['building', 'reported_at', 'status'], name='buildings_a_buildin_e10ea8_idx')],
+                "indexes": [
+                    models.Index(
+                        fields=["building", "reported_at", "status"],
+                        name="buildings_a_buildin_e10ea8_idx",
+                    )
+                ],
             },
         ),
     ]

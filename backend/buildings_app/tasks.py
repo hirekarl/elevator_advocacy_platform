@@ -23,19 +23,21 @@ def fetch_building_news(bin: str):
 
     for art in articles:
         # Strict relevance threshold: skip if score < 0.7 or summary indicates irrelevance
-        if art.relevance_score < 0.7 or art.summary.lower() == 'irrelevant':
+        if art.relevance_score < 0.7 or art.summary.lower() == "irrelevant":
             continue
-            
+
         BuildingNews.objects.get_or_create(
             url=art.url,
             defaults={
-                'building': building,
-                'title': art.title,
-                'source': art.source,
-                'published_date': art.published_date,
-                'summary': art.summary,
-                'relevance_score': art.relevance_score
-            }
+                "building": building,
+                "title": art.title,
+                "source": art.source,
+                "published_date": art.published_date,
+                "summary": art.summary,
+                "relevance_score": art.relevance_score,
+            },
         )
 
-    return f"Successfully processed {len(articles)} news articles for {building.address}."
+    return (
+        f"Successfully processed {len(articles)} news articles for {building.address}."
+    )

@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('buildings_app', '0003_buildingnews'),
+        ("buildings_app", "0003_buildingnews"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='building',
-            name='last_news_refresh',
+            model_name="building",
+            name="last_news_refresh",
             field=models.DateTimeField(blank=True, null=True),
         ),
     ]

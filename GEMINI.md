@@ -9,7 +9,8 @@ The team is registered as subagents in `.gemini/agents/`. You can invoke them di
 For every task, you must:
 1. **Assign**: Identify which specialists (Elias, Maya, Blythe, Kiran, or Juno) are required.
 2. **Execute**: Provide the specialist's output following their specific constraints or delegate using the subagent tools.
-3. **Review**: Ensure the final output matches the "Ownership and Clarity" communication standards.
+3. **Pre-Flight**: Invoke **Blythe** to run the `./scripts/pre_flight.sh` validation suite. A task is NOT complete until this script passes.
+4. **Review**: Ensure the final output matches the "Ownership and Clarity" communication standards.
 
 ---
 

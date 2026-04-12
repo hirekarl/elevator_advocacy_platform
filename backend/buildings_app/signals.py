@@ -10,10 +10,11 @@ def create_user_profile(sender, instance, created, **kwargs):
     if created:
         UserProfile.objects.get_or_create(user=instance)
 
+
 @receiver(post_save, sender=Building)
 def trigger_news_search(sender, instance, created, **kwargs):
     """
-    (Deprecated) Moved trigger to views.py to prevent searches for 
+    (Deprecated) Moved trigger to views.py to prevent searches for
     invalid buildings or incomplete geocoding.
     """
     pass

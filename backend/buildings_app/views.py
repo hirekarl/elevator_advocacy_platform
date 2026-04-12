@@ -25,15 +25,19 @@ class AuthViewSet(viewsets.ViewSet):
     """
     API endpoint for user registration, email confirmation, and session management.
     """
+
     permission_classes = [permissions.AllowAny]
 
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=["post"])
     def login(self, request):
-        identity = request.data.get('username') # Could be username or email
-        password = request.data.get('password')
+        identity = request.data.get("username")  # Could be username or email
+        password = request.data.get("password")
 
         if not identity or not password:
-            return Response({"error": "Please provide both username/email and password."}, status=400)
+            return Response(
+                {"error": "Please provide both username/email and password."},
+                status=400,
+            )
 
         # 1. Resolve username if an email was provided
         username = identity
@@ -49,66 +53,86 @@ class AuthViewSet(viewsets.ViewSet):
 
         if user:
             token, _ = Token.objects.get_or_create(user=user)
-            
+
             # Fetch primary building if associated
             primary_building = None
             from .models import UserProfile
+
             profile, _ = UserProfile.objects.get_or_create(user=user)
             if profile.primary_building:
                 primary_building = {
                     "bin": profile.primary_building.bin,
-                    "address": profile.primary_building.address
+                    "address": profile.primary_building.address,
                 }
 
-            return Response({
-                "token": token.key,
-                "username": user.username,
-                "email": user.email,
-                "primary_building": primary_building
-            })
+            return Response(
+                {
+                    "token": token.key,
+                    "username": user.username,
+                    "email": user.email,
+                    "primary_building": primary_building,
+                }
+            )
 
         # 3. Differentiate for better user experience (Handle unconfirmed accounts)
         try:
-            potential_user = User.objects.get(Q(username__iexact=identity) | Q(email__iexact=identity))
+            potential_user = User.objects.get(
+                Q(username__iexact=identity) | Q(email__iexact=identity)
+            )
             if not potential_user.is_active and potential_user.check_password(password):
-                return Response({"error": "Please confirm your email before logging in."}, status=403)
+                return Response(
+                    {"error": "Please confirm your email before logging in."},
+                    status=403,
+                )
         except (User.DoesNotExist, User.MultipleObjectsReturned):
             pass
 
-        return Response({"error": "Incorrect username or password. Please try again."}, status=401)
+        return Response(
+            {"error": "Incorrect username or password. Please try again."}, status=401
+        )
 
-    @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    @action(
+        detail=False, methods=["post"], permission_classes=[permissions.IsAuthenticated]
+    )
     def logout(self, request):
         request.user.auth_token.delete()
         return Response({"message": "Successfully logged out."})
 
-    @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    @action(
+        detail=False, methods=["post"], permission_classes=[permissions.IsAuthenticated]
+    )
     def set_primary_building(self, request):
         """
         Couples the authenticated user to a specific building BIN.
         """
-        bin_id = request.data.get('bin')
+        bin_id = request.data.get("bin")
         if not bin_id:
             return Response({"error": "BIN is required."}, status=400)
-            
+
         try:
             building = Building.objects.get(bin=bin_id)
             from .models import UserProfile
+
             profile, _ = UserProfile.objects.get_or_create(user=request.user)
             profile.primary_building = building
             profile.save()
-            return Response({
-                "message": f"Successfully set {building.address} as your home building.",
-                "primary_building": {"bin": building.bin, "address": building.address}
-            })
+            return Response(
+                {
+                    "message": f"Successfully set {building.address} as your home building.",
+                    "primary_building": {
+                        "bin": building.bin,
+                        "address": building.address,
+                    },
+                }
+            )
         except Building.DoesNotExist:
             return Response({"error": "Building not found."}, status=404)
 
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=["post"])
     def signup(self, request):
-        username = request.data.get('username')
-        email = request.data.get('email')
-        password = request.data.get('password')
+        username = request.data.get("username")
+        email = request.data.get("email")
+        password = request.data.get("password")
 
         if not all([username, email, password]):
             return Response({"error": "Missing required fields."}, status=400)
@@ -116,7 +140,9 @@ class AuthViewSet(viewsets.ViewSet):
         if User.objects.filter(username=username).exists():
             return Response({"error": "Username already exists."}, status=400)
 
-        user = User.objects.create_user(username=username, email=email, password=password)
+        user = User.objects.create_user(
+            username=username, email=email, password=password
+        )
         user.is_active = False  # Deactivate until email is confirmed
         user.save()
 
@@ -134,12 +160,17 @@ class AuthViewSet(viewsets.ViewSet):
             fail_silently=False,
         )
 
-        return Response({"message": "Signup successful. Check your terminal (local dev) or email for confirmation link."}, status=201)
+        return Response(
+            {
+                "message": "Signup successful. Check your terminal (local dev) or email for confirmation link."
+            },
+            status=201,
+        )
 
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=["post"])
     def confirm_email(self, request):
-        uidb64 = request.data.get('uid')
-        token = request.data.get('token')
+        uidb64 = request.data.get("uid")
+        token = request.data.get("token")
 
         try:
             uid = force_str(urlsafe_base64_decode(uidb64))
@@ -150,17 +181,21 @@ class AuthViewSet(viewsets.ViewSet):
         if user is not None and default_token_generator.check_token(user, token):
             user.is_active = True
             user.save()
-            return Response({"message": "Email confirmed! You can now log in."}, status=200)
-        
+            return Response(
+                {"message": "Email confirmed! You can now log in."}, status=200
+            )
+
         return Response({"error": "Invalid or expired confirmation link."}, status=400)
+
 
 class BuildingViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API endpoint for viewing buildings and their verified status.
     """
+
     queryset = Building.objects.all()
     serializer_class = BuildingSerializer
-    lookup_field = 'bin'
+    lookup_field = "bin"
     permission_classes = [permissions.AllowAny]
 
     def retrieve(self, request, *args, **kwargs):
@@ -170,60 +205,69 @@ class BuildingViewSet(viewsets.ReadOnlyModelViewSet):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         data = serializer.data
-        
+
         # Include recent reports
-        recent_reports = instance.reports.order_by('-reported_at')[:10]
-        data['recent_reports'] = ElevatorReportSerializer(recent_reports, many=True).data
-        
+        recent_reports = instance.reports.order_by("-reported_at")[:10]
+        data["recent_reports"] = ElevatorReportSerializer(
+            recent_reports, many=True
+        ).data
+
         return Response(data)
 
-    @action(detail=True, methods=['get'])
+    @action(detail=True, methods=["get"])
     def status(self, request, bin=None):
         """
         Returns the current verified status for a specific building.
         """
         building = self.get_object()
         serializer = self.get_serializer(building)
-        return Response({
-            'bin': building.bin,
-            'verified_status': serializer.data['verified_status']
-        })
+        return Response(
+            {"bin": building.bin, "verified_status": serializer.data["verified_status"]}
+        )
 
-    @action(detail=True, methods=['get'])
+    @action(detail=True, methods=["get"])
     def advocacy_script(self, request, bin=None):
         """
         Generates a 311 reporting script using Sol's AdvocacyStrategist.
         """
         building = self.get_object()
         from .ai_logic import AdvocacyStrategist
+
         script_data = AdvocacyStrategist.generate_311_script(building)
         return Response(script_data)
 
-    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    @action(
+        detail=True, methods=["post"], permission_classes=[permissions.IsAuthenticated]
+    )
     def log_advocacy_action(self, request, bin=None):
         """
         Allows Martha or her niece to log a 311 complaint or legal action.
         """
         building = self.get_object()
-        sr_number = request.data.get('sr_number')
-        description = request.data.get('description', '')
-        outcome = request.data.get('outcome', 'Pending')
+        sr_number = request.data.get("sr_number")
+        description = request.data.get("description", "")
+        outcome = request.data.get("outcome", "Pending")
 
         if not sr_number:
-            return Response({"error": "Service Request (SR) number is required."}, status=400)
+            return Response(
+                {"error": "Service Request (SR) number is required."}, status=400
+            )
 
         from .models import AdvocacyLog
+
         log = AdvocacyLog.objects.create(
             building=building,
             user=request.user,
             sr_number=sr_number,
             description=description,
-            outcome=outcome
+            outcome=outcome,
         )
 
         return Response(AdvocacyLogSerializer(log).data, status=201)
 
-    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    @action(
+        detail=True, methods=["post"], permission_classes=[permissions.IsAuthenticated]
+    )
     def refresh_news(self, request, bin=None):
         """
         Manually triggers the news extraction task for this building.
@@ -232,80 +276,96 @@ class BuildingViewSet(viewsets.ReadOnlyModelViewSet):
         from datetime import timedelta
 
         from django.utils import timezone
-        
+
         building = self.get_object()
         now = timezone.now()
-        
+
         # Enforce 24-hour cooldown
-        if building.last_news_refresh and (now - building.last_news_refresh) < timedelta(hours=24):
-            remaining_seconds = int((timedelta(hours=24) - (now - building.last_news_refresh)).total_seconds())
+        if building.last_news_refresh and (
+            now - building.last_news_refresh
+        ) < timedelta(hours=24):
+            remaining_seconds = int(
+                (
+                    timedelta(hours=24) - (now - building.last_news_refresh)
+                ).total_seconds()
+            )
             remaining_hours = remaining_seconds // 3600
             remaining_minutes = (remaining_seconds % 3600) // 60
-            
-            return Response({
-                "error": "Cooldown in effect.",
-                "message": f"News can only be refreshed once every 24 hours. Please try again in {remaining_hours}h {remaining_minutes}m.",
-                "cooldown_remaining": remaining_seconds
-            }, status=status.HTTP_429_TOO_MANY_REQUESTS)
+
+            return Response(
+                {
+                    "error": "Cooldown in effect.",
+                    "message": f"News can only be refreshed once every 24 hours. Please try again in {remaining_hours}h {remaining_minutes}m.",
+                    "cooldown_remaining": remaining_seconds,
+                },
+                status=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
 
         from .tasks import fetch_building_news
-        
+
         # Update last refresh timestamp immediately to prevent race conditions
         building.last_news_refresh = now
-        building.save(update_fields=['last_news_refresh'])
-        
+        building.save(update_fields=["last_news_refresh"])
+
         # Enqueue the task using Django 6.0 Task Framework
         fetch_building_news.enqueue(bin=building.bin)
-        
-        return Response({
-            "message": f"News refresh for {building.address} has been queued.",
-            "status": "QUEUED"
-        })
 
-    @action(detail=False, methods=['get'])
+        return Response(
+            {
+                "message": f"News refresh for {building.address} has been queued.",
+                "status": "QUEUED",
+            }
+        )
+
+    @action(detail=False, methods=["get"])
     def lookup(self, request):
         """
         Retrieves a building by address (house_number, street, borough).
         Creates the building in the DB via Geoclient if it doesn't exist.
         """
-        house_number = request.query_params.get('house_number')
-        street = request.query_params.get('street')
-        borough = request.query_params.get('borough')
+        house_number = request.query_params.get("house_number")
+        street = request.query_params.get("street")
+        borough = request.query_params.get("borough")
 
         if not all([house_number, street, borough]):
             return Response(
                 {"error": "Please provide house_number, street, and borough."},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         manager = ConsensusManager()
         # We need to know if it was created to trigger the news search
         # Refactoring manager to return (building, created)
-        building, created = manager.get_or_create_building_with_status(house_number, street, borough)
+        building, created = manager.get_or_create_building_with_status(
+            house_number, street, borough
+        )
 
         if not building:
             return Response(
                 {
                     "error": "Address not recognized.",
-                    "message": f"'{house_number} {street}' in {borough} was not found in NYC's official building records. Please check the spelling or house number."
+                    "message": f"'{house_number} {street}' in {borough} was not found in NYC's official building records. Please check the spelling or house number.",
                 },
-                status=status.HTTP_404_NOT_FOUND
+                status=status.HTTP_404_NOT_FOUND,
             )
 
         if created:
             from .tasks import fetch_building_news
+
             fetch_building_news.enqueue(bin=building.bin)
 
         serializer = self.get_serializer(building)
         data = serializer.data
-        
+
         # Include recent reports (same as retrieve)
-        recent_reports = building.reports.order_by('-reported_at')[:10]
-        data['recent_reports'] = ElevatorReportSerializer(recent_reports, many=True).data
-        
+        recent_reports = building.reports.order_by("-reported_at")[:10]
+        data["recent_reports"] = ElevatorReportSerializer(
+            recent_reports, many=True
+        ).data
+
         return Response(data)
 
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=["get"])
     def map(self, request):
         """
         Returns a list of buildings with coordinates and verified status for map display.
@@ -314,10 +374,12 @@ class BuildingViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = self.get_serializer(buildings, many=True)
         return Response(serializer.data)
 
+
 class ReportViewSet(viewsets.ViewSet):
     """
     API endpoint for reporting elevator status via address.
     """
+
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def create(self, request):
@@ -325,25 +387,24 @@ class ReportViewSet(viewsets.ViewSet):
         if serializer.is_valid():
             manager = ConsensusManager()
             building = manager.get_or_create_building(
-                house_number=serializer.validated_data['house_number'],
-                street=serializer.validated_data['street'],
-                borough=serializer.validated_data['borough']
+                house_number=serializer.validated_data["house_number"],
+                street=serializer.validated_data["street"],
+                borough=serializer.validated_data["borough"],
             )
 
             if not building:
                 return Response(
                     {"error": "Building not found in NYC Geoclient."},
-                    status=status.HTTP_404_NOT_FOUND
+                    status=status.HTTP_404_NOT_FOUND,
                 )
 
             report = manager.report_status(
                 building=building,
                 user=request.user,
-                status=serializer.validated_data['status']
+                status=serializer.validated_data["status"],
             )
 
             return Response(
-                ElevatorReportSerializer(report).data,
-                status=status.HTTP_201_CREATED
+                ElevatorReportSerializer(report).data, status=status.HTTP_201_CREATED
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

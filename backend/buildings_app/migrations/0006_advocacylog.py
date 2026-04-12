@@ -7,28 +7,72 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('buildings_app', '0005_userprofile'),
+        ("buildings_app", "0005_userprofile"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='AdvocacyLog',
+            name="AdvocacyLog",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('sr_number', models.CharField(max_length=50, verbose_name='311 Service Request #')),
-                ('description', models.TextField(blank=True, help_text='Any extra notes Martha or her niece want to track.')),
-                ('outcome', models.CharField(blank=True, help_text="E.g., 'Inspected', 'Closed - No Violation Found'.", max_length=200)),
-                ('created_at', models.DateTimeField(db_default=django.db.models.functions.datetime.Now())),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('building', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='advocacy_logs', to='buildings_app.building')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='advocacy_logs', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "sr_number",
+                    models.CharField(
+                        max_length=50, verbose_name="311 Service Request #"
+                    ),
+                ),
+                (
+                    "description",
+                    models.TextField(
+                        blank=True,
+                        help_text="Any extra notes Martha or her niece want to track.",
+                    ),
+                ),
+                (
+                    "outcome",
+                    models.CharField(
+                        blank=True,
+                        help_text="E.g., 'Inspected', 'Closed - No Violation Found'.",
+                        max_length=200,
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        db_default=django.db.models.functions.datetime.Now()
+                    ),
+                ),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "building",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="advocacy_logs",
+                        to="buildings_app.building",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="advocacy_logs",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Advocacy Logs',
-                'ordering': ['-created_at'],
+                "verbose_name_plural": "Advocacy Logs",
+                "ordering": ["-created_at"],
             },
         ),
     ]

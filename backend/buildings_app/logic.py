@@ -1,8 +1,10 @@
+import os
 from datetime import timedelta
 from django.db.models import Count, Q
 from django.utils import timezone
 from .models import Building, ElevatorReport
 from services.geoclient import GeoclientService
+from services.geoclient_mock import MockGeoclientService
 from typing import Optional, List, Dict, Any
 
 class ConsensusManager:
@@ -12,8 +14,13 @@ class ConsensusManager:
 
     CONSENSUS_WINDOW_MINUTES = 120
 
-    def __init__(self, geoclient: Optional[GeoclientService] = None):
-        self.geoclient = geoclient or GeoclientService()
+    def __init__(self, geoclient: Optional[Any] = None):
+        if geoclient:
+            self.geoclient = geoclient
+        elif os.getenv("USE_MOCK_GEOCLIENT", "False") == "True":
+            self.geoclient = MockGeoclientService()
+        else:
+            self.geoclient = GeoclientService()
 
     def get_or_create_building(self, house_number: str, street: str, borough: str) -> Optional[Building]:
         """

@@ -22,6 +22,7 @@ class GeoclientService:
             "houseNumber": house_number,
             "street": street,
             "borough": borough,
+            "subscription-key": self.api_key  # Fallback for some NYC API versions
         }
         headers = {
             "Ocp-Apim-Subscription-Key": self.api_key

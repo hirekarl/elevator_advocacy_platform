@@ -1,19 +1,20 @@
 [project]
 name = "backend"
 version = "0.1.0"
-description = "Add your description here"
+description = "Elevator Advocacy Platform Backend"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "django~=6.0",
-    "djangorestframework>=3.17.1",
-    "python-dotenv>=1.2.2",
-    "requests>=2.33.1",
+    "djangorestframework",
+    "requests",
+    "python-dotenv",
 ]
 
-[dependency-groups]
-dev = [
-    "mypy>=1.20.0",
-    "pytest>=9.0.3",
-    "ruff>=0.15.10",
-]
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings"
+python_files = ["tests.py", "test_*.py"]
+
+[tool.ruff]
+line-length = 88
+select = ["E", "F", "I"]

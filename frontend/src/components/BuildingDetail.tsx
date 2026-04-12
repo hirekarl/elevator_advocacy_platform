@@ -13,7 +13,9 @@ interface BuildingDetailProps {
 export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, onReportOptimistic, refreshBuilding }: BuildingDetailProps) {
   const { t, i18n } = useTranslation();
   const [advocacyScript, setAdvocacyScript] = useState<any>(null);
+  const [executiveSummary, setExecutiveSummary] = useState<any>(null);
   const [isLoadingScript, setIsLoadingScript] = useState(false);
+  const [isLoadingSummary, setIsLoadingSummary] = useState(false);
   const [isReporting, setIsReporting] = useState(false);
   
   // Toast State
@@ -35,6 +37,7 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
   useEffect(() => {
     if (buildingData?.bin) {
       fetchAdvocacyScript();
+      fetchExecutiveSummary();
     }
   }, [buildingData?.bin, i18n.language]);
 
@@ -50,6 +53,21 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
       console.error("Error fetching advocacy script:", error);
     } finally {
       setIsLoadingScript(false);
+    }
+  };
+
+  const fetchExecutiveSummary = async () => {
+    setIsLoadingSummary(true);
+    try {
+      const response = await fetch(`http://localhost:8000/api/buildings/${buildingData.bin}/advocacy_summary/?lang=${i18n.language}`);
+      if (response.ok) {
+        const data = await response.json();
+        setExecutiveSummary(data);
+      }
+    } catch (error) {
+      console.error("Error fetching executive summary:", error);
+    } finally {
+      setIsLoadingSummary(false);
     }
   };
 
@@ -138,6 +156,13 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
 
   return (
     <div className="building-action-center pb-safe">
+      {/* Mock Data Warning */}
+      {buildingData.is_mocked && (
+        <Alert variant="warning" className="border-0 rounded-0 mb-0 py-2 text-center fw-bold small shadow-sm animate-pulse">
+          <span aria-hidden="true">🧪</span> {t('dev_mode_mock_data')}
+        </Alert>
+      )}
+
       {/* Modals & Toasts */}
       <Modal show={showAdvocacyModal} onHide={() => setShowAdvocacyModal(false)} centered>
         <Modal.Header closeButton className="border-0 pb-0">
@@ -192,7 +217,7 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
           {buildingData.verified_status === 'UNVERIFIED' ? (
             <><span aria-hidden="true">⚠️</span> {t('verification_pending')} ({buildingData.verification_countdown}m)</>
           ) : (
-            <><span aria-hidden="true">✅</span> Current Status: {buildingData.verified_status}</>
+            <><span aria-hidden="true">✅</span> {t('current_status')}: {buildingData.verified_status}</>
           )}
         </div>
         <Card.Body className="p-4">
@@ -221,10 +246,10 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
                       localStorage.setItem('primary_building_bin', buildingData.bin);
                       triggerToast(data.message, 'success');
                     }
-                  } catch (e) { triggerToast("Error setting home building", "danger"); }
+                  } catch (e) { triggerToast(t('error_setting_home'), "danger"); }
                 }}
               >
-                Set as Home
+                {t('set_as_home')}
               </Button>
             )}
           </div>
@@ -341,7 +366,7 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
             <h6 className="text-uppercase fw-bold text-muted small mb-3">{t('loss_of_service')}</h6>
             <div className="d-flex align-items-end mb-2">
               <span className="display-6 fw-bold me-2 fs-2">{100 - (buildingData.loss_of_service_30d || 0)}%</span>
-              <span className="text-muted mb-1 pb-1 small">Uptime (30d)</span>
+              <span className="text-muted mb-1 pb-1 small">{t('uptime_30d')}</span>
             </div>
             <ProgressBar
               now={100 - (buildingData.loss_of_service_30d || 0)}
@@ -353,10 +378,10 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
         </Col>
         <Col xs={12} md={6}>
           <div className="p-3 bg-white shadow-sm rounded-4 border h-100">
-            <h6 className="text-uppercase fw-bold text-muted small mb-3">Maintenance Forecast</h6>
+            <h6 className="text-uppercase fw-bold text-muted small mb-3">{t('maintenance_forecast')}</h6>
             <div className="d-flex align-items-end mb-2">
               <span className="display-6 fw-bold me-2 fs-2">{buildingData.failure_risk?.risk_score || 0}%</span>
-              <span className="text-muted mb-1 pb-1 small">Risk Level</span>
+              <span className="text-muted mb-1 pb-1 small">{t('risk_level')}</span>
             </div>
             <ProgressBar
               now={buildingData.failure_risk?.risk_score || 0}
@@ -368,7 +393,56 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
         </Col>
       </Row>
 
-      {/* ZONE 3: Advocacy */}
+      {/* ZONE 2.5: AI Executive Summary */}
+      {(isLoadingSummary || executiveSummary) && (
+        <Card className="border-0 shadow-sm mb-4 rounded-4 overflow-hidden border-start border-primary border-5">
+          <Card.Header className="bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+            <h5 className="fw-bold mb-0">
+              <span className="me-2" aria-hidden="true">🧠</span> {t('executive_summary_title')}
+            </h5>
+            {executiveSummary && (
+              <Badge bg={executiveSummary.risk_level === 'Critical' ? 'danger' : 'warning'} className="px-3 py-2 rounded-pill">
+                {t('risk_level_label')}: {executiveSummary.risk_level}
+              </Badge>
+            )}
+          </Card.Header>
+          <Card.Body className="px-4 pb-4">
+            {isLoadingSummary ? (
+              <div className="py-4 text-center">
+                <div className="spinner-border text-primary mb-2" role="status"></div>
+                <p className="text-muted small mb-0">{t('generating_summary')}</p>
+              </div>
+            ) : (
+              <Row className="g-4">
+                <Col md={6}>
+                  <h6 className="fw-bold text-uppercase small text-muted mb-2">{t('historical_patterns_title')}</h6>
+                  <p className="small mb-0">{executiveSummary.historical_patterns}</p>
+                </Col>
+                <Col md={6}>
+                  <h6 className="fw-bold text-uppercase small text-muted mb-2">{t('community_sentiment_title')}</h6>
+                  <p className="small mb-0">{executiveSummary.community_sentiment}</p>
+                </Col>
+                <Col md={6}>
+                  <h6 className="fw-bold text-uppercase small text-muted mb-2">{t('legal_standing_title')}</h6>
+                  <p className="small mb-0">{executiveSummary.legal_standing}</p>
+                </Col>
+                <Col md={6}>
+                  <h6 className="fw-bold text-uppercase small text-muted mb-2">{t('recommended_action_title')}</h6>
+                  <p className="small fw-bold text-primary mb-0">{executiveSummary.recommended_action}</p>
+                </Col>
+                <Col xs={12} className="mt-4 pt-3 border-top d-flex justify-content-between align-items-center">
+                   <small className="text-muted">{t('confidence_label')}: {(executiveSummary.confidence_score * 100).toFixed(0)}%</small>
+                   <Button variant="link" size="sm" className="p-0 text-decoration-none small" onClick={fetchExecutiveSummary}>
+                     🔄 {t('refresh_analysis')}
+                   </Button>
+                </Col>
+              </Row>
+            )}
+          </Card.Body>
+        </Card>
+      )}
+
+      {/* ZONE 3: Advocacy Center */}
       <h4 className="fw-bold mb-3 mt-5 d-flex align-items-center">
         <span className="me-2" aria-hidden="true">📢</span> {t('advocacy_center')}
       </h4>
@@ -385,18 +459,31 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
         </div>
         <div className="text-end">
           <div className="fw-bold">{t('call_311_number')}</div>
-          <small className="fw-normal opacity-75">or dial 311</small>
+          <small className="fw-normal opacity-75">{t('or_dial_311')}</small>
         </div>
       </a>
 
+      {/* AI Strategy & Paper Trail Grouping */}
       <Card className="border-0 shadow-sm bg-primary text-white mb-4 overflow-hidden rounded-4">
         <Card.Body className="p-4">
           {isLoadingScript ? (
             <p className="mb-0 italic text-white-50">Generating custom advocacy strategy...</p>
           ) : advocacyScript ? (
             <>
-              <h6 className="fw-bold text-info mb-3">{advocacyScript.headline}</h6>
-              <div className="p-3 bg-white text-dark rounded-3 border-start border-info border-5 mb-3">
+              <div className="d-flex justify-content-between align-items-start mb-3">
+                <h6 className="fw-bold text-info mb-0">{advocacyScript.headline}</h6>
+                {isLoggedIn && (
+                  <Button 
+                    variant="info" 
+                    size="sm" 
+                    className="rounded-pill px-3 fw-bold text-white shadow-sm"
+                    onClick={() => setShowAdvocacyModal(true)}
+                  >
+                    📝 {t('log_this_call')}
+                  </Button>
+                )}
+              </div>
+              <div className="p-3 bg-white text-dark rounded-3 border-start border-info border-5 mb-3 shadow-sm">
                 <div className="mb-0 small" style={{ whiteSpace: 'pre-wrap' }}>
                   {advocacyScript.script}
                 </div>
@@ -412,13 +499,93 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
                     triggerToast("Script copied to clipboard!", "info");
                   }}
                 >
-                  Copy Script
+                  {t('copy_script')}
                 </Button>
               </div>
             </>
           ) : (
-            <p className="mb-0 text-white-50">No advocacy strategy available for this building status.</p>
+            <p className="mb-0 text-white-50">{t('no_strategy_available')}</p>
           )}
+        </Card.Body>
+      </Card>
+
+      {/* ZONE 4: Advocacy Paper Trail (MOVED UP) */}
+      <Card className="border-0 shadow-sm mb-4 rounded-4 overflow-hidden">
+        <Card.Header className="bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+          <div>
+            <h5 className="fw-bold mb-0">
+              <span className="me-2" aria-hidden="true">📜</span> {t('paper_trail_title')}
+            </h5>
+          </div>
+          {isLoggedIn && (
+            <Button 
+              variant="primary" 
+              size="sm" 
+              className="rounded-pill px-3 fw-bold shadow-sm"
+              onClick={() => setShowAdvocacyModal(true)}
+            >
+              + {t('log_311_title')}
+            </Button>
+          )}
+        </Card.Header>
+        <Card.Body className="px-4 pb-4">
+          <Row className="g-4">
+            <Col lg={12}>
+              <h6 className="fw-bold mb-3 text-primary small text-uppercase">{t('my_personal_trail')}</h6>
+              {advocacyLogs.length > 0 ? (
+                <ListGroup variant="flush">
+                  {advocacyLogs.map((log: any, idx: number) => (
+                    <ListGroup.Item key={idx} className="px-0 py-3 border-light">
+                      <div className="d-flex justify-content-between align-items-start">
+                        <div>
+                          <span className="badge bg-primary-subtle text-primary mb-2 me-2">SR {log.sr_number}</span>
+                          <span className={`badge ${log.outcome === 'Pending' ? 'bg-secondary' : 'bg-info'} mb-2`}>{log.outcome}</span>
+                          <p className="mb-1 fw-bold small">{log.description || "311 Complaint Filed"}</p>
+                          <small className="text-secondary">{new Date(log.created_at).toLocaleString()}</small>
+                        </div>
+                      </div>
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
+              ) : (
+                <Alert variant="light" className="border-dashed py-4 text-center">
+                  <small className="text-muted italic">{t('no_personal_logs')}</small>
+                </Alert>
+              )}
+            </Col>
+            
+            <Col md={6}>
+              <h6 className="fw-bold mb-3 text-success small text-uppercase">{t('community_reports')}</h6>
+              <ListGroup variant="flush" className="border rounded bg-light p-2">
+                {tenantReports.length > 0 ? (
+                  tenantReports.slice(0, 5).map((report: any, idx: number) => (
+                    <ListGroup.Item key={idx} className="bg-transparent px-2 py-2 border-light small">
+                      <Badge bg={report.status === 'UP' ? 'success' : 'danger'} className="me-2">{report.status}</Badge>
+                      <span className="text-muted">{new Date(report.reported_at).toLocaleDateString()}</span>
+                    </ListGroup.Item>
+                  ))
+                ) : (
+                  <div className="p-3 text-center small text-muted">{t('no_community_reports')}</div>
+                )}
+              </ListGroup>
+            </Col>
+
+            <Col md={6}>
+              <h6 className="fw-bold mb-3 text-info small text-uppercase">{t('official_history')}</h6>
+              <ListGroup variant="flush" className="border rounded bg-light p-2">
+                {officialReports.length > 0 ? (
+                  officialReports.slice(0, 5).map((report: any, idx: number) => (
+                    <Group.Item key={idx} className="bg-transparent px-2 py-2 border-light small">
+                      <Badge bg="info" className="me-2">DOB</Badge>
+                      <span className="text-muted">{new Date(report.reported_at).toLocaleDateString()}</span>
+                    </Group.Item>
+                  ))
+                ) : (
+                  <div className="p-3 text-center small text-muted">{t('no_official_data')}</div>
+                )}
+              </ListGroup>
+            </Col>
+          </Row>
         </Card.Body>
       </Card>
 
@@ -467,85 +634,6 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
         </Card.Body>
       </Card>
 
-      {/* ZONE 4: Evidence Timeline */}
-      <h4 className="fw-bold mb-3 mt-5 d-flex align-items-center">
-        <span className="me-2">📜</span> {t('paper_trail_title')}
-      </h4>
-      <Card className="border-0 shadow-sm mb-5 rounded-4 overflow-hidden">
-        <Card.Header className="bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
-          <div>
-            <h6 className="fw-bold mb-0 text-uppercase small text-muted">Evidence & History</h6>
-          </div>
-          <Button 
-            variant="primary" 
-            size="sm" 
-            className="rounded-pill px-3 fw-bold shadow-sm"
-            onClick={() => setShowAdvocacyModal(true)}
-          >
-            + {t('log_311_title')}
-          </Button>
-        </Card.Header>
-        <Card.Body className="px-4 pb-4">
-          <Row className="g-4">
-            <Col lg={12}>
-              <h6 className="fw-bold mb-3 text-primary small text-uppercase">My Personal Trail</h6>
-              {advocacyLogs.length > 0 ? (
-                <ListGroup variant="flush">
-                  {advocacyLogs.map((log: any, idx: number) => (
-                    <ListGroup.Item key={idx} className="px-0 py-3 border-light">
-                      <div className="d-flex justify-content-between align-items-start">
-                        <div>
-                          <span className="badge bg-primary-subtle text-primary mb-2 me-2">SR {log.sr_number}</span>
-                          <span className={`badge ${log.outcome === 'Pending' ? 'bg-secondary' : 'bg-info'} mb-2`}>{log.outcome}</span>
-                          <p className="mb-1 fw-bold small">{log.description || "311 Complaint Filed"}</p>
-                          <small className="text-secondary">{new Date(log.created_at).toLocaleString()}</small>
-                        </div>
-                      </div>
-                    </ListGroup.Item>
-                  ))}
-                </ListGroup>
-              ) : (
-                <Alert variant="light" className="border-dashed py-4 text-center">
-                  <small className="text-muted italic">No personal logs. Tap + to add a 311 SR#.</small>
-                </Alert>
-              )}
-            </Col>
-            
-            <Col md={6}>
-              <h6 className="fw-bold mb-3 text-success small text-uppercase">{t('community_reports')}</h6>
-              <ListGroup variant="flush" className="border rounded bg-light p-2">
-                {tenantReports.length > 0 ? (
-                  tenantReports.slice(0, 5).map((report: any, idx: number) => (
-                    <ListGroup.Item key={idx} className="bg-transparent px-2 py-2 border-light small">
-                      <Badge bg={report.status === 'UP' ? 'success' : 'danger'} className="me-2">{report.status}</Badge>
-                      <span className="text-muted">{new Date(report.reported_at).toLocaleDateString()}</span>
-                    </ListGroup.Item>
-                  ))
-                ) : (
-                  <div className="p-3 text-center small text-muted">No community reports.</div>
-                )}
-              </ListGroup>
-            </Col>
-
-            <Col md={6}>
-              <h6 className="fw-bold mb-3 text-info small text-uppercase">{t('official_history')}</h6>
-              <ListGroup variant="flush" className="border rounded bg-light p-2">
-                {officialReports.length > 0 ? (
-                  officialReports.slice(0, 5).map((report: any, idx: number) => (
-                    <ListGroup.Item key={idx} className="bg-transparent px-2 py-2 border-light small">
-                      <Badge bg="info" className="me-2">DOB</Badge>
-                      <span className="text-muted">{new Date(report.reported_at).toLocaleDateString()}</span>
-                    </ListGroup.Item>
-                  ))
-                ) : (
-                  <div className="p-3 text-center small text-muted">No official DOB data.</div>
-                )}
-              </ListGroup>
-            </Col>
-          </Row>
-        </Card.Body>
-      </Card>
-
       <div className="d-flex justify-content-between align-items-center mb-4 mt-5">
         <h4 className="fw-bold mb-0">📰 {t('news_section')}</h4>
         <button
@@ -563,7 +651,7 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
             } catch (e) { triggerToast("Error syncing news", "danger"); }
           }}
         >
-          Refresh
+          {t('refresh')}
         </button>
       </div>
       
@@ -574,19 +662,24 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
               <Card className="h-100 border-0 shadow-sm rounded-4">
                 <Card.Body className="p-3">
                   <div className="d-flex justify-content-between mb-2">
-                    <small className="text-primary fw-bold text-uppercase fs-8">{article.source}</small>
+                    <div className="d-flex align-items-center gap-2">
+                      <small className="text-primary fw-bold text-uppercase fs-8">{article.source}</small>
+                      {article.is_mocked && (
+                        <Badge bg="secondary" className="fs-10 text-uppercase fw-bold opacity-75">Mock</Badge>
+                      )}
+                    </div>
                     <small className="text-muted fs-8">{article.published_date}</small>
                   </div>
                   <h6 className="fw-bold mb-2">{article.title}</h6>
                   <p className="text-muted fs-8 mb-3">{article.summary}</p>
-                  <a href={article.url} target="_blank" rel="noopener noreferrer" className="btn btn-link p-0 fs-8 fw-bold" aria-label={`Read full story: ${article.title}`}>Read Full Story →</a>
+                  <a href={article.url} target="_blank" rel="noopener noreferrer" className="btn btn-link p-0 fs-8 fw-bold" aria-label={`${t('read_full_story')}: ${article.title}`}>{t('read_full_story')} →</a>
                 </Card.Body>
               </Card>
             </Col>
           ))
         ) : (
           <Col xs={12}>
-            <Alert variant="light" className="border-dashed py-4 text-center text-muted small">No media mentions found.</Alert>
+            <Alert variant="light" className="border-dashed py-4 text-center text-muted small">{t('no_media_mentions')}</Alert>
           </Col>
         )}
       </Row>

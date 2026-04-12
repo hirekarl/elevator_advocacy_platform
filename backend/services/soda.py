@@ -20,10 +20,10 @@ class SODAService:
         self, bin: str, limit: int = 50
     ) -> List[Dict[str, Any]]:
         """
-        Fetches complaints for a specific BIN, filtered by elevator-related descriptors.
+        Fetches complaints for a specific BIN, filtered by elevator-related categories.
         """
-        # Descriptor codes: '81' (Inoperative), '63' (Failed Test)
-        where_clause = f"bin='{bin}' AND descriptor IN ('81', '63')"
+        # Category codes: '81' (Elevator-Inoperative/Unsafe), '63' (Elevator-Failed Test)
+        where_clause = f"bin='{bin}' AND complaint_category IN ('81', '63')"
 
         params: Dict[str, Any] = {
             "$where": where_clause,
@@ -50,7 +50,9 @@ class SODAService:
             "%Y-%m-%dT%H:%M:%S"
         )
 
-        where_clause = f"descriptor IN ('81', '63') AND created_date > '{limit_date}'"
+        where_clause = (
+            f"complaint_category IN ('81', '63') AND date_entered > '{limit_date}'"
+        )
         params: Dict[str, Any] = {"$where": where_clause, "$$app_token": self.app_token}
 
         try:

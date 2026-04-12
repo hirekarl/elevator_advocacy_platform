@@ -128,6 +128,33 @@ class AuthViewSet(viewsets.ViewSet):
         except Building.DoesNotExist:
             return Response({"error": "Building not found."}, status=404)
 
+    @action(
+        detail=False, methods=["get"], permission_classes=[permissions.IsAuthenticated]
+    )
+    def whoami(self, request):
+        """
+        Returns the profile of the current authenticated user.
+        Used by the frontend to sync state on load or refresh.
+        """
+        user = request.user
+        primary_building = None
+        from .models import UserProfile
+
+        profile, _ = UserProfile.objects.get_or_create(user=user)
+        if profile.primary_building:
+            primary_building = {
+                "bin": profile.primary_building.bin,
+                "address": profile.primary_building.address,
+            }
+
+        return Response(
+            {
+                "username": user.username,
+                "email": user.email,
+                "primary_building": primary_building,
+            }
+        )
+
     @action(detail=False, methods=["post"])
     def signup(self, request):
         username = request.data.get("username")
@@ -224,6 +251,52 @@ class BuildingViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(
             {"bin": building.bin, "verified_status": serializer.data["verified_status"]}
         )
+
+    @action(detail=True, methods=["get"])
+    def advocacy_summary(self, request, bin=None):
+        """
+        Synthesizes an Executive Advocacy Summary using the Supervisor-Worker system.
+        """
+        building = self.get_object()
+        lang = request.query_params.get("lang", "en")
+        manager = ConsensusManager()
+
+        # Prepare context for the Supervisor
+        reports = building.reports.order_by("-reported_at")[:20]
+        logs = building.advocacy_logs.order_by("-created_at")[:20]
+
+        context = {
+            "bin": building.bin,
+            "address": building.address,
+            "verified_status": manager.get_verified_status(building),
+            "loss_of_service": manager.get_loss_of_service_percentage(building),
+            "lang": lang,
+            "reports": [
+                {"status": r.status, "reported_at": str(r.reported_at)} for r in reports
+            ],
+            "logs": [
+                {
+                    "description": log.description,
+                    "sr_number": log.sr_number,
+                    "created_at": str(log.created_at),
+                }
+                for log in logs
+            ],
+        }
+
+        from orchestration.supervisor import Supervisor
+
+        supervisor = Supervisor()
+        summary = supervisor.analyze(context)
+
+        if not summary:
+            return Response(
+                {"error": "Failed to generate advocacy summary."},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
+
+        # We return the dict representation of the Pydantic model
+        return Response(summary.model_dump())
 
     @action(detail=True, methods=["get"])
     def advocacy_script(self, request, bin=None):
@@ -358,6 +431,7 @@ class BuildingViewSet(viewsets.ReadOnlyModelViewSet):
 
         serializer = self.get_serializer(building)
         data = serializer.data
+        data["is_mocked"] = manager.is_mocked
 
         # Include recent reports (same as retrieve)
         recent_reports = building.reports.order_by("-reported_at")[:10]

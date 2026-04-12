@@ -15,10 +15,10 @@ export function HeroSearch({ onSearch, searchData, setSearchData, isPending }: H
     <div className="py-4 py-md-5 bg-light mb-4 rounded-3 border shadow-sm">
       <div className="container px-3 px-md-4 py-2 py-md-3">
         <h1 className="display-5 fw-bold text-primary mb-3 text-center text-md-start">
-          Resident Action Center
+          {t('resident_action_center')}
         </h1>
         <p className="col-lg-8 fs-4 text-muted mb-4 text-center text-md-start">
-          Enter your address to view your building's elevator service history, DOB complaints, and tenant reports.
+          {t('hero_description')}
         </p>
         
         <Form onSubmit={onSearch} className="p-3 p-md-4 bg-white border rounded shadow-sm mx-auto">
@@ -62,11 +62,11 @@ export function HeroSearch({ onSearch, searchData, setSearchData, isPending }: H
                   value={searchData.borough}
                   onChange={(e) => setSearchData({ ...searchData, borough: e.target.value })}
                 >
-                  <option value="Manhattan">Manhattan</option>
-                  <option value="Bronx">Bronx</option>
-                  <option value="Brooklyn">Brooklyn</option>
-                  <option value="Queens">Queens</option>
-                  <option value="Staten Island">Staten Island</option>
+                  <option value="Manhattan">{t('manhattan')}</option>
+                  <option value="Bronx">{t('bronx')}</option>
+                  <option value="Brooklyn">{t('brooklyn')}</option>
+                  <option value="Queens">{t('queens')}</option>
+                  <option value="Staten Island">{t('staten_island')}</option>
                 </Form.Select>
               </Form.Group>
             </Col>

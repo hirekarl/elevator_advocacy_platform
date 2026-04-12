@@ -27,6 +27,11 @@ class ConsensusManager:
         else:
             self.geoclient = GeoclientService()
 
+    @property
+    def is_mocked(self) -> bool:
+        """Returns True if the underlying geoclient is a mock."""
+        return getattr(self.geoclient, "is_mocked", False)
+
     def get_or_create_building(
         self, house_number: str, street: str, borough: str
     ) -> Optional[Building]:
@@ -178,6 +183,6 @@ class ConsensusManager:
                     "user": None,
                     "status": status,
                     "is_official": True,
-                    "reported_at": report.get("created_date", timezone.now()),
+                    "reported_at": report.get("date_entered", timezone.now()),
                 },
             )

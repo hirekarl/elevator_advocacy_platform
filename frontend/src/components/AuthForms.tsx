@@ -30,10 +30,10 @@ export function SignupForm({ onSuccess }: AuthFormsProps) {
         setStatus({ type: 'success', message: t('signup_success_check_email') });
         // onSuccess(); // Keep them on the page to read the success message
       } else {
-        setStatus({ type: 'danger', message: data.error || 'Signup failed.' });
+        setStatus({ type: 'danger', message: data.error || t('signup_failed') });
       }
     } catch (error) {
-      setStatus({ type: 'danger', message: 'Network error. Try again.' });
+      setStatus({ type: 'danger', message: t('network_error') });
     } finally {
       setLoading(false);
     }
@@ -58,13 +58,13 @@ export function SignupForm({ onSuccess }: AuthFormsProps) {
         if (data.primary_building) {
           localStorage.setItem('primary_building_bin', data.primary_building.bin);
         }
-        setStatus({ type: 'success', message: 'Signed in successfully!' });
+        setStatus({ type: 'success', message: t('signin_success') });
         onSuccess(data);
       } else {
-        setStatus({ type: 'danger', message: data.error || 'Login failed.' });
+        setStatus({ type: 'danger', message: data.error || t('login_failed') });
       }
     } catch (error) {
-      setStatus({ type: 'danger', message: 'Network error. Try again.' });
+      setStatus({ type: 'danger', message: t('network_error') });
     } finally {
       setLoading(false);
     }
@@ -124,7 +124,7 @@ export function SignupForm({ onSuccess }: AuthFormsProps) {
               className="text-decoration-none small"
               onClick={() => { setIsLogin(!isLogin); setStatus(null); }}
             >
-              {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
+              {isLogin ? t('dont_have_account') : t('already_have_account')}
             </Button>
           </div>
         </Form>

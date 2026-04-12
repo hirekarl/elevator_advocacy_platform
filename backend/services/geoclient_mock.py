@@ -7,6 +7,8 @@ class MockGeoclientService:
     Provides realistic BINs for testing without external API calls.
     """
 
+    is_mocked = True
+
     # Real NYC Address -> BIN mappings for testing
     MOCK_DATA = {
         ("120", "Broadway", "Manhattan"): "1001145",

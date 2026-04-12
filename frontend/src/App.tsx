@@ -29,19 +29,38 @@ function MainDashboard() {
   const [showGuide, setShowGuide] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('username');
-    const primaryBin = localStorage.getItem('primary_building_bin');
-
-    if (token && storedUser) {
-      setIsLoggedIn(true);
-      setUsername(storedUser);
-      
-      // If no BIN in URL, but user has a home building, go there.
-      if (!bin && primaryBin) {
-        navigate(`/building/${primaryBin}`);
+    const fetchUser = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const response = await fetch('http://localhost:8000/api/auth/whoami/', {
+            headers: { 'Authorization': `Token ${token}` }
+          });
+          if (response.ok) {
+            const data = await response.json();
+            setIsLoggedIn(true);
+            setUsername(data.username);
+            
+            if (data.primary_building) {
+              const currentBinInStorage = localStorage.getItem('primary_building_bin');
+              if (currentBinInStorage !== data.primary_building.bin) {
+                localStorage.setItem('primary_building_bin', data.primary_building.bin);
+              }
+              // If no BIN in URL, but user has a home building, go there.
+              if (!bin) {
+                navigate(`/building/${data.primary_building.bin}`);
+              }
+            }
+          } else if (response.status === 401) {
+            handleLogout();
+          }
+        } catch (error) {
+          console.error("Auth sync error:", error);
+        }
       }
-    }
+    };
+
+    fetchUser();
   }, [bin, navigate]);
 
   useEffect(() => {
@@ -172,7 +191,7 @@ function MainDashboard() {
                   <span className="d-md-none">👤</span>
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  <Dropdown.Item onClick={handleLogout}>Log Out</Dropdown.Item>
+                  <Dropdown.Item onClick={handleLogout}>{t('log_out')}</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             ) : (
@@ -246,7 +265,7 @@ function MainDashboard() {
           )}
           <Row className="mt-4 mt-md-5">
              <Col md={12} lg={10} className="mx-auto text-center mb-5">
-                <h2 className="fw-bold mb-4 px-3 fs-3 fs-md-2">Explore NYC Elevator Outages</h2>
+                <h2 className="fw-bold mb-4 px-3 fs-3 fs-md-2">{t('explore_outages')}</h2>
                 <div className="px-1 px-md-2">
                   <BuildingsMap onBuildingSelect={(binId) => navigate(`/building/${binId}`)} />
                 </div>
@@ -289,12 +308,12 @@ function MainDashboard() {
 
                   <div className={`p-4 bg-white border rounded shadow-sm ${!isLoggedIn ? 'mt-4' : ''}`}>
                     <h5 className="mb-3 d-flex justify-content-between align-items-center">
-                      Building Feed
+                      {t('building_feed')}
                       {optimisticReports.length > 0 && <Badge bg="primary" pill>{optimisticReports.length}</Badge>}
                     </h5>
                     {optimisticReports.length === 0 ? (
                       <Alert variant="light" className="text-muted border border-secondary border-opacity-25 border-dashed">
-                        No recent tenant activity.
+                        {t('no_recent_activity')}
                       </Alert>
                     ) : (
                       <div style={{ maxHeight: '400px', overflowY: 'auto' }} className="pe-2">

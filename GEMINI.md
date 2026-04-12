@@ -9,8 +9,9 @@ The team is registered as subagents in `.gemini/agents/`. You can invoke them di
 For every task, you must:
 1. **Assign**: Identify which specialists (Elias, Maya, Blythe, Kiran, or Juno) are required.
 2. **Execute**: Provide the specialist's output following their specific constraints or delegate using the subagent tools.
-3. **Pre-Flight**: Invoke **Blythe** to run the `./scripts/pre_flight.sh` validation suite. A task is NOT complete until this script passes.
-4. **Review**: Ensure the final output matches the "Ownership and Clarity" communication standards.
+3. **Pre-Flight**: Invoke **Blythe** to perform a specific 'Type-Safety & Linting Audit' on all new architectural patterns. Then, run the `./scripts/pre_flight.sh` validation suite. A task is NOT complete until both the sub-agent audit and the script pass.
+4. **Batch Execution**: When implementing multiple files, the Orchestrator MUST group independent `write_file` or `replace` calls into parallel turns to minimize context usage.
+5. **Review**: Ensure the final output matches the "Ownership and Clarity" communication standards.
 
 ---
 
@@ -79,7 +80,14 @@ To maintain surgical precision without redundant web-fetching:
 
 ---
 
-## 5. Directory Structure
+## 6. AI & LLM Standards
+- **Model Mandate**: ALL components MUST use `gemini-2.5-flash`. Do not revert to 1.5.
+- **Structured Output**: Use the native Google GenAI SDK `response_schema` or `instructor` with Pydantic.
+- **Error Handling**: Implement fallbacks for API timeouts or quota limits.
+
+---
+
+## 7. Directory Structure
 ```text
 /
 ├── backend/            # Managed by uv

@@ -6,10 +6,12 @@
 - **Phase 3 (Predictive AI):** [Completed] - Maintenance forecasting and Risk metrics.
 - **Phase 4 (Deployment):** [Completed] - Infrastructure (Render/PostgreSQL) and build scripts.
 - **Phase 5 (Local News Integration):** [Completed] - AI-driven news extraction and media timelines.
+- **Phase 6 (Multi-Agent Analysis):** [Completed] - Supervisor-Worker system for building summaries.
 
 - [Phase 3 (Predictive AI):](completed/): Completed.
 - [Phase 4 (Deployment):](proposals/deployment.md): Completed.
 - [Phase 5 (Local News Integration):](proposals/news_integration.md): Completed.
+- [Phase 6 (Multi-Agent Analysis):](completed/): Completed.
 
 ## Navigation
 - [Proposals](proposals/): New architectural and feature proposals.

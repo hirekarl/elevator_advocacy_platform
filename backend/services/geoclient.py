@@ -10,6 +10,8 @@ class GeoclientService:
     Maps street addresses to Building Identification Numbers (BIN).
     """
 
+    is_mocked = False
+
     BASE_URL = "https://api.nyc.gov/geo/geoclient/v2/address.json"
 
     def __init__(self, api_key: Optional[str] = None):

@@ -18,6 +18,7 @@ class NewsArticleSchema(BaseModel):
     published_date: Optional[date]
     summary: str
     relevance_score: float  # 0-1 score
+    is_mocked: bool = False
 
 
 class NewsSearchService:
@@ -110,17 +111,19 @@ class NewsSearchService:
             NewsArticleSchema(
                 title=f"Elevator Outage at {address} Leaves Seniors Stranded",
                 url="https://gothamist.com/news/mock-elevator-story-1",
-                source="Gothamist",
+                source="Gothamist (MOCK)",
                 published_date=date(2025, 12, 10),
                 summary="Residents of the building reported consistent failures across all three elevators over a 48-hour period.",
                 relevance_score=0.95,
+                is_mocked=True,
             ),
             NewsArticleSchema(
                 title=f"NYC DOB Issues Multiple Violations for {address}",
                 url="https://thecity.nyc/2026/01/building-violations-mock",
-                source="The City",
+                source="The City (MOCK)",
                 published_date=date(2026, 1, 15),
                 summary="The Department of Buildings identified failed safety tests in the building's elevator shafts.",
                 relevance_score=0.85,
+                is_mocked=True,
             ),
         ]

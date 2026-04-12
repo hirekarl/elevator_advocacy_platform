@@ -18,6 +18,7 @@ class BuildingSerializer(serializers.ModelSerializer):
     verified_status = serializers.SerializerMethodField()
     loss_of_service_30d = serializers.SerializerMethodField()
     failure_risk = serializers.SerializerMethodField()
+    verification_countdown = serializers.SerializerMethodField()
     news_articles = BuildingNewsSerializer(many=True, read_only=True)
 
     class Meta:
@@ -25,12 +26,16 @@ class BuildingSerializer(serializers.ModelSerializer):
         fields = [
             'bin', 'address', 'borough', 'latitude', 'longitude', 
             'created_at', 'verified_status', 'loss_of_service_30d', 
-            'failure_risk', 'news_articles'
+            'failure_risk', 'verification_countdown', 'news_articles'
         ]
 
     def get_verified_status(self, obj: Building) -> str:
         from .logic import ConsensusManager
         return ConsensusManager().get_verified_status(obj)
+
+    def get_verification_countdown(self, obj: Building) -> int:
+        from .logic import ConsensusManager
+        return ConsensusManager().get_verification_countdown(obj)
 
     def get_loss_of_service_30d(self, obj: Building) -> float:
         from .logic import ConsensusManager

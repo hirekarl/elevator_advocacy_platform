@@ -101,6 +101,30 @@ class ConsensusManager:
 
         return "UNVERIFIED"
 
+    def get_verification_countdown(self, building: Building) -> int:
+        """
+        Calculates the minutes remaining until the current unverified report
+        expires from the consensus window. Returns 0 if already verified
+        or no reports exist.
+        """
+        if self.get_verified_status(building) != "UNVERIFIED":
+            return 0
+
+        window_start = timezone.now() - timedelta(minutes=self.CONSENSUS_WINDOW_MINUTES)
+        last_report = ElevatorReport.objects.filter(
+            building=building,
+            reported_at__gte=window_start
+        ).order_by('-reported_at').first()
+
+        if not last_report:
+            return 0
+
+        # Minutes remaining = (Window - (Now - ReportedAt))
+        elapsed_minutes = (timezone.now() - last_report.reported_at).total_seconds() / 60
+        remaining = self.CONSENSUS_WINDOW_MINUTES - elapsed_minutes
+        
+        return max(int(remaining), 0)
+
     def get_loss_of_service_percentage(self, building: Building, days: int = 30) -> float:
         """
         Calculates the Loss of Service % = (Total Down Time / Total Period Time) * 100.

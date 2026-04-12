@@ -52,7 +52,7 @@ class NewsSearchServiceTests(TestCase):
 
         # 3. Execute
         # We need to ensure API keys are "present" for the service to not use mocks
-        with patch.dict('os.environ', {'SERPAPI_KEY': 'fake_serp', 'GEMINI_API_KEY': 'fake_gemini'}):
+        with patch.dict('os.environ', {'SERPAPI_KEY': 'fake_serp', 'GEMINI_API_KEY': 'fake_gemini', 'USE_MOCK_SERPAPI': 'False'}):
             self.service.serp_api_key = 'fake_serp'
             self.service.gemini_api_key = 'fake_gemini'
             self.service.client = mock_genai_instance # Inject mock client

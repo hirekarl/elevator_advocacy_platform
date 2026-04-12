@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Card, ProgressBar, ListGroup, Badge, Alert, Row, Col, Button } from 'react-bootstrap';
+import { Card, ProgressBar, ListGroup, Badge, Alert, Row, Col, Button, Toast, ToastContainer } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
 interface BuildingDetailProps {
@@ -10,6 +10,17 @@ export function BuildingDetail({ buildingData }: BuildingDetailProps) {
   const { t } = useTranslation();
   const [advocacyScript, setAdvocacyScript] = useState<any>(null);
   const [isLoadingScript, setIsLoadingScript] = useState(false);
+  
+  // Toast State
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastVariant, setToastVariant] = useState('primary');
+
+  const triggerToast = (msg: string, variant: string = 'primary') => {
+    setToastMessage(msg);
+    setToastVariant(variant);
+    setShowToast(true);
+  };
 
   useEffect(() => {
     if (buildingData?.bin) {
@@ -39,6 +50,20 @@ export function BuildingDetail({ buildingData }: BuildingDetailProps) {
 
   return (
     <div className="building-action-center">
+      {/* Feedback Toast */}
+      <ToastContainer position="top-end" className="p-3" style={{ zIndex: 9999 }}>
+        <Toast 
+          onClose={() => setShowToast(false)} 
+          show={showToast} 
+          delay={3000} 
+          autohide 
+          bg={toastVariant} 
+          className={toastVariant === 'light' ? 'text-dark' : 'text-white'}
+        >
+          <Toast.Body className="fw-medium">{toastMessage}</Toast.Body>
+        </Toast>
+      </ToastContainer>
+
       <Card className="border-0 shadow-sm mb-4">
         <Card.Body className="p-4">
           <div className="d-flex justify-content-between align-items-start mb-3">
@@ -48,10 +73,13 @@ export function BuildingDetail({ buildingData }: BuildingDetailProps) {
             </div>
             <Badge 
               bg={buildingData.verified_status === 'DOWN' ? 'danger' : (buildingData.verified_status === 'UNVERIFIED' ? 'warning' : 'success')} 
-              className={`px-3 py-2 fs-6 ${buildingData.verified_status === 'UNVERIFIED' ? 'animate-pulse text-dark' : ''}`}
+              className={`px-3 py-2 fs-6 ${buildingData.verified_status === 'UNVERIFIED' ? 'animate-pulse text-dark border border-dark' : ''}`}
             >
-              {buildingData.verified_status === 'UNVERIFIED' ? 'Status: Unverified / Testing' : `Status: ${buildingData.verified_status}`}
+              {buildingData.verified_status === 'UNVERIFIED' 
+                ? `Status: Unverified (${buildingData.verification_countdown}m left)` 
+                : `Status: ${buildingData.verified_status}`}
             </Badge>
+
           </div>
 
           {localStorage.getItem('token') && (
@@ -70,13 +98,16 @@ export function BuildingDetail({ buildingData }: BuildingDetailProps) {
                       },
                       body: JSON.stringify({ bin: buildingData.bin })
                     });
+                    const data = await res.json();
                     if (res.ok) {
-                      const data = await res.json();
                       localStorage.setItem('primary_building_bin', buildingData.bin);
-                      alert(data.message);
+                      triggerToast(data.message, 'success');
+                    } else {
+                      triggerToast(data.error || 'Error setting home building', 'danger');
                     }
                   } catch (e) {
                     console.error("Home building error:", e);
+                    triggerToast("Network error occurred", "danger");
                   }
                 }}
               >
@@ -124,11 +155,11 @@ export function BuildingDetail({ buildingData }: BuildingDetailProps) {
         <Card.Body className="p-4 position-relative">
           <div className="position-relative" style={{ zIndex: 1 }}>
             <div className="d-flex align-items-center mb-3">
-              <span className="fs-3 me-2">📢</span>
+              <span role="img" aria-label="Loudspeaker" className="fs-3 me-2">📢</span>
               <h5 className="fw-bold mb-0">311 Reporting Script</h5>
             </div>
             {isLoadingScript ? (
-              <p className="mb-0 italic opacity-75 text-white">Generating custom advocacy strategy...</p>
+              <p className="mb-0 italic text-white-50">Generating custom advocacy strategy...</p>
             ) : advocacyScript ? (
               <>
                 <h6 className="fw-bold text-info mb-3">{advocacyScript.headline}</h6>
@@ -138,14 +169,14 @@ export function BuildingDetail({ buildingData }: BuildingDetailProps) {
                   </pre>
                 </div>
                 <div className="d-flex justify-content-between align-items-center">
-                  <small className="opacity-75">Legal Context: {advocacyScript.legal_reference}</small>
+                  <small className="text-white-50">Legal Context: {advocacyScript.legal_reference}</small>
                   <Button 
                     variant="light" 
                     size="sm" 
                     className="rounded-pill px-3 fw-bold"
                     onClick={() => {
                       navigator.clipboard.writeText(advocacyScript.script);
-                      alert("Script copied to clipboard!");
+                      triggerToast("Script copied to clipboard!", "info");
                     }}
                   >
                     Copy Script
@@ -153,11 +184,11 @@ export function BuildingDetail({ buildingData }: BuildingDetailProps) {
                 </div>
               </>
             ) : (
-              <p className="mb-0 opacity-75">No advocacy strategy available for this building status.</p>
+              <p className="mb-0 text-white-50">No advocacy strategy available for this building status.</p>
             )}
           </div>
           <div className="position-absolute bottom-0 end-0 opacity-10" style={{ fontSize: '100px', transform: 'translate(20%, 20%)' }}>
-            ⚖️
+            <span role="img" aria-label="Balance Scales Decoration">⚖️</span>
           </div>
         </Card.Body>
       </Card>
@@ -226,7 +257,7 @@ export function BuildingDetail({ buildingData }: BuildingDetailProps) {
           className="btn btn-sm btn-outline-secondary rounded-pill px-3"
           onClick={async () => {
             const token = localStorage.getItem('token');
-            if (!token) return alert("Please log in to refresh building data.");
+            if (!token) return triggerToast("Please log in to refresh building data.", "warning");
             
             try {
               const res = await fetch(`http://localhost:8000/api/buildings/${buildingData.bin}/refresh_news/`, {
@@ -237,14 +268,15 @@ export function BuildingDetail({ buildingData }: BuildingDetailProps) {
               const data = await res.json();
               
               if (res.ok) {
-                alert("Data sync started. New articles will appear shortly.");
+                triggerToast("Data sync started. New articles will appear shortly.", "success");
               } else if (res.status === 429) {
-                alert(data.message || "Cooldown in effect. Please try again later.");
+                triggerToast(data.message || "Cooldown in effect. Please try again later.", "warning");
               } else {
-                alert(data.error || "An error occurred.");
+                triggerToast(data.error || "An error occurred.", "danger");
               }
             } catch (e) {
               console.error("Refresh error:", e);
+              triggerToast("Network error occurred", "danger");
             }
           }}
         >
@@ -265,7 +297,13 @@ export function BuildingDetail({ buildingData }: BuildingDetailProps) {
                   </div>
                   <h5 className="fw-bold mb-3">{article.title}</h5>
                   <p className="text-muted small mb-4">{article.summary}</p>
-                  <a href={article.url} target="_blank" rel="noopener noreferrer" className="btn btn-outline-primary btn-sm rounded-pill px-3">
+                  <a 
+                    href={article.url} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="btn btn-outline-primary btn-sm rounded-pill px-3"
+                    aria-label={`Read full article: ${article.title} (opens in new window)`}
+                  >
                     Read Article
                   </a>
                 </Card.Body>

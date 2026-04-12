@@ -1,4 +1,4 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import Building, ElevatorReport
@@ -12,6 +12,7 @@ class BuildingViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Building.objects.all()
     serializer_class = BuildingSerializer
     lookup_field = 'bin'
+    permission_classes = [permissions.AllowAny]
 
     @action(detail=True, methods=['get'])
     def status(self, request, bin=None):
@@ -30,6 +31,9 @@ class ReportViewSet(viewsets.ViewSet):
     """
     API endpoint for reporting elevator status via address.
     """
+    permission_classes = [permissions.AllowAny]
+    authentication_classes = []  # Bypass CSRF for prototype development
+
     def create(self, request):
         serializer = ReportStatusSerializer(data=request.data)
         if serializer.is_valid():

@@ -9,6 +9,7 @@ dependencies = [
     "djangorestframework",
     "requests",
     "python-dotenv",
+    "django-cors-headers>=4.9.0",
 ]
 
 [tool.pytest.ini_options]

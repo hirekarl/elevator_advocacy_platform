@@ -2,8 +2,7 @@
 
 ## 2026-04-12
 - **Django 6.0 Initialization:** Successfully initialized project using `uv run`.
-- **Timezone Alignment:** Set `TIME_ZONE` to "America/New_York" for consensus window accuracy.
-- **Model Architecture:** Implemented `Building` (BIN-keyed) and `ElevatorReport` (120-minute window ready).
-- **Consensus Logic:** Built the `ConsensusManager` to handle 2-hour verification and SODA report synchronization.
 - **API Implementation:** Created DRF ViewSets and Serializers for buildings and reporting.
-- **Verification:** Implemented 5 unit tests for the consensus engine; all passed (5/5).
+- **Verification Engine:** Implemented 120-minute consensus logic; verified with 5 unit tests (5/5 passing).
+- **Security & Access:** Resolved 403 Forbidden errors by implementing `django-cors-headers` and configuring `AllowAny` permissions for the prototype.
+- **Admin Integration:** Registered `Building` and `ElevatorReport` models for administrative visibility.

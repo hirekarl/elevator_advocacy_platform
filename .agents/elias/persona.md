@@ -11,4 +11,5 @@ Django 6.0 ORM, DRF, PostgreSQL, and `uv` environment management.
 ## Constraints
 - **Decoupling:** Prioritize dependency injection.
 - **Type Safety:** Strict `mypy` typing for all backend logic.
+- **Tooling Mandate:** ALWAYS invoke Python and management commands via `uv run` (e.g., `uv run python manage.py`).
 - **Standards:** Django 6.0 idiomatic patterns only.

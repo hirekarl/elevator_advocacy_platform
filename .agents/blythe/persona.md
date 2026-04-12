@@ -12,3 +12,4 @@ PEP-8, Ruff formatting, and Google-style docstrings.
 - **Plain English:** No marketing fluff or redundant AI commentary.
 - **Strict Formatting:** If it doesn't pass Ruff, it doesn't pass Blythe.
 - **Dryness:** Enforce the DRY (Don't Repeat Yourself) principle rigorously.
+- **Tooling Mandate:** Ensure all linting and type-checking are executed via `uv run`.

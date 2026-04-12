@@ -1,5 +1,5 @@
 import { useState, useOptimistic, useTransition, useEffect } from 'react';
-import { Container, Navbar, Nav, Button, Row, Col, Alert, Badge, Dropdown } from 'react-bootstrap';
+import { Container, Navbar, Nav, Button, Row, Col, Alert, Badge, Dropdown, Modal } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { BrowserRouter as Router, Routes, Route, useParams, useNavigate, Link } from 'react-router-dom';
 
@@ -24,6 +24,7 @@ function MainDashboard() {
     borough: 'Manhattan'
   });
   const [activeBuilding, setActiveBuilding] = useState<any>(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -163,11 +164,34 @@ function MainDashboard() {
                 </Dropdown.Menu>
               </Dropdown>
             ) : (
-              <Badge bg="warning" text="dark" className="p-2">{t('login_required')}</Badge>
+              <Button 
+                variant="primary" 
+                size="sm" 
+                className="fw-bold px-3 rounded-pill"
+                onClick={() => setShowAuthModal(true)}
+              >
+                {t('login_button')}
+              </Button>
             )}
           </Nav>
         </Container>
       </Navbar>
+
+      {/* Global Auth Modal */}
+      <Modal show={showAuthModal} onHide={() => setShowAuthModal(false)} centered>
+        <Modal.Header closeButton className="border-0 pb-0"></Modal.Header>
+        <Modal.Body className="pt-0">
+          <SignupForm onSuccess={(data) => {
+            setIsLoggedIn(true);
+            setUsername(data.username);
+            setShowAuthModal(false);
+            if (data.primary_building) {
+              localStorage.setItem('primary_building_bin', data.primary_building.bin);
+              navigate(`/building/${data.primary_building.bin}`);
+            }
+          }} />
+        </Modal.Body>
+      </Modal>
 
       {!bin ? (
         <div className="container mt-5 pb-5">

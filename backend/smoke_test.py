@@ -1,6 +1,7 @@
 import os
 import sys
 from pathlib import Path
+
 from dotenv import load_dotenv
 
 # Set up Django environment
@@ -8,10 +9,12 @@ sys.path.append(str(Path(__file__).resolve().parent))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 
 import django
+
 django.setup()
 
 from buildings_app.logic import ConsensusManager
 from services.soda import SODAService
+
 
 def run_smoke_test():
     # Load .env from project root

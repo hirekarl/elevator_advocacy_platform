@@ -1,7 +1,9 @@
 from django.core.management.base import BaseCommand
+
 from buildings_app.logic import ConsensusManager
-from services.soda import SODAService
 from buildings_app.models import Building
+from services.soda import SODAService
+
 
 class Command(BaseCommand):
     help = "Polls NYC Open Data (SODA) for recent elevator complaints and syncs them to the local database."

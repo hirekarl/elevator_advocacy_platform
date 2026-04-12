@@ -1,11 +1,15 @@
-from django.test import TestCase
-from django.utils import timezone
 from datetime import timedelta
 from unittest.mock import MagicMock
+
 from django.contrib.auth.models import User
-from .models import Building, ElevatorReport
-from .logic import ConsensusManager
+from django.test import TestCase
+from django.utils import timezone
+
 from services.geoclient import GeoclientService
+
+from .logic import ConsensusManager
+from .models import Building, ElevatorReport
+
 
 class ConsensusManagerTests(TestCase):
     """

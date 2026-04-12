@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import Building, ElevatorReport, BuildingNews
+
+from .models import Building, BuildingNews, ElevatorReport
+
 
 class BuildingNewsInline(admin.TabularInline):
     model = BuildingNews

@@ -1,6 +1,8 @@
 from django.core.management.base import BaseCommand
+
 from buildings_app.models import Building
 from buildings_app.tasks import fetch_building_news
+
 
 class Command(BaseCommand):
     """

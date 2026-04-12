@@ -1,7 +1,11 @@
-from django.tasks import task
-from .models import Building, BuildingNews
-from services.news_search import NewsSearchService, NewsArticleSchema
 from typing import List
+
+from django.tasks import task
+
+from services.news_search import NewsArticleSchema, NewsSearchService
+
+from .models import Building, BuildingNews
+
 
 @task
 def fetch_building_news(bin: str):

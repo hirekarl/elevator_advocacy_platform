@@ -1,9 +1,11 @@
 import os
-from typing import List, Optional
-from pydantic import BaseModel
 from datetime import date
-from google import genai
+from typing import List, Optional
+
 import serpapi
+from google import genai
+from pydantic import BaseModel
+
 
 class NewsArticleSchema(BaseModel):
     """
@@ -34,17 +36,22 @@ class NewsSearchService:
         """
         Performs the search and extraction pipeline.
         """
-        if not self.serp_api_key or not self.gemini_api_key:
+        use_mock_serp = os.getenv("USE_MOCK_SERPAPI", "False") == "True"
+
+        if not self.gemini_api_key:
             return self.get_mock_results(address)
 
-        # 1. Search via SerpAPI (New Client Syntax)
-        serp_client = serpapi.Client(api_key=self.serp_api_key)
-        results = serp_client.search({
-            "engine": "google",
-            "q": f'"{address}" NYC elevator outage complaint news',
-            "location": "New York, New York, United States",
-        })
-        organic_results = results.get("organic_results", [])[:5]
+        # 1. Search via SerpAPI (or Mock)
+        if use_mock_serp or not self.serp_api_key:
+            organic_results = self.get_mock_serp_results(address)
+        else:
+            serp_client = serpapi.Client(api_key=self.serp_api_key)
+            results = serp_client.search({
+                "engine": "google",
+                "q": f'"{address}" NYC elevator outage complaint news',
+                "location": "New York, New York, United States",
+            })
+            organic_results = results.get("organic_results", [])[:5]
 
         # 2. Extract and Validate via Native Gemini SDK
         articles = []
@@ -68,6 +75,28 @@ class NewsSearchService:
                 print(f"Extraction Error for {res.get('title')}: {e}")
 
         return articles
+
+    def get_mock_serp_results(self, address: str) -> List[dict]:
+        """
+        Provides realistic raw SerpAPI results for testing Gemini extraction.
+        """
+        return [
+            {
+                "title": f"Elevator Outage at {address} Leaves Seniors Stranded",
+                "link": "https://gothamist.com/news/mock-elevator-story-1",
+                "snippet": f"Residents of {address} reported consistent failures across all three elevators over a 48-hour period. 'We are trapped,' said one tenant.",
+            },
+            {
+                "title": f"NYC DOB Issues Multiple Violations for {address}",
+                "link": "https://thecity.nyc/2026/01/building-violations-mock",
+                "snippet": f"The Department of Buildings identified failed safety tests in the elevator shafts at {address} during a surprise inspection.",
+            },
+            {
+                "title": "Local Neighborhood News",
+                "link": "https://patch.com/new-york/neighborhood-news",
+                "snippet": "A new community garden is opening down the street from the local school. Residents are excited for spring.",
+            }
+        ]
 
     def get_mock_results(self, address: str) -> List[NewsArticleSchema]:
         """

@@ -1,7 +1,9 @@
 import os
 from pathlib import Path
-from dotenv import load_dotenv
+
 import requests
+from dotenv import load_dotenv
+
 
 def test_soda_only():
     root_dir = Path(__file__).resolve().parent.parent

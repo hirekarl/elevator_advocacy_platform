@@ -1,7 +1,9 @@
 import os
-from typing import List, Dict, Any, Optional
-import requests
 from datetime import datetime
+from typing import Any, Dict, List, Optional
+
+import requests
+
 
 class SODAService:
     """
@@ -20,11 +22,11 @@ class SODAService:
         """
         # Descriptor codes: '81' (Inoperative), '63' (Failed Test)
         where_clause = f"bin='{bin}' AND descriptor IN ('81', '63')"
-        
-        params = {
+
+        params: Dict[str, Any] = {
             "$where": where_clause,
             "$limit": limit,
-            "$$app_token": self.app_token
+            "$$app_token": self.app_token,
         }
 
         try:
@@ -40,11 +42,11 @@ class SODAService:
         Fetches all elevator-related outages across NYC from the last N hours.
         """
         # SODA floating timestamp format: YYYY-MM-DDTHH:MM:SS
-        from datetime import datetime, timedelta
+        from datetime import timedelta
         limit_date = (datetime.now() - timedelta(hours=hours)).strftime("%Y-%m-%dT%H:%M:%S")
-        
+
         where_clause = f"descriptor IN ('81', '63') AND created_date > '{limit_date}'"
-        params = {"$where": where_clause, "$$app_token": self.app_token}
+        params: Dict[str, Any] = {"$where": where_clause, "$$app_token": self.app_token}
 
         try:
             response = requests.get(self.BASE_URL, params=params, timeout=15)

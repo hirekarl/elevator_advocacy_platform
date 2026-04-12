@@ -1,8 +1,10 @@
-import math
 from datetime import timedelta
-from typing import Dict, List, Any
+from typing import Any, Dict
+
 from django.utils import timezone
+
 from .models import Building, ElevatorReport
+
 
 class PredictiveEngine:
     """

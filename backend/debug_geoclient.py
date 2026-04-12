@@ -1,7 +1,9 @@
 import os
-import requests
 from pathlib import Path
+
+import requests
 from dotenv import load_dotenv
+
 
 def debug_geoclient():
     root_dir = Path(__file__).resolve().parent.parent

@@ -1,6 +1,8 @@
+from typing import Final
+
 from django.db import models
 from django.db.models.functions import Now
-from typing import Final
+
 
 class Building(models.Model):
     """
@@ -18,6 +20,7 @@ class Building(models.Model):
         return f"{self.address} (BIN: {self.bin})"
 
 from django.contrib.auth.models import User
+
 
 class ElevatorReport(models.Model):
     """

@@ -1,12 +1,16 @@
 import os
 from datetime import timedelta
-from django.db.models import Count, Q
-from django.utils import timezone
+from typing import Any, Dict, List, Optional
+
 from django.contrib.auth.models import User
-from .models import Building, ElevatorReport
+from django.db.models import Count
+from django.utils import timezone
+
 from services.geoclient import GeoclientService
 from services.geoclient_mock import MockGeoclientService
-from typing import Optional, List, Dict, Any
+
+from .models import Building, ElevatorReport
+
 
 class ConsensusManager:
     """

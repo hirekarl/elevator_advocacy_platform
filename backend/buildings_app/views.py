@@ -1,20 +1,24 @@
-from rest_framework import viewsets, status, permissions
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from .models import Building, ElevatorReport
-from .serializers import BuildingSerializer, ElevatorReportSerializer, ReportStatusSerializer
-from .logic import ConsensusManager
-
+from django.conf import settings
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_str
-
-from django.conf import settings
-from django.contrib.auth import authenticate
-from rest_framework.authtoken.models import Token
 from django.db.models import Q
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from rest_framework import permissions, status, viewsets
+from rest_framework.authtoken.models import Token
+from rest_framework.decorators import action
+from rest_framework.response import Response
+
+from .logic import ConsensusManager
+from .models import Building
+from .serializers import (
+    BuildingSerializer,
+    ElevatorReportSerializer,
+    ReportStatusSerializer,
+)
+
 
 class AuthViewSet(viewsets.ViewSet):
     """
@@ -197,8 +201,9 @@ class BuildingViewSet(viewsets.ReadOnlyModelViewSet):
         Manually triggers the news extraction task for this building.
         Requires authentication and enforces a 24-hour cooldown per building.
         """
-        from django.utils import timezone
         from datetime import timedelta
+
+        from django.utils import timezone
         
         building = self.get_object()
         now = timezone.now()

@@ -11,11 +11,48 @@ from django.core.mail import send_mail
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 
+from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token
+
 class AuthViewSet(viewsets.ViewSet):
     """
-    API endpoint for user registration and email confirmation.
+    API endpoint for user registration, email confirmation, and session management.
     """
     permission_classes = [permissions.AllowAny]
+
+    @action(detail=False, methods=['post'])
+    def login(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+
+        if not username or not password:
+            return Response({"error": "Please provide both username and password."}, status=400)
+
+        # Authenticate checks is_active by default and returns None if inactive or wrong password
+        user = authenticate(username=username, password=password)
+
+        if user:
+            token, _ = Token.objects.get_or_create(user=user)
+            return Response({
+                "token": token.key,
+                "username": user.username,
+                "email": user.email
+            })
+
+        # Differentiate for better user experience
+        try:
+            potential_user = User.objects.get(username=username)
+            if not potential_user.is_active and potential_user.check_password(password):
+                return Response({"error": "Please confirm your email before logging in."}, status=403)
+        except User.DoesNotExist:
+            pass
+
+        return Response({"error": "Incorrect username or password. Please try again."}, status=401)
+
+    @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def logout(self, request):
+        request.user.auth_token.delete()
+        return Response({"message": "Successfully logged out."})
 
     @action(detail=False, methods=['post'])
     def signup(self, request):

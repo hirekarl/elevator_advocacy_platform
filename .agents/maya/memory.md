@@ -1,5 +1,5 @@
-# Maya Memory Log - Phase 3 Final
-- **Frontend:** React 19 + Vite with React Bootstrap and Leaflet.
-- **UI:** Implemented "7-Day Maintenance Forecast" cards in `BuildingDetail`.
-- **Map:** Integrated Outage Risk and Down Time metrics into `BuildingsMap` popups.
-- **Aesthetics:** Adhered to "Blythe" constraints by removing AI jargon and using plain English for forecasts.
+# Maya Memory Log - Auth Sprint Final
+- **Frontend:** Integrated `LoginForm` into a unified `AuthForms` component with a state-based toggle.
+- **State:** Implemented persistent auth using `localStorage` for `token` and `username`.
+- **UI:** Added a user profile dropdown in the `Navbar` with "Log Out" capability.
+- **Integration:** Updated `handleReport` to include the `Authorization` header, enabling authenticated outage reporting.

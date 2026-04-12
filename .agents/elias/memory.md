@@ -1,5 +1,6 @@
-# Elias Memory Log - Phase 3 Final
-- **Backend:** Django 6.0 core with PostgreSQL-ready models (BIN primary keys).
-- **Architecture:** Decoupled AI metrics into `BuildingSerializer` using `SerializerMethodField`.
-- **Migrations:** Successfully migrated coordinates (latitude/longitude) and User relationships for reports.
-- **Logic:** Refined `ConsensusManager` to prioritize official SODA reports as verified status.
+# Elias Memory Log - Auth Sprint Final
+- **Backend:** Switched from Basic/Session to **DRF Token Authentication** for stateless login.
+- **Auth:** Implemented `login` and `logout` actions in `AuthViewSet`.
+- **Security:** Differentiated between "Invalid Credentials" (401) and "Inactive Account" (403) for better UX.
+- **Migrations:** Applied `authtoken` migrations to the database.
+- **Verification:** Confirmed auth lifecycle (Signup -> Confirm -> Login -> Logout) via `verify_auth.py`.

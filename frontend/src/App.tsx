@@ -1,5 +1,5 @@
-import { useState, useOptimistic, useTransition } from 'react';
-import { Container, Navbar, Nav, Button, Row, Col, Alert, Form, Badge } from 'react-bootstrap';
+import { useState, useOptimistic, useTransition, useEffect } from 'react';
+import { Container, Navbar, Nav, Button, Row, Col, Alert, Form, Badge, Dropdown } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
@@ -13,13 +13,30 @@ function MainDashboard() {
   const { t, i18n } = useTranslation();
   const [isPending, startTransition] = useTransition();
   const [reports, setReports] = useState<any[]>([]);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
+  const [username, setUsername] = useState(localStorage.getItem('username') || '');
   const [searchData, setSearchData] = useState({
     house_number: '',
     street: '',
     borough: 'Manhattan'
   });
   const [activeBuilding, setActiveBuilding] = useState<any>(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('username');
+    if (token && storedUser) {
+      setIsLoggedIn(true);
+      setUsername(storedUser);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    setIsLoggedIn(false);
+    setUsername('');
+  };
 
   const handleSearch = async (e?: React.FormEvent, bin?: string) => {
     if (e) e.preventDefault();
@@ -60,12 +77,17 @@ function MainDashboard() {
   const handleReport = (formData: any) => {
     startTransition(async () => {
       const tempReport = { id: Date.now(), status: formData.status, time: new Date().toLocaleTimeString() };
+      const token = localStorage.getItem('token');
+      
       addOptimisticReport(tempReport);
 
       try {
         const response = await fetch('/api/reports/', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${token}`
+          },
           body: JSON.stringify(formData)
         });
         
@@ -75,9 +97,9 @@ function MainDashboard() {
           if (activeBuilding && activeBuilding.bin === data.building) {
              handleSearch(undefined, activeBuilding.bin);
           }
-        } else if (response.status === 403) {
+        } else if (response.status === 401 || response.status === 403) {
           alert(t('login_required'));
-          setIsLoggedIn(false);
+          handleLogout();
         }
       } catch (error) {
         console.error("API Error:", error);
@@ -94,7 +116,16 @@ function MainDashboard() {
             <Button variant="outline-light" size="sm" onClick={toggleLanguage} aria-label="Toggle Language" className="me-3">
               {i18n.language === 'en' ? 'ES' : 'EN'}
             </Button>
-            {!isLoggedIn && (
+            {isLoggedIn ? (
+              <Dropdown align="end">
+                <Dropdown.Toggle variant="outline-info" size="sm" className="fw-bold px-3">
+                  {username}
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item onClick={handleLogout}>Log Out</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            ) : (
               <Badge bg="warning" text="dark" className="p-2">{t('login_required')}</Badge>
             )}
           </Nav>
@@ -107,7 +138,10 @@ function MainDashboard() {
             {isLoggedIn ? (
               <ReportForm onReport={handleReport} isPending={isPending} />
             ) : (
-              <SignupForm onSuccess={() => setIsLoggedIn(true)} />
+              <SignupForm onSuccess={() => {
+                setIsLoggedIn(true);
+                setUsername(localStorage.getItem('username') || '');
+              }} />
             )}
             
             <Form onSubmit={handleSearch} className="mb-5 p-4 border rounded bg-white shadow-sm">

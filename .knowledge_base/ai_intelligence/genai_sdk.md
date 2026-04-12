@@ -1,4 +1,4 @@
-# Google GenAI SDK (Gemini 2.0 Flash)
+# Google GenAI SDK (Gemini 2.5 Flash)
 
 ## Initialization
 Using the `google-genai` package (v1.72+).
@@ -15,7 +15,7 @@ For the **Elevator Advocacy Platform**, focus on extraction rather than conversa
 
 ```python
 response = client.models.generate_content(
-    model="gemini-2.0-flash",
+    model="gemini-2.5-flash",
     contents="Extract elevator outages from this snippet: ..."
 )
 ```

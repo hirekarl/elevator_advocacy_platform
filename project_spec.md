@@ -13,7 +13,7 @@
 
 ## 3. Core Features & Logic
 - **Data Pipeline**: Resolve address to BIN via NYC Geoclient API. Query elevator complaints from NYC Open Data (SODA) using SoQL.
-- **Verification Engine**: "Second-logged observation" rule. Requires a verification from a different user within a 2-hour window to update the canonical elevator status.
+- **Verification Engine**: "Second-logged observation" rule. Requires a verification from a different user within a 2-hour window to update the canonical elevator status. Includes a `verification_countdown` for transparency.
 - **Multi-Agent Analysis**: A Supervisor-Worker system.
     - **SODAResearcher**: Aggregates history from SODA API.
     - **CommunityReporter**: Aggregates local tenant logs.

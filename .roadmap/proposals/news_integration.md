@@ -1,4 +1,4 @@
-# Proposal: Local News & Media Integration (The "Action Center" Intelligence)
+# Proposal: Local News & Media Integration (The "Action Center" Intelligence) [Completed]
 
 ## Objective
 Automatically augment building profiles with local news reports and media mentions regarding elevator outages and safety issues. This provides residents with a broader context of their building's public record.
@@ -11,7 +11,7 @@ Automatically augment building profiles with local news reports and media mentio
 - **Implementation:** Use a search API (e.g., SerpAPI, Google Custom Search, or a scraper) to retrieve top 10 relevant links.
 
 ### 2. AI Integration: `google-genai` + `instructor`
-- **Model:** Gemini 2.0 Flash (via `google-genai`).
+- **Model:** Gemini 2.5 Flash (via `google-genai`).
 - **Parsing:** Use the `instructor` library to enforce a structured Pydantic schema on search results.
 - **Schema:**
     ```python

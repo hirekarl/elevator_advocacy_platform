@@ -1,5 +1,6 @@
-# Kiran Memory Log - Phase 3 & News Proposal
-- **Data:** Geoclient v2 (Live/Mock) and SODA API (`kqwi-7ncn`) wrappers implemented.
-- **AI Engine:** Developed `PredictiveEngine` for 7-day maintenance forecasting.
-- **News Proposal:** Researched `google-genai` + `instructor` integration for local news search.
-- **Verification:** Verified 100% success on AI forecasting, user authentication, and admin access.
+# Kiran Memory Log - Phase 5 News Intelligence
+- **AI Engine:** Upgraded to **Gemini 2.5 Flash** for high-precision news extraction.
+- **Data Retrieval:** Integrated `serpapi` with a custom search pipeline for local NYC elevator news.
+- **Extraction:** Implemented structured Pydantic extraction for `NewsArticleSchema` to ensure data integrity.
+- **Relevance:** Designed the prompt logic to automatically filter irrelevant real estate ads and neighborhood news.
+- **Metrics:** Refined the "Loss of Service" calculation by cross-referencing news reports with official DOB data.

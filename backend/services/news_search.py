@@ -21,7 +21,7 @@ class NewsArticleSchema(BaseModel):
 class NewsSearchService:
     """
     Kiran's News Service: Searches for local news regarding elevator outages
-    and extracts structured data using Gemini 2.0 Flash.
+    and extracts structured data using Gemini 2.5 Flash.
     """
 
     def __init__(self):

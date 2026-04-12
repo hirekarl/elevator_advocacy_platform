@@ -1,8 +1,13 @@
 import os
 from pathlib import Path
 from typing import List
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+ROOT_DIR = BASE_DIR.parent
+
+# Load .env from project root
+load_dotenv(ROOT_DIR / ".env")
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-default-key")
 DEBUG = os.getenv("DJANGO_DEBUG", "True") == "True"

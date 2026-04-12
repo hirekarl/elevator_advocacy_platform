@@ -75,11 +75,12 @@ export function BuildingsMap({ onBuildingSelect }: BuildingsMapProps) {
   };
 
   return (
-    <div className="rounded shadow-sm border overflow-hidden mb-4" style={{ height: '400px' }}>
+    <div className="rounded-4 shadow-sm border overflow-hidden mb-4" style={{ height: 'min(70vh, 500px)', minHeight: '350px' }}>
       <MapContainer 
         center={[40.7128, -74.0060]} 
         zoom={12} 
         style={{ height: '100%', width: '100%' }}
+        scrollWheelZoom={false}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -91,23 +92,28 @@ export function BuildingsMap({ onBuildingSelect }: BuildingsMapProps) {
             position={[b.latitude, b.longitude]}
             icon={createIcon(b.verified_status)}
           >
-            <Popup>
-              <div className="p-1">
-                <h6 className="fw-bold mb-1">{b.address}</h6>
-                <div className="mb-2">
-                  <Badge bg={getStatusColor(b.verified_status)}>
+            <Popup minWidth={200}>
+              <div className="p-2">
+                <h6 className="fw-bold mb-2 fs-5 text-primary">{b.address}</h6>
+                <div className="mb-3">
+                  <Badge bg={getStatusColor(b.verified_status)} className="px-3 py-2 fs-6 mb-2">
                     {b.verified_status}
                   </Badge>
-                  <div className="mt-2 small">
-                    <strong>{b.loss_of_service_30d}%</strong> Down Time
-                    <br />
-                    <strong>{b.failure_risk?.risk_score}%</strong> Outage Risk
+                  <div className="small text-muted mt-1">
+                    <div className="d-flex justify-content-between mb-1">
+                      <span>30d Uptime:</span>
+                      <span className="fw-bold text-dark">{100 - b.loss_of_service_30d}%</span>
+                    </div>
+                    <div className="d-flex justify-content-between">
+                      <span>Risk Level:</span>
+                      <span className="fw-bold text-dark">{b.failure_risk?.risk_score}%</span>
+                    </div>
                   </div>
                 </div>
                 <Button 
-                  size="sm" 
-                  variant="outline-primary" 
-                  className="w-100"
+                  size="lg" 
+                  variant="primary" 
+                  className="w-100 fw-bold rounded-pill py-2 shadow-sm"
                   onClick={() => onBuildingSelect(b.bin)}
                 >
                   {t('building_details')}

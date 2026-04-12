@@ -56,3 +56,38 @@
   margin: 12px !important;
   width: 200px !important;
 }
+
+/* Responsive Helpers */
+.fs-7 { font-size: 0.875rem !important; }
+.fs-8 { font-size: 0.75rem !important; }
+
+@media (max-width: 768px) {
+  .display-5 {
+    font-size: 2rem !important;
+  }
+  .fs-4 {
+    font-size: 1.1rem !important;
+  }
+  .card-body {
+    padding: 1.25rem !important;
+  }
+}
+
+/* Safe Area for Mobile */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.sticky-lg-top {
+  position: relative;
+  top: 0;
+}
+
+@media (min-width: 992px) {
+  .sticky-lg-top {
+    position: sticky !important;
+    top: 100px;
+    z-index: 1020;
+  }
+}
+

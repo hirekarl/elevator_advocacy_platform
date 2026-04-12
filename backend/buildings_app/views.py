@@ -229,11 +229,13 @@ class BuildingViewSet(viewsets.ReadOnlyModelViewSet):
     def advocacy_script(self, request, bin=None):
         """
         Generates a 311 reporting script using Sol's AdvocacyStrategist.
+        Supports 'lang' query parameter (e.g., ?lang=es).
         """
         building = self.get_object()
+        lang = request.query_params.get("lang", "en")
         from .ai_logic import AdvocacyStrategist
 
-        script_data = AdvocacyStrategist.generate_311_script(building)
+        script_data = AdvocacyStrategist.generate_311_script(building, lang=lang)
         return Response(script_data)
 
     @action(
@@ -373,6 +375,43 @@ class BuildingViewSet(viewsets.ReadOnlyModelViewSet):
         buildings = Building.objects.exclude(latitude__isnull=True)
         serializer = self.get_serializer(buildings, many=True)
         return Response(serializer.data)
+
+    @action(
+        detail=True, methods=["post"], permission_classes=[permissions.IsAuthenticated]
+    )
+    def report_status(self, request, bin=None):
+        """
+        Directly logs a status report for a specific building via its BIN.
+        This is the preferred endpoint for 'Martha-mode' quick reporting.
+        """
+        building = self.get_object()
+        status_value = request.data.get("status")
+
+        if not status_value:
+            return Response({"error": "Status is required."}, status=400)
+
+        # Validate status choice
+        from .models import ElevatorReport
+
+        valid_statuses = [s[0] for s in ElevatorReport.STATUS_CHOICES]
+        if status_value not in valid_statuses:
+            return Response(
+                {
+                    "error": f"Invalid status. Must be one of: {', '.join(valid_statuses)}"
+                },
+                status=400,
+            )
+
+        manager = ConsensusManager()
+        report = manager.report_status(
+            building=building,
+            user=request.user,
+            status=status_value,
+        )
+
+        return Response(
+            ElevatorReportSerializer(report).data, status=status.HTTP_201_CREATED
+        )
 
 
 class ReportViewSet(viewsets.ViewSet):

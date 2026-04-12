@@ -134,8 +134,15 @@ export function BuildingDetail({ buildingData }: BuildingDetailProps) {
                 method: 'POST',
                 headers: { 'Authorization': `Token ${token}` }
               });
+              
+              const data = await res.json();
+              
               if (res.ok) {
                 alert("Data sync started. New articles will appear shortly.");
+              } else if (res.status === 429) {
+                alert(data.message || "Cooldown in effect. Please try again later.");
+              } else {
+                alert(data.error || "An error occurred.");
               }
             } catch (e) {
               console.error("Refresh error:", e);

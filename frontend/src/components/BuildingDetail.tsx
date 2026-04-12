@@ -37,6 +37,27 @@ export function BuildingDetail({ buildingData }: BuildingDetailProps) {
           </small>
         </div>
 
+        <div className="mb-4 bg-light p-3 rounded border">
+          <h5 className="d-flex justify-content-between align-items-center">
+            7-Day Maintenance Forecast
+            <Badge bg={buildingData.failure_risk?.risk_score > 60 ? 'danger' : buildingData.failure_risk?.risk_score > 30 ? 'warning' : 'success'}>
+              {buildingData.failure_risk?.risk_score}% Risk
+            </Badge>
+          </h5>
+          <p className="small text-muted mb-2">
+            Estimated likelihood of service interruption based on historical activity and recent reports.
+          </p>
+          <div className="d-flex align-items-center">
+            <span className="me-2 small text-uppercase fw-bold">Data Reliability:</span>
+            <ProgressBar 
+              now={buildingData.failure_risk?.confidence} 
+              variant="info" 
+              style={{ height: '8px', width: '80px' }} 
+            />
+            <span className="ms-2 small text-muted">{buildingData.failure_risk?.confidence}%</span>
+          </div>
+        </div>
+
         <hr />
 
         <h5>{t('recent_activity')}</h5>

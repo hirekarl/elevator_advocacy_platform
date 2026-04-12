@@ -2,6 +2,7 @@ import os
 from datetime import timedelta
 from django.db.models import Count, Q
 from django.utils import timezone
+from django.contrib.auth.models import User
 from .models import Building, ElevatorReport
 from services.geoclient import GeoclientService
 from services.geoclient_mock import MockGeoclientService
@@ -57,14 +58,26 @@ class ConsensusManager:
     def get_verified_status(self, building: Building) -> str:
         """
         Determines the current consensus status for a building's elevators.
-        Status is 'Verified' if 2+ independent users report the same status within 2 hours.
-        Prioritizes the most recent verified status if multiple exist.
+        Status is 'Verified' if:
+        1. 2+ independent users report the same status within 2 hours.
+        2. Any official SODA report is logged within the window.
         """
         window_start = timezone.now() - timedelta(minutes=self.CONSENSUS_WINDOW_MINUTES)
         
-        # Aggregate reports within the window, ordered by most recent first
+        # Check for official reports first
+        official_report = ElevatorReport.objects.filter(
+            building=building,
+            is_official=True,
+            reported_at__gte=window_start
+        ).last()
+        
+        if official_report:
+            return official_report.status
+
+        # Aggregate user reports within the window
         reports = ElevatorReport.objects.filter(
             building=building,
+            is_official=False,
             reported_at__gte=window_start
         ).values('status').annotate(
             unique_users=Count('user_id', distinct=True),
@@ -113,7 +126,7 @@ class ConsensusManager:
                 soda_unique_key=unique_key,
                 defaults={
                     'building': building,
-                    'user_id': 'NYC_SODA_API',
+                    'user': None,
                     'status': status,
                     'is_official': True,
                     'reported_at': report.get('created_date', timezone.now())

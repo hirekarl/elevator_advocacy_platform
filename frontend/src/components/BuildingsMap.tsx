@@ -25,6 +25,10 @@ interface MapBuilding {
   longitude: number;
   verified_status: string;
   loss_of_service_30d: number;
+  failure_risk: {
+    risk_score: number;
+    confidence: number;
+  };
 }
 
 interface BuildingsMapProps {
@@ -94,9 +98,11 @@ export function BuildingsMap({ onBuildingSelect }: BuildingsMapProps) {
                   <Badge bg={getStatusColor(b.verified_status)}>
                     {b.verified_status}
                   </Badge>
-                  <span className="ms-2 text-muted small">
-                    {b.loss_of_service_30d}% {t('loss_of_service')}
-                  </span>
+                  <div className="mt-2 small">
+                    <strong>{b.loss_of_service_30d}%</strong> Down Time
+                    <br />
+                    <strong>{b.failure_risk?.risk_score}%</strong> Outage Risk
+                  </div>
                 </div>
                 <Button 
                   size="sm" 

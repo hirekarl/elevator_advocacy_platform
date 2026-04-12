@@ -78,15 +78,11 @@ class BuildingViewSet(viewsets.ReadOnlyModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         """
-        Extends the default retrieve to include metrics.
+        Extends the default retrieve to include recent reports.
         """
         instance = self.get_object()
-        manager = ConsensusManager()
-        
         serializer = self.get_serializer(instance)
         data = serializer.data
-        data['verified_status'] = manager.get_verified_status(instance)
-        data['loss_of_service_30d'] = manager.get_loss_of_service_percentage(instance, days=30)
         
         # Include recent reports
         recent_reports = instance.reports.order_by('-reported_at')[:10]
@@ -100,11 +96,10 @@ class BuildingViewSet(viewsets.ReadOnlyModelViewSet):
         Returns the current verified status for a specific building.
         """
         building = self.get_object()
-        manager = ConsensusManager()
-        verified_status = manager.get_verified_status(building)
+        serializer = self.get_serializer(building)
         return Response({
             'bin': building.bin,
-            'verified_status': verified_status
+            'verified_status': serializer.data['verified_status']
         })
 
     @action(detail=False, methods=['get'])
@@ -113,20 +108,8 @@ class BuildingViewSet(viewsets.ReadOnlyModelViewSet):
         Returns a list of buildings with coordinates and verified status for map display.
         """
         buildings = Building.objects.exclude(latitude__isnull=True)
-        manager = ConsensusManager()
-        
-        results = []
-        for building in buildings:
-            results.append({
-                'bin': building.bin,
-                'address': building.address,
-                'latitude': building.latitude,
-                'longitude': building.longitude,
-                'verified_status': manager.get_verified_status(building),
-                'loss_of_service_30d': manager.get_loss_of_service_percentage(building)
-            })
-            
-        return Response(results)
+        serializer = self.get_serializer(buildings, many=True)
+        return Response(serializer.data)
 
 class ReportViewSet(viewsets.ViewSet):
     """

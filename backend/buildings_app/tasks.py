@@ -18,6 +18,10 @@ def fetch_building_news(bin: str):
     articles: List[NewsArticleSchema] = service.search_and_extract(building.address)
 
     for art in articles:
+        # Strict relevance threshold: skip if score < 0.7 or summary indicates irrelevance
+        if art.relevance_score < 0.7 or art.summary.lower() == 'irrelevant':
+            continue
+            
         BuildingNews.objects.get_or_create(
             url=art.url,
             defaults={

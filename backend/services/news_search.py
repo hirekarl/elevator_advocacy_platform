@@ -53,7 +53,7 @@ class NewsSearchService:
                 # Native Structured Output with Pydantic
                 response = self.client.models.generate_content(
                     model="gemini-2.5-flash",
-                    contents=f"Extract elevator-related news from this snippet. Title: {res.get('title')}\nSnippet: {res.get('snippet')}\nURL: {res.get('link')}",
+                    contents=f"You are a specialized investigator. EXTRACT ONLY news articles that explicitly mention elevator outages, repairs, or safety violations at the building address: {address}. If the snippet is about dispensaries, real estate ads, or general neighborhood news UNRELATED to elevators, set the relevance_score to 0.0 and summary to 'Irrelevant'.\n\nTitle: {res.get('title')}\nSnippet: {res.get('snippet')}\nURL: {res.get('link')}",
                     config={
                         'response_mime_type': 'application/json',
                         'response_schema': NewsArticleSchema,

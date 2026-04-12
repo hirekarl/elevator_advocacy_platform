@@ -6,7 +6,7 @@ from .tasks import fetch_building_news
 @receiver(post_save, sender=Building)
 def trigger_news_search(sender, instance, created, **kwargs):
     """
-    Triggers the news search background task when a new building is created.
+    (Deprecated) Moved trigger to views.py to prevent searches for 
+    invalid buildings or incomplete geocoding.
     """
-    if created:
-        fetch_building_news.enqueue(bin=instance.bin)
+    pass

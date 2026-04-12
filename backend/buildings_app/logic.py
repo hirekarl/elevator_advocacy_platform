@@ -25,14 +25,21 @@ class ConsensusManager:
 
     def get_or_create_building(self, house_number: str, street: str, borough: str) -> Optional[Building]:
         """
+        Backward compatibility for legacy calls.
+        """
+        building, _ = self.get_or_create_building_with_status(house_number, street, borough)
+        return building
+
+    def get_or_create_building_with_status(self, house_number: str, street: str, borough: str) -> tuple[Optional[Building], bool]:
+        """
         Retrieves a building by BIN, creating it via Geoclient if it doesn't exist.
-        Stores spatial coordinates for mapping.
+        Returns a tuple (Building, created).
         """
         geo_data = self.geoclient.get_bin_with_coordinates(house_number, street, borough)
         bin_id = geo_data.get('bin')
         
         if not bin_id:
-            return None
+            return None, False
 
         building, created = Building.objects.get_or_create(
             bin=bin_id,
@@ -43,7 +50,7 @@ class ConsensusManager:
                 'longitude': geo_data.get('longitude')
             }
         )
-        return building
+        return building, created
 
     def report_status(self, building: Building, user: User, status: str) -> ElevatorReport:
         """

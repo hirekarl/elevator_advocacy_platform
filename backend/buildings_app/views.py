@@ -162,17 +162,17 @@ class BuildingViewSet(viewsets.ReadOnlyModelViewSet):
         building = self.get_object()
         now = timezone.now()
         
-        # Enforce 24-hour cooldown
-        if building.last_news_refresh and (now - building.last_news_refresh) < timedelta(hours=24):
-            remaining_seconds = int((timedelta(hours=24) - (now - building.last_news_refresh)).total_seconds())
-            remaining_hours = remaining_seconds // 3600
-            remaining_minutes = (remaining_seconds % 3600) // 60
-            
-            return Response({
-                "error": "Cooldown in effect.",
-                "message": f"News can only be refreshed once every 24 hours. Please try again in {remaining_hours}h {remaining_minutes}m.",
-                "cooldown_remaining": remaining_seconds
-            }, status=status.HTTP_429_TOO_MANY_REQUESTS)
+        # TEMPORARILY DISABLED: Enforce 24-hour cooldown
+        # if building.last_news_refresh and (now - building.last_news_refresh) < timedelta(hours=24):
+        #     remaining_seconds = int((timedelta(hours=24) - (now - building.last_news_refresh)).total_seconds())
+        #     remaining_hours = remaining_seconds // 3600
+        #     remaining_minutes = (remaining_seconds % 3600) // 60
+        #     
+        #     return Response({
+        #         "error": "Cooldown in effect.",
+        #         "message": f"News can only be refreshed once every 24 hours. Please try again in {remaining_hours}h {remaining_minutes}m.",
+        #         "cooldown_remaining": remaining_seconds
+        #     }, status=status.HTTP_429_TOO_MANY_REQUESTS)
 
         from .tasks import fetch_building_news
         
@@ -205,13 +205,22 @@ class BuildingViewSet(viewsets.ReadOnlyModelViewSet):
             )
 
         manager = ConsensusManager()
-        building = manager.get_or_create_building(house_number, street, borough)
+        # We need to know if it was created to trigger the news search
+        # Refactoring manager to return (building, created)
+        building, created = manager.get_or_create_building_with_status(house_number, street, borough)
 
         if not building:
             return Response(
-                {"error": "Building not found in NYC Geoclient."},
+                {
+                    "error": "Address not recognized.",
+                    "message": f"'{house_number} {street}' in {borough} was not found in NYC's official building records. Please check the spelling or house number."
+                },
                 status=status.HTTP_404_NOT_FOUND
             )
+
+        if created:
+            from .tasks import fetch_building_news
+            fetch_building_news.enqueue(bin=building.bin)
 
         serializer = self.get_serializer(building)
         data = serializer.data

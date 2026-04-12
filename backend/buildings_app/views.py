@@ -52,10 +52,12 @@ class AuthViewSet(viewsets.ViewSet):
             
             # Fetch primary building if associated
             primary_building = None
-            if hasattr(user, 'profile') and user.profile.primary_building:
+            from .models import UserProfile
+            profile, _ = UserProfile.objects.get_or_create(user=user)
+            if profile.primary_building:
                 primary_building = {
-                    "bin": user.profile.primary_building.bin,
-                    "address": user.profile.primary_building.address
+                    "bin": profile.primary_building.bin,
+                    "address": profile.primary_building.address
                 }
 
             return Response({
@@ -91,7 +93,8 @@ class AuthViewSet(viewsets.ViewSet):
             
         try:
             building = Building.objects.get(bin=bin_id)
-            profile = request.user.profile
+            from .models import UserProfile
+            profile, _ = UserProfile.objects.get_or_create(user=request.user)
             profile.primary_building = building
             profile.save()
             return Response({

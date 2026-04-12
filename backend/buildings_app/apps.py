@@ -5,4 +5,4 @@ class BuildingsAppConfig(AppConfig):
     name = 'buildings_app'
 
     def ready(self):
-        pass
+        import buildings_app.signals

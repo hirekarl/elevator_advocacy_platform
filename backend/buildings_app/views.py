@@ -11,8 +11,10 @@ from django.core.mail import send_mail
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 
+from django.conf import settings
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
+from django.db.models import Q
 
 class AuthViewSet(viewsets.ViewSet):
     """
@@ -22,13 +24,22 @@ class AuthViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=['post'])
     def login(self, request):
-        username = request.data.get('username')
+        identity = request.data.get('username') # Could be username or email
         password = request.data.get('password')
 
-        if not username or not password:
-            return Response({"error": "Please provide both username and password."}, status=400)
+        if not identity or not password:
+            return Response({"error": "Please provide both username/email and password."}, status=400)
 
-        # Authenticate checks is_active by default and returns None if inactive or wrong password
+        # 1. Resolve username if an email was provided
+        username = identity
+        if "@" in identity:
+            try:
+                user_obj = User.objects.get(email__iexact=identity)
+                username = user_obj.username
+            except (User.DoesNotExist, User.MultipleObjectsReturned):
+                pass
+
+        # 2. Authenticate
         user = authenticate(username=username, password=password)
 
         if user:
@@ -39,12 +50,12 @@ class AuthViewSet(viewsets.ViewSet):
                 "email": user.email
             })
 
-        # Differentiate for better user experience
+        # 3. Differentiate for better user experience (Handle unconfirmed accounts)
         try:
-            potential_user = User.objects.get(username=username)
+            potential_user = User.objects.get(Q(username__iexact=identity) | Q(email__iexact=identity))
             if not potential_user.is_active and potential_user.check_password(password):
                 return Response({"error": "Please confirm your email before logging in."}, status=403)
-        except User.DoesNotExist:
+        except (User.DoesNotExist, User.MultipleObjectsReturned):
             pass
 
         return Response({"error": "Incorrect username or password. Please try again."}, status=401)

@@ -14,6 +14,11 @@ dependencies = [
     "instructor>=1.15.1",
     "serpapi>=1.0.2",
     "types-requests>=2.31.0",
+    "gunicorn>=25.3.0",
+    "uvicorn>=0.44.0",
+    "whitenoise>=6.12.0",
+    "psycopg[binary]>=3.3.3",
+    "dj-database-url>=3.1.2",
 ]
 
 [tool.pytest.ini_options]

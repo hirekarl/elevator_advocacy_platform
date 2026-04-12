@@ -1,5 +1,5 @@
 import { useState, useOptimistic, useTransition, useEffect } from 'react';
-import { Container, Navbar, Nav, Button, Row, Col, Alert, Form, Badge, Dropdown } from 'react-bootstrap';
+import { Container, Navbar, Nav, Button, Row, Col, Alert, Badge, Dropdown } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
@@ -8,6 +8,7 @@ import { BuildingDetail } from './components/BuildingDetail';
 import { BuildingsMap } from './components/BuildingsMap';
 import { SignupForm } from './components/AuthForms';
 import { ConfirmEmail } from './components/ConfirmEmail';
+import { HeroSearch } from './components/HeroSearch';
 
 function MainDashboard() {
   const { t, i18n } = useTranslation();
@@ -36,6 +37,11 @@ function MainDashboard() {
     localStorage.removeItem('username');
     setIsLoggedIn(false);
     setUsername('');
+  };
+
+  const clearSearch = () => {
+    setActiveBuilding(null);
+    setSearchData({ house_number: '', street: '', borough: 'Manhattan' });
   };
 
   const handleSearch = async (e?: React.FormEvent, bin?: string) => {
@@ -108,12 +114,18 @@ function MainDashboard() {
   };
 
   return (
-    <Container fluid className="p-0">
-      <Navbar bg="dark" variant="dark" expand="lg" className="shadow-sm">
+    <Container fluid className="p-0 bg-light min-vh-100">
+      <Navbar bg="dark" variant="dark" expand="lg" className="shadow-sm sticky-top">
         <Container>
-          <Navbar.Brand href="/" className="fw-bold text-uppercase">Elevator Advocacy</Navbar.Brand>
+          <Navbar.Brand 
+            href="/" 
+            className="fw-bold text-uppercase d-flex align-items-center"
+            onClick={(e) => { e.preventDefault(); clearSearch(); }}
+          >
+            <span className="text-primary me-2">🏢</span> Elevator Advocacy
+          </Navbar.Brand>
           <Nav className="ms-auto align-items-center">
-            <Button variant="outline-light" size="sm" onClick={toggleLanguage} aria-label="Toggle Language" className="me-3">
+            <Button variant="outline-light" size="sm" onClick={toggleLanguage} aria-label="Toggle Language" className="me-3 border-0">
               {i18n.language === 'en' ? 'ES' : 'EN'}
             </Button>
             {isLoggedIn ? (
@@ -132,111 +144,77 @@ function MainDashboard() {
         </Container>
       </Navbar>
 
-      <Container className="mt-4">
-        <Row>
-          <Col lg={6} className="mb-4">
-            {isLoggedIn ? (
-              <ReportForm onReport={handleReport} isPending={isPending} />
-            ) : (
-              <SignupForm onSuccess={() => {
-                setIsLoggedIn(true);
-                setUsername(localStorage.getItem('username') || '');
-              }} />
-            )}
-            
-            <Form onSubmit={handleSearch} className="mb-5 p-4 border rounded bg-white shadow-sm">
-              <h5 className="mb-4 text-primary">{t('search_address')}</h5>
-              <Row>
-                <Col md={3}>
-                  <Form.Group className="mb-3">
-                    <Form.Label className="small fw-bold">{t('house_number')}</Form.Label>
-                    <Form.Control
-                      type="text"
-                      required
-                      placeholder="e.g., 280"
-                      value={searchData.house_number}
-                      onChange={(e) => setSearchData({ ...searchData, house_number: e.target.value })}
-                    />
-                  </Form.Group>
-                </Col>
-                <Col md={5}>
-                  <Form.Group className="mb-3">
-                    <Form.Label className="small fw-bold">{t('street')}</Form.Label>
-                    <Form.Control
-                      type="text"
-                      required
-                      placeholder="e.g., Broadway"
-                      value={searchData.street}
-                      onChange={(e) => setSearchData({ ...searchData, street: e.target.value })}
-                    />
-                  </Form.Group>
-                </Col>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Label className="small fw-bold">{t('borough')}</Form.Label>
-                    <Form.Select
-                      value={searchData.borough}
-                      onChange={(e) => setSearchData({ ...searchData, borough: e.target.value })}
-                    >
-                      <option value="Manhattan">Manhattan</option>
-                      <option value="Bronx">Bronx</option>
-                      <option value="Brooklyn">Brooklyn</option>
-                      <option value="Queens">Queens</option>
-                      <option value="Staten Island">Staten Island</option>
-                    </Form.Select>
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Button 
-                variant="primary" 
-                type="submit" 
-                className="w-100 mt-2"
-                disabled={isPending}
-              >
-                {isPending ? t('syncing') : t('submit')}
-              </Button>
-            </Form>
-
-            <div className="mt-4">
-              {optimisticReports.length > 0 && <h5 className="mb-3">{t('recent_activity')}</h5>}
-              {optimisticReports.length === 0 ? (
-                <Alert variant="info" role="alert">{t('no_outages')}</Alert>
-              ) : (
-                optimisticReports.map((report: any) => (
-                  <div key={report.id || report.reported_at} className={`card mb-3 ${report.pending ? 'border-warning animate-pulse' : 'border-success'}`}>
-                    <div className="card-body">
-                      <h5 className="card-title">
-                        {report.pending ? t('verification_pending') : t('verified_status')}
-                      </h5>
-                      <p className="card-text">
-                        {report.status} - {report.reported_at || report.time}
-                      </p>
-                      {report.pending && (
-                        <div className="text-warning small" aria-hidden="true">
-                          ● {t('syncing')}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </Col>
+      {!activeBuilding ? (
+        <div className="container mt-5 pb-5">
+          <HeroSearch 
+            onSearch={handleSearch} 
+            searchData={searchData} 
+            setSearchData={setSearchData} 
+            isPending={isPending}
+          />
+          <Row className="mt-5">
+             <Col md={10} className="mx-auto text-center mb-5">
+                <h2 className="fw-bold mb-4">Explore NYC Elevator Outages</h2>
+                <BuildingsMap onBuildingSelect={(bin) => handleSearch(undefined, bin)} />
+             </Col>
+          </Row>
+        </div>
+      ) : (
+        <Container className="mt-4 pb-5">
+          <Button 
+            variant="link" 
+            className="text-decoration-none mb-3 p-0 d-flex align-items-center text-muted"
+            onClick={clearSearch}
+          >
+            <span className="me-2">←</span> Back to Search
+          </Button>
           
-          <Col lg={6}>
-            <BuildingsMap onBuildingSelect={(bin) => handleSearch(undefined, bin)} />
-
-            {activeBuilding ? (
+          <Row>
+            <Col lg={7}>
               <BuildingDetail buildingData={activeBuilding} />
-            ) : (
-              <div className="p-5 text-center text-muted bg-light rounded shadow-sm border">
-                <h3>{t('building_details')}</h3>
-                <p>Find your building on the map or search by address to view detailed service metrics.</p>
+            </Col>
+            <Col lg={5}>
+              <div className="sticky-top" style={{ top: '80px', zIndex: 10 }}>
+                {isLoggedIn ? (
+                  <ReportForm onReport={handleReport} isPending={isPending} />
+                ) : (
+                  <SignupForm onSuccess={() => {
+                    setIsLoggedIn(true);
+                    setUsername(localStorage.getItem('username') || '');
+                  }} />
+                )}
+
+                <div className="mt-4 p-4 bg-white border rounded shadow-sm">
+                  <h5 className="mb-3 d-flex justify-content-between align-items-center">
+                    Building Feed
+                    {optimisticReports.length > 0 && <Badge bg="primary" pill>{optimisticReports.length}</Badge>}
+                  </h5>
+                  {optimisticReports.length === 0 ? (
+                    <Alert variant="light" className="text-muted border border-secondary border-opacity-25 border-dashed">
+                      No recent tenant activity.
+                    </Alert>
+                  ) : (
+                    <div style={{ maxHeight: '400px', overflowY: 'auto' }} className="pe-2">
+                      {optimisticReports.map((report: any) => (
+                        <div key={report.id || report.reported_at} className={`card mb-3 shadow-sm ${report.pending ? 'border-warning animate-pulse' : 'border-success'}`}>
+                          <div className="card-body p-3">
+                            <h6 className="card-title small fw-bold mb-1">
+                              {report.pending ? t('verification_pending') : t('verified_status')}
+                            </h6>
+                            <p className="card-text small mb-0">
+                              {report.status} - {report.reported_at || report.time}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
-            )}
-          </Col>
-        </Row>
-      </Container>
+            </Col>
+          </Row>
+        </Container>
+      )}
     </Container>
   );
 }

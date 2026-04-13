@@ -33,6 +33,7 @@ I selected these technologies to ensure a decoupled, performant, and type-safe e
 1. Navigate to the frontend directory: `cd frontend`
 2. Install dependencies: `npm install`
 3. Start the development server: `npm run dev`
+4. Run E2E tests: `npm run test:e2e`
 
 ## Core Domain Logic
 - **The 2-Hour Consensus Rule**: An elevator outage is only marked as "Verified" once two different users report the same status within a rolling 2-hour window.

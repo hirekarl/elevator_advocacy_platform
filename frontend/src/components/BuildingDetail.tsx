@@ -594,7 +594,7 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
           ) : advocacyScript ? (
             <>
               <div className="d-flex justify-content-between align-items-start mb-3">
-                <h6 className="fw-bold text-white mb-0">{advocacyScript.headline}</h6>
+                <h3 className="fw-bold text-white mb-0 fs-6">{advocacyScript.headline}</h3>
                 {isLoggedIn && (
                   <Button
                     variant="info"

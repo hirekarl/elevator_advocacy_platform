@@ -71,9 +71,6 @@ function MainDashboard() {
               if (currentBinInStorage !== data.primary_building.bin) {
                 localStorage.setItem('primary_building_bin', data.primary_building.bin);
               }
-              if (!bin) {
-                navigate(`/building/${data.primary_building.bin}`);
-              }
             }
           } else if (response.status === 401) {
             handleLogout();

@@ -12,12 +12,18 @@ test.describe("Martha's Journey (Vulnerable User UX)", () => {
 
   // Global mocks for every test to avoid hanging on non-critical API calls
   test.beforeEach(async ({ page }) => {
-    await page.route(`${BASE_API_URL}/buildings/${MOCK_BIN}/advocacy_script/`, async route => {
-      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ headline: 'Mock Script', script: 'Mock content', legal_reference: 'Mock law' }) });
-    });
-    await page.route(`${BASE_API_URL}/buildings/${MOCK_BIN}/advocacy_summary/`, async route => {
-      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ risk_level: 'Low', historical_patterns: 'Mock history', community_sentiment: 'Mock sentiment', legal_standing: 'Mock legal', recommended_action: 'Mock action', confidence_score: 0.9 }) });
-    });
+    await page.route(
+      url => url.href.startsWith(`${BASE_API_URL}/buildings/${MOCK_BIN}/advocacy_script/`),
+      async route => {
+        await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ headline: 'Mock Script', script: 'Mock content', legal_reference: 'Mock law' }) });
+      }
+    );
+    await page.route(
+      url => url.href.startsWith(`${BASE_API_URL}/buildings/${MOCK_BIN}/advocacy_summary/`),
+      async route => {
+        await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ risk_level: 'Low', historical_patterns: 'Mock history', community_sentiment: 'Mock sentiment', legal_standing: 'Mock legal', recommended_action: 'Mock action', confidence_score: 0.9 }) });
+      }
+    );
   });
 
   test('Scenario 1: Critical Outage (DOWN) - Should show emergency block and call 311', async ({ page }) => {

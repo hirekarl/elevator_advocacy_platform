@@ -1,11 +1,15 @@
 # Sprint 10: Martha Mode — Vulnerable User UX
 
+**Status:** ✅ COMPLETED
 **Date:** 2026-04-13
 **Lead:** Sol (Orchestrator)
 **Team:** Juno (Audit), Maya (Implementation), Blythe (Validation)
 **North Star:** Martha — 70yo, walker, possible early-stage dementia, physically stranded if elevator is down.
 
 ---
+
+## Post-Remediation Note
+Initial implementation introduced 8 TypeScript errors (`TS2448`, `TS2454`) due to hook ordering. These were resolved via a remediation pass on 2026-04-13.
 
 ## Problem Statement
 
@@ -44,11 +48,13 @@ The app was audited from the perspective of Martha's three jobs when her elevato
 - [x] Quick Report button labels: remove `small` class, use cleaner label text
 - [x] Remove `opacity-75` from Call 311 section description spans
 - [x] Update `verification_explainer` i18n string to plain English
+- [x] **REMEDIATION**: Fix `useCallback` ordering in `App.tsx` and `BuildingDetail.tsx`
 
 ### Blythe: Validation
 
 - [x] All new i18n keys present in both EN and ES
 - [x] No `opacity-75` on critical information text
+- [x] `npm run build` (TSC) pass
 - [x] Pre-flight passes
 
 ---

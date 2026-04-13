@@ -19,6 +19,7 @@ function MainDashboard() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
   const [username, setUsername] = useState(localStorage.getItem('username') || '');
   const [primaryBuildingBin, setPrimaryBuildingBin] = useState<string | null>(localStorage.getItem('primary_building_bin'));
+  const [primaryBuildingStatus, setPrimaryBuildingStatus] = useState<string | null>(null);
   const [searchData, setSearchData] = useState({
     house_number: '',
     street: '',
@@ -97,6 +98,18 @@ function MainDashboard() {
     }
   }, [bin, fetchBuilding]);
 
+  // Fetch the primary building's current status for the landing page banner.
+  useEffect(() => {
+    if (primaryBuildingBin && !bin) {
+      fetch(`http://localhost:8000/api/buildings/${primaryBuildingBin}/`)
+        .then(res => res.ok ? res.json() : null)
+        .then(data => { if (data) setPrimaryBuildingStatus(data.verified_status ?? null); })
+        .catch(() => {});
+    } else {
+      setPrimaryBuildingStatus(null);
+    }
+  }, [primaryBuildingBin, bin]);
+
   // Seed the building feed from the current building's tenant reports.
   useEffect(() => {
     if (activeBuilding) {
@@ -137,6 +150,24 @@ function MainDashboard() {
     reports,
     (state: OptimisticReport[], newReport: OptimisticReport) => [{ ...newReport, pending: true }, ...state]
   );
+
+  const getStatusBadgeStyle = (status: string): { bg: string; color: string } => {
+    if (['DOWN', 'TRAPPED', 'UNSAFE'].includes(status)) return { bg: '#c8281c', color: '#fff' };
+    if (['SLOW', 'UNVERIFIED'].includes(status)) return { bg: '#e8920a', color: '#0d1b2a' };
+    return { bg: '#1a7a4a', color: '#fff' };
+  };
+
+  const getStatusShortLabel = (status: string): string => {
+    const labels: Record<string, string> = {
+      UP: t('status_short_up'),
+      DOWN: t('status_short_down'),
+      TRAPPED: t('status_short_trapped'),
+      UNSAFE: t('status_short_unsafe'),
+      SLOW: t('status_short_slow'),
+      UNVERIFIED: t('status_short_unverified'),
+    };
+    return labels[status] ?? status;
+  };
 
   const toggleLanguage = () => {
     i18n.changeLanguage(i18n.language === 'en' ? 'es' : 'en');
@@ -296,8 +327,26 @@ function MainDashboard() {
                     <div className="fw-bold text-white fs-5" style={{ fontFamily: 'Syne, sans-serif', letterSpacing: '-0.03em' }}>
                       {t('welcome_back')}, {username}
                     </div>
-                    <div className="text-white mt-1" style={{ opacity: 0.72, fontSize: '0.9rem' }}>
-                      {t('your_home_building_prompt')}
+                    <div className="d-flex align-items-center gap-2 mt-2">
+                      {primaryBuildingStatus ? (
+                        <span
+                          className="px-2 py-1 rounded-pill fw-bold"
+                          style={{
+                            ...getStatusBadgeStyle(primaryBuildingStatus),
+                            fontSize: '0.72rem',
+                            fontFamily: 'Syne, sans-serif',
+                            letterSpacing: '0.04em',
+                            textTransform: 'uppercase',
+                          }}
+                        >
+                          {getStatusShortLabel(primaryBuildingStatus)}
+                        </span>
+                      ) : (
+                        <span style={{ opacity: 0.4, fontSize: '0.8rem', color: '#fff' }}>—</span>
+                      )}
+                      <span className="text-white" style={{ opacity: 0.6, fontSize: '0.85rem' }}>
+                        {t('your_home_building_prompt')}
+                      </span>
                     </div>
                   </div>
                   <Button

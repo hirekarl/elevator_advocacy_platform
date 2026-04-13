@@ -145,8 +145,14 @@ const resources = {
       "btn_report_slow": "Moving Slowly",
       "go_to_my_building": "Go to My Building",
       "welcome_back": "Welcome back",
-      "your_home_building_prompt": "Your home building is set. Jump straight to your dashboard.",
-      "set_primary_prompt": "Search for your building above to start tracking elevator status and set it as your home."
+      "your_home_building_prompt": "Your home building",
+      "set_primary_prompt": "Search for your building above to start tracking elevator status and set it as your home.",
+      "status_short_up": "Working",
+      "status_short_down": "Not Working",
+      "status_short_trapped": "Emergency",
+      "status_short_unsafe": "Unsafe",
+      "status_short_slow": "Slow",
+      "status_short_unverified": "Unverified"
     }
   },
   es: {
@@ -292,8 +298,14 @@ const resources = {
       "btn_report_slow": "Funciona Lento",
       "go_to_my_building": "Ir a Mi Edificio",
       "welcome_back": "Bienvenido",
-      "your_home_building_prompt": "Tu edificio principal está configurado. Ve directamente a tu panel.",
-      "set_primary_prompt": "Busca tu edificio arriba para comenzar a rastrear el estado del ascensor y establecerlo como tu hogar."
+      "your_home_building_prompt": "Tu edificio principal",
+      "set_primary_prompt": "Busca tu edificio arriba para comenzar a rastrear el estado del ascensor y establecerlo como tu hogar.",
+      "status_short_up": "Funciona",
+      "status_short_down": "No Funciona",
+      "status_short_trapped": "Emergencia",
+      "status_short_unsafe": "Inseguro",
+      "status_short_slow": "Lento",
+      "status_short_unverified": "Sin Verificar"
     }
   }
 };

@@ -152,6 +152,9 @@ function MainDashboard() {
 
   return (
     <Container fluid className="p-0 bg-light min-vh-100">
+      <header>
+        <h1 className="visually-hidden">Elevator Advocacy Platform</h1>
+      </header>
       <a
         href="#main-content"
         className="visually-hidden-focusable position-absolute top-0 start-0 p-2 bg-white text-primary fw-bold"

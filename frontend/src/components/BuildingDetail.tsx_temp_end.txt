@@ -1,0 +1,36 @@
+                <Card.Body className="p-3">
+                  <div className="d-flex justify-content-between mb-2">
+                    <div className="d-flex align-items-center gap-2">
+                      <small className="text-primary fw-bold text-uppercase fs-8">{article.source}</small>
+                      {article.is_mocked && (
+                        <Badge bg="secondary" className="fs-10 text-uppercase fw-bold opacity-75">Mock</Badge>
+                      )}
+                    </div>
+                    <small className="text-muted fs-8">{article.published_date}</small>
+                  </div>
+                  <h6 className="fw-bold mb-2">{article.title}</h6>
+                  <p className="text-muted fs-8 mb-3">{article.summary}</p>
+                  <a
+                    href={article.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-link p-0 fs-8 fw-bold"
+                    aria-label={`${t('read_full_story')}: ${article.title}`}
+                  >
+                    {t('read_full_story')} →
+                  </a>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))
+        ) : (
+          <Col xs={12}>
+            <Alert variant="light" className="border-dashed py-4 text-center text-muted small">
+              {t('no_media_mentions')}
+            </Alert>
+          </Col>
+        )}
+      </Row>
+    </div>
+  );
+}

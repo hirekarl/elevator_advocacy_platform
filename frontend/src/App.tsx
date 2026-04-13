@@ -324,12 +324,12 @@ function MainDashboard() {
                     )}
 
                     <div className={`p-4 bg-white border rounded shadow-sm ${!isLoggedIn ? 'mt-4' : ''}`}>
-                      <h5 className="mb-3 d-flex justify-content-between align-items-center">
+                      <h2 className="mb-3 d-flex justify-content-between align-items-center fs-5">
                         {t('building_feed')}
                         {optimisticReports.length > 0 && (
                           <Badge bg="primary" pill>{optimisticReports.length}</Badge>
                         )}
-                      </h5>
+                      </h2>
                       {optimisticReports.length === 0 ? (
                         <Alert variant="light" className="text-muted border border-secondary border-opacity-25 border-dashed">
                           {t('no_recent_activity')}

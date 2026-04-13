@@ -75,11 +75,11 @@ export function SignupForm({ onSuccess }: AuthFormsProps) {
   return (
     <Card className="shadow-sm border-0 p-4">
       <Card.Body>
-        <h4 className="mb-4 fw-bold">{isLogin ? t('login_title') : t('signup_title')}</h4>
+        <h2 className="mb-4 fw-bold fs-4">{isLogin ? t('login_title') : t('signup_title')}</h2>
         {status && <Alert variant={status.type}>{status.message}</Alert>}
         
         <Form onSubmit={isLogin ? handleLogin : handleSignup}>
-          <Form.Group className="mb-3">
+          <Form.Group className="mb-3" controlId="auth-username">
             <Form.Label>{t('username')}</Form.Label>
             <Form.Control
               type="text"
@@ -90,7 +90,7 @@ export function SignupForm({ onSuccess }: AuthFormsProps) {
           </Form.Group>
 
           {!isLogin && (
-            <Form.Group className="mb-3">
+            <Form.Group className="mb-3" controlId="auth-email">
               <Form.Label>{t('email')}</Form.Label>
               <Form.Control
                 type="email"
@@ -101,7 +101,7 @@ export function SignupForm({ onSuccess }: AuthFormsProps) {
             </Form.Group>
           )}
 
-          <Form.Group className="mb-4">
+          <Form.Group className="mb-4" controlId="auth-password">
             <Form.Label>{t('password')}</Form.Label>
             <Form.Control
               type="password"

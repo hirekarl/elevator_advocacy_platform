@@ -24,7 +24,7 @@ export function ConfirmEmail() {
         } else {
           setStatus('error');
         }
-      } catch (error) {
+      } catch {
         setStatus('error');
       }
     };

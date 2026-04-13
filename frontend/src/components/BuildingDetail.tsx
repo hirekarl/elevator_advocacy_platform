@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, ProgressBar, ListGroup, Badge, Alert, Row, Col, Button, Toast, ToastContainer, Modal, Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
@@ -42,9 +42,9 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
       fetchAdvocacyScript();
       fetchExecutiveSummary();
     }
-  }, [buildingData?.bin, i18n.language]);
+  }, [buildingData?.bin, fetchAdvocacyScript, fetchExecutiveSummary]);
 
-  const fetchAdvocacyScript = async () => {
+  const fetchAdvocacyScript = useCallback(async () => {
     setIsLoadingScript(true);
     try {
       const response = await fetch(`http://localhost:8000/api/buildings/${buildingData.bin}/advocacy_script/?lang=${i18n.language}`);
@@ -57,9 +57,9 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
     } finally {
       setIsLoadingScript(false);
     }
-  };
+  }, [buildingData.bin, i18n.language]);
 
-  const fetchExecutiveSummary = async () => {
+  const fetchExecutiveSummary = useCallback(async () => {
     setIsLoadingSummary(true);
     try {
       const response = await fetch(`http://localhost:8000/api/buildings/${buildingData.bin}/advocacy_summary/?lang=${i18n.language}`);
@@ -72,7 +72,7 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
     } finally {
       setIsLoadingSummary(false);
     }
-  };
+  }, [buildingData.bin, i18n.language]);
 
   if (!buildingData) return null;
 
@@ -82,7 +82,10 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
 
   const handleReport = async (status: string) => {
     const token = localStorage.getItem('token');
-    if (!token) return triggerToast(t('login_required'), 'warning');
+    if (!token) {
+      if (onShowAuth) onShowAuth();
+      return;
+    }
 
     setIsReporting(true);
 
@@ -172,9 +175,24 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
   const getStatusVariant = (status: string) => {
     switch (status) {
       case 'DOWN': return 'danger';
+      case 'TRAPPED': return 'danger';
+      case 'UNSAFE': return 'danger';
       case 'UNVERIFIED': return 'warning';
+      case 'SLOW': return 'warning';
       default: return 'success';
     }
+  };
+
+  const getStatusLabel = (status: string): string => {
+    const labels: Record<string, string> = {
+      DOWN: t('status_label_down'),
+      TRAPPED: t('status_label_trapped'),
+      UNSAFE: t('status_label_unsafe'),
+      UNVERIFIED: t('status_label_unverified'),
+      UP: t('status_label_up'),
+      SLOW: t('status_label_slow'),
+    };
+    return labels[status] ?? status;
   };
 
   const lossOfService = buildingData.loss_of_service_30d;
@@ -245,14 +263,53 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
         </Toast>
       </ToastContainer>
 
+      {/* Martha Mode: Emergency block — shown first when elevator is critically impacted */}
+      {(['DOWN', 'TRAPPED', 'UNSAFE'] as string[]).includes(buildingData.verified_status) && (
+        <div
+          className="bg-danger text-white p-4 mb-4 rounded-4 shadow"
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+        >
+          <h2 className="fw-bold fs-3 mb-1">{getStatusLabel(buildingData.verified_status)}</h2>
+          <p className="mb-3 fw-normal fs-6">{t('emergency_help_desc')}</p>
+          <a
+            href="tel:311"
+            className="d-block btn btn-light btn-lg fw-bold rounded-pill w-100 mb-3 shadow text-danger py-3 fs-5"
+            aria-label={`${t('call_311_now')} — ${t('call_311_number')}`}
+          >
+            <span className="me-2" aria-hidden="true">📞</span>{t('call_311_now')} — {t('call_311_number')}
+          </a>
+          <a
+            href={`sms:?body=${encodeURIComponent(`${buildingData.address}: ${t('alert_neighbor_sms_body')}`)}`}
+            className="d-block btn btn-outline-light fw-bold rounded-pill w-100 py-3 fs-6"
+          >
+            <span className="me-2" aria-hidden="true">💬</span>{t('alert_neighbor')}
+          </a>
+        </div>
+      )}
+
+      {/* Martha Mode: Unverified status plain-language alert */}
+      {buildingData.verified_status === 'UNVERIFIED' && (
+        <Alert
+          variant="warning"
+          className="rounded-4 shadow-sm mb-4 py-3 border-warning border-2"
+          role="status"
+          aria-live="polite"
+        >
+          <div className="fw-bold fs-6 mb-1">{t('status_label_unverified')}</div>
+          <div className="small">{t('verification_neighbor_prompt')}</div>
+        </Alert>
+      )}
+
       {/* ZONE 1: Identity & Live Status */}
       <Card className="border-0 shadow mb-4 overflow-hidden">
-        <div className={`bg-${getStatusVariant(buildingData.verified_status)} py-2 px-4 text-white fw-bold small text-uppercase`}>
-          {buildingData.verified_status === 'UNVERIFIED' ? (
-            <><span aria-hidden="true">⚠️</span> {t('verification_pending')} ({buildingData.verification_countdown}m)</>
-          ) : (
-            <><span aria-hidden="true">✅</span> {t('current_status')}: {buildingData.verified_status}</>
-          )}
+        <div
+          className={`bg-${getStatusVariant(buildingData.verified_status)} py-3 px-4 text-white fw-bold text-center`}
+          role="status"
+          aria-live="polite"
+        >
+          <div className="fs-5">{getStatusLabel(buildingData.verified_status)}</div>
         </div>
         <Card.Body className="p-4">
           <div className="d-flex flex-column flex-md-row justify-content-between align-items-start mb-4 gap-3">
@@ -302,7 +359,7 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
                   <div className="bg-white rounded-circle p-1 mb-2 shadow-sm d-flex align-items-center justify-content-center" style={{ width: '32px', height: '32px' }}>
                     <span className="fs-5" aria-hidden="true">✅</span>
                   </div>
-                  <span className="small">{t('status_up').split(' / ')[0].toUpperCase()}</span>
+                  <span className="fw-bold">{t('btn_report_working')}</span>
                 </Button>
               </Col>
               <Col xs={4} className="d-flex">
@@ -316,7 +373,7 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
                   <div className="bg-white rounded-circle p-1 mb-2 shadow-sm d-flex align-items-center justify-content-center" style={{ width: '32px', height: '32px' }}>
                     <span className="fs-5" aria-hidden="true">❌</span>
                   </div>
-                  <span className="small">{t('status_down').split(' / ')[0].toUpperCase()}</span>
+                  <span className="fw-bold">{t('btn_report_not_working')}</span>
                 </Button>
               </Col>
               <Col xs={4} className="d-flex">
@@ -330,7 +387,7 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
                   <div className="bg-dark rounded-circle p-1 mb-2 shadow-sm d-flex align-items-center justify-content-center" style={{ width: '32px', height: '32px' }}>
                     <span className="fs-5" aria-hidden="true">⚠️</span>
                   </div>
-                  <span className="small">{t('status_slow').split(' / ')[0].toUpperCase()}</span>
+                  <span className="fw-bold">{t('btn_report_slow')}</span>
                 </Button>
               </Col>
             </Row>
@@ -497,11 +554,11 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
       >
         <div>
           <div className="fs-6"><span aria-hidden="true">📞</span> {t('call_311_now')}</div>
-          <small className="fw-normal opacity-75">{t('call_311_desc')}</small>
+          <small className="fw-normal">{t('call_311_desc')}</small>
         </div>
         <div className="text-end">
           <div className="fw-bold">{t('call_311_number')}</div>
-          <small className="fw-normal opacity-75">{t('or_dial_311')}</small>
+          <small className="fw-normal">{t('or_dial_311')}</small>
         </div>
       </a>
 

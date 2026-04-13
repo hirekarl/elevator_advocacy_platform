@@ -34,7 +34,7 @@ export function SignupForm({ onSuccess }: AuthFormsProps) {
       } else {
         setStatus({ type: 'danger', message: data.error || t('signup_failed') });
       }
-    } catch (error) {
+    } catch {
       setStatus({ type: 'danger', message: t('network_error') });
     } finally {
       setLoading(false);
@@ -65,7 +65,7 @@ export function SignupForm({ onSuccess }: AuthFormsProps) {
       } else {
         setStatus({ type: 'danger', message: data.error || t('login_failed') });
       }
-    } catch (error) {
+    } catch {
       setStatus({ type: 'danger', message: t('network_error') });
     } finally {
       setLoading(false);

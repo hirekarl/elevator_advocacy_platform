@@ -66,7 +66,7 @@ const resources = {
       "call_311_desc": "Free NYC helpline — available 24/7",
       "call_311_number": "212-639-9675",
       "report_login_cta": "Sign in to submit a report and help your neighbors.",
-      "verification_explainer": "Two neighbors confirming the same status within 2 hours marks it Verified.",
+      "verification_explainer": "Reports from two different neighbors within 2 hours confirm the status.",
       "sign_in": "Sign In",
       "executive_summary_title": "AI Executive Summary",
       "generating_summary": "Synthesizing worker reports...",
@@ -128,7 +128,21 @@ const resources = {
       "error_syncing_news": "Error syncing news.",
       "error_sending_report": "Error sending report.",
       "auth_modal_label": "Sign in or create account",
-      "guide_modal_label": "How to use Elevator Advocacy"
+      "guide_modal_label": "How to use Elevator Advocacy",
+      "status_label_down": "Elevator is NOT WORKING",
+      "status_label_trapped": "EMERGENCY — People May Be Trapped",
+      "status_label_unsafe": "Elevator is UNSAFE — Do Not Use",
+      "status_label_unverified": "Elevator Status Not Yet Confirmed",
+      "status_label_up": "Elevator is Working",
+      "status_label_slow": "Elevator is Slow or Having Problems",
+      "emergency_help_title": "Need Help Right Now?",
+      "emergency_help_desc": "Use the buttons below to call for help or alert someone who can assist you.",
+      "alert_neighbor": "Send Text Alert to a Neighbor",
+      "alert_neighbor_sms_body": "The elevator at this building may not be working. Can you check on your neighbor or call 311?",
+      "verification_neighbor_prompt": "One neighbor has reported this. Ask another neighbor to also tap a button — once two neighbors agree, the status becomes confirmed.",
+      "btn_report_working": "Working",
+      "btn_report_not_working": "Not Working",
+      "btn_report_slow": "Moving Slowly"
     }
   },
   es: {
@@ -195,7 +209,7 @@ const resources = {
       "call_311_desc": "Línea gratuita de NYC — disponible 24/7",
       "call_311_number": "212-639-9675",
       "report_login_cta": "Inicia sesión para enviar un reporte y ayudar a tus vecinos.",
-      "verification_explainer": "Dos vecinos confirmando el mismo estado en 2 horas lo marca como Verificado.",
+      "verification_explainer": "Los reportes de dos vecinos diferentes en 2 horas confirman el estado.",
       "sign_in": "Iniciar Sesión",
       "executive_summary_title": "Resumen Ejecutivo de IA",
       "generating_summary": "Sintetizando informes de trabajadores...",
@@ -257,7 +271,21 @@ const resources = {
       "error_syncing_news": "Error al sincronizar noticias.",
       "error_sending_report": "Error al enviar el reporte.",
       "auth_modal_label": "Iniciar sesión o crear cuenta",
-      "guide_modal_label": "Cómo usar Elevator Advocacy"
+      "guide_modal_label": "Cómo usar Elevator Advocacy",
+      "status_label_down": "El ascensor NO FUNCIONA",
+      "status_label_trapped": "EMERGENCIA — Personas Posiblemente Atrapadas",
+      "status_label_unsafe": "El ascensor es INSEGURO — No lo use",
+      "status_label_unverified": "Estado del Ascensor Aún No Confirmado",
+      "status_label_up": "El Ascensor Funciona",
+      "status_label_slow": "El Ascensor Está Lento o Con Problemas",
+      "emergency_help_title": "¿Necesita Ayuda Ahora Mismo?",
+      "emergency_help_desc": "Use los botones de abajo para pedir ayuda o avisar a alguien que pueda asistirle.",
+      "alert_neighbor": "Enviar Mensaje de Alerta a un Vecino",
+      "alert_neighbor_sms_body": "El ascensor en este edificio puede no funcionar. ¿Puede revisar o llamar al 311?",
+      "verification_neighbor_prompt": "Un vecino ha reportado esto. Pida a otro vecino que también toque un botón — cuando dos vecinos estén de acuerdo, el estado queda confirmado.",
+      "btn_report_working": "Funciona",
+      "btn_report_not_working": "No Funciona",
+      "btn_report_slow": "Funciona Lento"
     }
   }
 };

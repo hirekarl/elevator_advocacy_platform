@@ -13,7 +13,7 @@ uv run ruff check . --fix --ignore E501,E402
 
 # 2. Type Checking
 echo "Step 2: Running Mypy..."
-uv run mypy . --ignore-missing-imports
+uv run mypy . --ignore-missing-imports --disable-error-code import-untyped
 
 # 3. Django System Integrity
 echo "Step 3: Running Django System Check..."

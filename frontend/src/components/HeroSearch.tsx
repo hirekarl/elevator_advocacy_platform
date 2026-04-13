@@ -1,10 +1,16 @@
-import { Form, Button, Row, Col, Card } from 'react-bootstrap';
+import { Form, Button, Row, Col } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+
+interface SearchData {
+  house_number: string;
+  street: string;
+  borough: string;
+}
 
 interface HeroSearchProps {
   onSearch: (e: React.FormEvent) => void;
-  searchData: any;
-  setSearchData: (data: any) => void;
+  searchData: SearchData;
+  setSearchData: (data: SearchData) => void;
   isPending: boolean;
 }
 

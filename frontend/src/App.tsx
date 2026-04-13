@@ -1,5 +1,5 @@
-import { useState, useOptimistic, useTransition, useEffect } from 'react';
-import { Container, Navbar, Nav, Button, Row, Col, Alert, Badge, Dropdown, Modal } from 'react-bootstrap';
+import { useState, useOptimistic, useTransition, useEffect, useCallback } from 'react';
+import { Container, Navbar, Button, Row, Col, Alert, Badge, Dropdown, Modal } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { BrowserRouter as Router, Routes, Route, useParams, useNavigate, Link } from 'react-router-dom';
 
@@ -60,7 +60,7 @@ function MainDashboard() {
     };
 
     fetchUser();
-  }, [bin, navigate]);
+  }, [bin, navigate, handleLogout]);
 
   useEffect(() => {
     if (bin) {
@@ -68,7 +68,7 @@ function MainDashboard() {
     } else {
       setActiveBuilding(null);
     }
-  }, [bin]);
+  }, [bin, fetchBuilding]);
 
   // Seed the building feed from the current building's tenant reports.
   useEffect(() => {
@@ -82,7 +82,7 @@ function MainDashboard() {
     }
   }, [activeBuilding]);
 
-  const fetchBuilding = async (binId: string) => {
+  const fetchBuilding = useCallback((binId: string) => {
     startTransition(async () => {
       try {
         const response = await fetch(`http://localhost:8000/api/buildings/${binId}/`);
@@ -96,16 +96,16 @@ function MainDashboard() {
         console.error("Fetch Error:", error);
       }
     });
-  };
+  }, [navigate, startTransition]);
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     localStorage.removeItem('token');
     localStorage.removeItem('username');
     localStorage.removeItem('primary_building_bin');
     setIsLoggedIn(false);
     setUsername('');
     navigate('/');
-  };
+  }, [navigate]);
 
   const handleSearch = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();

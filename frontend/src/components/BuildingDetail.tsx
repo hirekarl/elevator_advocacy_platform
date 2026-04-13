@@ -607,7 +607,7 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
                 </div>
               </div>
               <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3">
-                <small className="text-white-50">Legal: {advocacyScript.legal_reference}</small>
+                <small className="text-white">Legal: {advocacyScript.legal_reference}</small>
                 <Button
                   variant="light"
                   size="sm"
@@ -622,7 +622,7 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
               </div>
             </>
           ) : (
-            <p className="mb-0 text-white-50">{t('no_strategy_available')}</p>
+            <p className="mb-0 text-white">{t('no_strategy_available')}</p>
           )}
         </Card.Body>
       </Card>

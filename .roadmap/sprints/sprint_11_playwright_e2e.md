@@ -47,9 +47,13 @@
 
 ### Maya: Frontend (Playwright)
 - [x] Install Playwright in `frontend/`.
-- [ ] Configure `playwright.config.ts` for Vite dev server.
-- [ ] Implement `e2e/martha.spec.ts` with mocked API responses.
-- [ ] Integrate `@axe-core/playwright` for accessibility checks.
+- [x] Configure `playwright.config.ts` for Vite dev server.
+- [x] Implement `e2e/martha.spec.ts` with mocked API responses.
+- [x] Integrate `@axe-core/playwright` for accessibility checks.
+- [x] Switch reporter to `dot` for compact output.
+
+### Blythe: Contrast Remediation
+- [x] Replace `text-white-50` with `text-white` on `bg-primary` cards in `BuildingDetail.tsx` (WCAG AA 4.5:1 fix).
 
 ### Juno: UX & Accessibility
 - [x] Review test assertions for "Martha-friendliness" (e.g., button sizes, contrast).

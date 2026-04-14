@@ -10,6 +10,9 @@ then
     source $HOME/.cargo/env
 fi
 
+# Clear Render's injected VIRTUAL_ENV so uv resolves the project's own .venv.
+unset VIRTUAL_ENV
+
 # Build the backend
 cd backend
 uv sync --frozen

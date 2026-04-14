@@ -8,7 +8,12 @@
 
 set -e # Exit on any error
 
+# Always run from the backend directory so mypy picks up pyproject.toml config.
+cd "$(dirname "$0")/.."
 
+# Clear any externally-injected VIRTUAL_ENV (e.g. from VS Code's Python extension)
+# so uv always resolves the project's own .venv without warnings.
+unset VIRTUAL_ENV
 
 echo "--- 🛠️ Starting Pre-Flight Validation ---"
 

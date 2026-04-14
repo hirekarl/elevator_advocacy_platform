@@ -62,4 +62,4 @@ services:
 
 databases:
   - name: elevator-advocate-db
-    plan: basic
+    plan: basic-256mb

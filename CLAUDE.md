@@ -200,10 +200,10 @@ Token-based (DRF `TokenAuthentication`). Token stored in localStorage on the fro
 | `backend/buildings_app/views.py` | All API viewsets |
 | `backend/buildings_app/logic.py` | `ConsensusManager` (2-hour rule) |
 | `backend/buildings_app/ai_logic.py` | `PredictiveEngine` (failure risk) |
-| `frontend/src/App.tsx` | Router + main dashboard |
-| `frontend/src/i18n.ts` | All EN/ES translations |
+| `frontend/src/App.tsx` | Router + main dashboard (modularized in `components/App/`) |
+| `frontend/src/i18n.ts` | Translation config (resources in `locales/`) |
 | `frontend/src/index.css` | Civic Operations design system (tokens, components) |
-| `frontend/src/components/BuildingDetail.tsx` | Action center — Martha Mode UX |
+| `frontend/src/components/BuildingDetail.tsx` | Action center (sub-components in `components/BuildingDetail/`) |
 
 ## Code Standards
 

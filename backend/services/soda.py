@@ -57,7 +57,10 @@ class SODAService:
             where_clause = (
                 f"complaint_category IN ('81', '63') AND date_entered > '{limit_date}'"
             )
-            params: Dict[str, Any] = {"$where": where_clause, "$$app_token": self.app_token}
+            params: Dict[str, Any] = {
+                "$where": where_clause,
+                "$$app_token": self.app_token,
+            }
         else:
             where_clause = "complaint_category IN ('81', '63')"
             params = {

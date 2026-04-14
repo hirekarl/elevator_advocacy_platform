@@ -27,4 +27,4 @@ Actions simplify the management of form submissions and asynchronous operations 
 - **Optimistic UI Support**: Pairs perfectly with `useOptimistic`.
 
 ## Implementation Priority
-The `handleReport` and `handleLogAdvocacy` functions in `BuildingDetail.tsx` are primary candidates for refactoring into React 19 Actions.
+The `handleReport` and `handleLogAdvocacy` functions (now in `useBuildingAdvocacy.ts`) and `handleSearch` (now in `useBuildingLookup.ts`) are primary candidates for refactoring into React 19 Actions. These hooks coordinate the core building-level and app-level state transitions.

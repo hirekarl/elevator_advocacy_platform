@@ -23,4 +23,4 @@ function BuildingProfile({ buildingPromise }) {
 - **Conditional Calling**: Unlike hooks, `use` can be called within loops and conditional statements.
 
 ## Implementation Goal
-Refactor existing `fetchBuilding` and `fetchAdvocacyScript` logic in `App.tsx` and `BuildingDetail.tsx` to utilize the `use` API combined with Suspense boundaries.
+Refactor existing `fetchBuilding` (in `useBuildingLookup.ts`) and `fetchAdvocacyScript` (in `useBuildingAdvocacy.ts`) logic to utilize the `use` API combined with Suspense boundaries. This will further simplify the state management within these hooks.

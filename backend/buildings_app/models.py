@@ -18,6 +18,8 @@ class Building(models.Model):
     state_assembly_district = models.CharField(max_length=10, null=True, blank=True)
     state_senate_district = models.CharField(max_length=10, null=True, blank=True)
     last_news_refresh = models.DateTimeField(null=True, blank=True)
+    cached_executive_summary = models.JSONField(null=True, blank=True)
+    summary_last_generated = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(db_default=Now())
 
     def __str__(self) -> str:

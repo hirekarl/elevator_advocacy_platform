@@ -45,21 +45,32 @@ class SODAService:
     def get_recent_outages(self, hours: int = 24) -> List[Dict[str, Any]]:
         """
         Fetches all elevator-related outages across NYC from the last N hours.
+        If hours=0, fetches the absolute most recent N outages regardless of time.
         """
         # SODA floating timestamp format: YYYY-MM-DDTHH:MM:SS
         from datetime import timedelta
 
-        limit_date = (datetime.now() - timedelta(hours=hours)).strftime(
-            "%Y-%m-%dT%H:%M:%S"
-        )
+        if hours > 0:
+            limit_date = (datetime.now() - timedelta(hours=hours)).strftime(
+                "%Y-%m-%dT%H:%M:%S"
+            )
+            where_clause = (
+                f"complaint_category IN ('81', '63') AND date_entered > '{limit_date}'"
+            )
+            params: Dict[str, Any] = {"$where": where_clause, "$$app_token": self.app_token}
+        else:
+            where_clause = "complaint_category IN ('81', '63')"
+            params = {
+                "$where": where_clause,
+                "$order": "date_entered DESC",
+                "$limit": 1000,
+                "$$app_token": self.app_token,
+            }
 
-        where_clause = (
-            f"complaint_category IN ('81', '63') AND date_entered > '{limit_date}'"
-        )
-        params: Dict[str, Any] = {"$where": where_clause, "$$app_token": self.app_token}
+        print(f"DEBUG SODA Query: {where_clause}")
 
         try:
-            response = requests.get(self.BASE_URL, params=params, timeout=15)
+            response = requests.get(self.BASE_URL, params=params, timeout=30)
             response.raise_for_status()
             data = response.json()
             if isinstance(data, list):

@@ -19,6 +19,10 @@
 - **AI Intelligence & Media Hub:** [Map: ai_intelligence_map.md](./ai_intelligence_map.md)
 - **SODA SoQL Query Guide:** [Socrata Documentation](https://dev.socrata.com/docs/queries/)
 
+## Core Domain Logic
+- **Business Rules & Metrics:** [Map: domain_logic_map.md](./domain_logic_map.md)
+- **Multi-Agent Operations:** [Map: domain_logic_map.md](./domain_logic_map.md)
+
 ## Specialist Assignments
 - **Elias:** Django 6.0, `uv`, PostgreSQL, Task Orchestration
 - **Maya:** React 19, Tailwind, Vite, UI Optimization

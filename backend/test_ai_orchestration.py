@@ -24,7 +24,7 @@ def print_header(title: str):
 
 
 @pytest.mark.django_db
-def test_multi_agent_system():
+def run_multi_agent_system_smoke_test():
     # 1. Setup Data
     bin_arg = None
     if len(sys.argv) > 1:
@@ -131,5 +131,5 @@ if __name__ == "__main__":
         print("🛑 STOP: GEMINI_API_KEY is not set in your environment.")
         sys.exit(1)
 
-    test_multi_agent_system()
+    run_multi_agent_system_smoke_test()
     print("\n✨ Test script execution finished.")

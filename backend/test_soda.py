@@ -5,15 +5,19 @@ import requests
 from dotenv import load_dotenv
 
 
-def test_soda_only():
+def run_soda_smoke_test():
     root_dir = Path(__file__).resolve().parent.parent
     load_dotenv(root_dir / ".env")
     token = os.getenv("SODA_APP_TOKEN")
 
+    if not token:
+        print("⏭️  Skipping SODA test: No SODA_APP_TOKEN found in environment.")
+        return
+
     url = "https://data.cityofnewyork.us/resource/kqwi-7ncn.json"
     params = {"$limit": 5, "$$app_token": token}
 
-    print(f"Testing SODA Token: {token[:4]}...{token[-4:] if token else 'None'}")
+    print(f"Testing SODA Token: {token[:4]}...{token[-4:]}")
     try:
         r = requests.get(url, params=params)
         print(f"Status: {r.status_code}")
@@ -27,4 +31,4 @@ def test_soda_only():
 
 
 if __name__ == "__main__":
-    test_soda_only()
+    run_soda_smoke_test()

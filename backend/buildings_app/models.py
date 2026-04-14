@@ -14,6 +14,9 @@ class Building(models.Model):
     borough = models.CharField(max_length=20)
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
+    city_council_district = models.CharField(max_length=10, null=True, blank=True)
+    state_assembly_district = models.CharField(max_length=10, null=True, blank=True)
+    state_senate_district = models.CharField(max_length=10, null=True, blank=True)
     last_news_refresh = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(db_default=Now())
 

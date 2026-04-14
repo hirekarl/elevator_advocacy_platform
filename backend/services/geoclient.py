@@ -49,6 +49,9 @@ class GeoclientService:
                 "bin": data.get("buildingIdentificationNumber"),
                 "latitude": data.get("latitude"),
                 "longitude": data.get("longitude"),
+                "city_council_district": data.get("cityCouncilDistrict"),
+                "state_assembly_district": data.get("assemblyDistrict"),
+                "state_senate_district": data.get("stateSenatorialDistrict"),
             }
         except requests.HTTPError as e:
             if e.response is not None and e.response.status_code == 401:

@@ -276,7 +276,7 @@ function MainDashboard() {
         <Modal.Body className="p-4 pt-3">
           <div className="user-guide-steps">
             {[1, 2, 3, 4].map((num) => (
-              <div key={num} className="d-flex align-items-center mb-4">
+              <div key={`guide-step-${num}`} className="d-flex align-items-center mb-4">
                 <div
                   className="bg-light rounded-circle shadow-sm p-2 d-flex align-items-center justify-content-center border me-3"
                   style={{ width: '56px', height: '56px', minWidth: '56px' }}

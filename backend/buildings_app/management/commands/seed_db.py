@@ -353,8 +353,7 @@ class Command(BaseCommand):
             defaults={
                 "building": building_b,
                 "title": (
-                    f"DOB Cites Bronx Building {building_b.address} "
-                    "for Safety Failures"
+                    f"DOB Cites Bronx Building {building_b.address} for Safety Failures"
                 ),
                 "source": "The City (Mock)",
                 "published_date": date(2026, 1, 15),
@@ -407,7 +406,7 @@ class Command(BaseCommand):
         logs_b = AdvocacyLog.objects.filter(building=building_b).count()
         news_b = BuildingNews.objects.filter(building=building_b).count()
         lines += [
-            f"  Building B — {building_b.address} " f"(BIN {building_b.bin})",
+            f"  Building B — {building_b.address} (BIN {building_b.bin})",
             "  Expected status: UNVERIFIED (amber badge)",
             f"  Features: {logs_b} Advocacy Logs, {news_b} News Articles",
             "",

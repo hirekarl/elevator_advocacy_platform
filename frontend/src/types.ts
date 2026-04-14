@@ -32,6 +32,14 @@ export interface Building {
   bin: string;
   address: string;
   borough: string;
+  city_council_district?: string;
+  representative?: {
+    name: string;
+    title: string;
+    email?: string;
+    phone?: string;
+    district?: string;
+  };
   verified_status: ElevatorStatus;
   verification_countdown: number;
   loss_of_service_30d: number | null;

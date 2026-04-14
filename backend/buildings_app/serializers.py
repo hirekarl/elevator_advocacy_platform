@@ -39,6 +39,7 @@ class BuildingSerializer(serializers.ModelSerializer):
     loss_of_service_30d = serializers.SerializerMethodField()
     failure_risk = serializers.SerializerMethodField()
     verification_countdown = serializers.SerializerMethodField()
+    representative = serializers.SerializerMethodField()
     news_articles = BuildingNewsSerializer(many=True, read_only=True)
     advocacy_logs = serializers.SerializerMethodField()
 
@@ -50,6 +51,10 @@ class BuildingSerializer(serializers.ModelSerializer):
             "borough",
             "latitude",
             "longitude",
+            "city_council_district",
+            "state_assembly_district",
+            "state_senate_district",
+            "representative",
             "created_at",
             "verified_status",
             "loss_of_service_30d",
@@ -58,6 +63,19 @@ class BuildingSerializer(serializers.ModelSerializer):
             "news_articles",
             "advocacy_logs",
         ]
+
+    def get_representative(self, obj: Building) -> dict:
+        """
+        Fetches representative info based on stored district data.
+        """
+        from services.representatives import RepresentativeService
+
+        service = RepresentativeService()
+        if obj.city_council_district:
+            return service.get_member_by_district(obj.city_council_district)
+
+        # Fallback to generic council contact if district is missing
+        return service.get_representative_for_address(obj.address)
 
     def get_advocacy_logs(self, obj: Building) -> list:
         """
@@ -98,8 +116,8 @@ class ElevatorReportSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ElevatorReport
-        fields = ["building", "user_id", "status", "reported_at", "is_official"]
-        read_only_fields = ["reported_at", "is_official"]
+        fields = ["id", "building", "user_id", "status", "reported_at", "is_official"]
+        read_only_fields = ["id", "reported_at", "is_official"]
 
 
 class ReportStatusSerializer(serializers.Serializer):

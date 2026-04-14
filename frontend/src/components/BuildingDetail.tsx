@@ -655,8 +655,8 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
               <h3 className="section-label">{t('my_personal_trail')}</h3>
               {advocacyLogs.length > 0 ? (
                 <ListGroup variant="flush">
-                  {advocacyLogs.map((log, idx) => (
-                    <ListGroup.Item key={idx} className="px-0 py-3 border-light">
+                  {advocacyLogs.map((log) => (
+                    <ListGroup.Item key={log.sr_number} className="px-0 py-3 border-light">
                       <div className="d-flex justify-content-between align-items-start">
                         <div>
                           <span className="badge bg-primary-subtle text-primary mb-2 me-2">SR {log.sr_number}</span>
@@ -679,8 +679,8 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
               <h3 className="section-label">{t('community_reports')}</h3>
               <ListGroup variant="flush" className="border rounded bg-light p-2">
                 {tenantReports.length > 0 ? (
-                  tenantReports.slice(0, 5).map((report, idx) => (
-                    <ListGroup.Item key={idx} className="bg-transparent px-2 py-2 border-light small">
+                  tenantReports.slice(0, 5).map((report) => (
+                    <ListGroup.Item key={report.id} className="bg-transparent px-2 py-2 border-light small">
                       <Badge bg={report.status === 'UP' ? 'success' : 'danger'} className="me-2">{report.status}</Badge>
                       <span className="text-muted">{new Date(report.reported_at).toLocaleDateString()}</span>
                     </ListGroup.Item>
@@ -696,7 +696,7 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
               <ListGroup variant="flush" className="border rounded bg-light p-2">
                 {officialReports.length > 0 ? (
                   officialReports.slice(0, 5).map((report, idx) => (
-                    <ListGroup.Item key={idx} className="bg-transparent px-2 py-2 border-light small">
+                    <ListGroup.Item key={`official-${report.id || idx}`} className="bg-transparent px-2 py-2 border-light small">
                       <Badge bg="info" className="me-2">DOB</Badge>
                       <span className="text-muted">{new Date(report.reported_at).toLocaleDateString()}</span>
                     </ListGroup.Item>
@@ -743,13 +743,34 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
                 >
                   Share via WhatsApp
                 </a>
-                <a
-                  href={`mailto:?subject=${encodeURIComponent(`Elevator Issue: ${buildingData.address}`)}&body=${encodeURIComponent(`Elevator Advocacy Report: ${buildingData.address}\n- 30-Day Service Loss: ${lossOfService != null ? `${lossOfService}%` : '—'}\n- Current Status: ${buildingData.verified_status}`)}`}
-                  className="badge bg-dark px-3 py-2 fw-medium rounded-pill text-decoration-none"
-                  aria-label="Email building status to a representative"
-                >
-                  Email Representative
-                </a>
+                {buildingData.representative?.email ? (
+                  <a
+                    href={`mailto:${buildingData.representative.email}?subject=${encodeURIComponent(`Elevator Outage: ${buildingData.address}`)}&body=${encodeURIComponent(`Dear ${buildingData.representative.name},\n\nI am writing to you today to report a persistent elevator issue at ${buildingData.address}.\n\nAccording to the Elevator Advocacy Platform, this building has a 30-day "Loss of Service" metric of ${lossOfService != null ? `${lossOfService}%` : 'unknown'}.\n\nThe current verified status of the elevator is: ${buildingData.verified_status}.\n\nPlease help us hold the building management accountable for these service interruptions.\n\nThank you,\nA concerned neighbor`)}`}
+                    className="badge bg-dark px-3 py-2 fw-medium rounded-pill text-decoration-none"
+                    aria-label={`Email ${buildingData.representative.name}`}
+                    rel="noopener noreferrer"
+                  >
+                    Email {buildingData.representative.name}
+                  </a>
+                ) : buildingData.representative?.phone ? (
+                  <a
+                    href={`tel:${buildingData.representative.phone}`}
+                    className="badge bg-dark px-3 py-2 fw-medium rounded-pill text-decoration-none"
+                    aria-label={`Call ${buildingData.representative.name}`}
+                    rel="noopener noreferrer"
+                  >
+                    Call {buildingData.representative.name}
+                  </a>
+                ) : (
+                  <a
+                    href={`mailto:?subject=${encodeURIComponent(`Elevator Issue: ${buildingData.address}`)}&body=${encodeURIComponent(`Elevator Advocacy Report: ${buildingData.address}\n- 30-Day Service Loss: ${lossOfService != null ? `${lossOfService}%` : '—'}\n- Current Status: ${buildingData.verified_status}`)}`}
+                    className="badge bg-dark px-3 py-2 fw-medium rounded-pill text-decoration-none"
+                    aria-label="Email building status to a representative"
+                    rel="noopener noreferrer"
+                  >
+                    Email Representative
+                  </a>
+                )}
               </div>
             </Col>
           </Row>
@@ -780,8 +801,8 @@ export function BuildingDetail({ buildingData, isLoggedIn = false, onShowAuth, o
 
       <Row className="g-3">
         {buildingData.news_articles && buildingData.news_articles.length > 0 ? (
-          buildingData.news_articles.map((article, idx) => (
-            <Col md={6} key={idx}>
+          buildingData.news_articles.map((article) => (
+            <Col md={6} key={article.url}>
               <Card className="h-100 border-0 shadow-sm rounded-4">
                 <Card.Body className="p-3">
                   <div className="d-flex justify-content-between mb-2">

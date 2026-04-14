@@ -213,5 +213,10 @@
   "adv_council_cta_primary": "Solicitar un informe distrital",
   "adv_council_cta_secondary": "Ver demostración",
   "adv_council_footnote": "Datos obtenidos de NYC Open Data, registros oficiales de edificios de la ciudad y reportes de residentes. Actualizado continuamente.",
-  "adv_council_cta_primary_aria": "Solicitar un informe de elevadores por correo electrónico"
+  "adv_council_cta_primary_aria": "Solicitar un informe de elevadores por correo electrónico",
+  "page_not_found_title": "Página No Encontrada",
+  "page_not_found_message": "La página que buscas no existe.",
+  "building_not_found_title": "Edificio No Encontrado",
+  "building_not_found_detail": "No tenemos registro de ese edificio. Intenta buscar tu dirección.",
+  "search_again": "Buscar de Nuevo"
 }

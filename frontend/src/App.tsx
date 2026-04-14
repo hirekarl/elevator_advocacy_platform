@@ -1,7 +1,7 @@
 import { useState, useOptimistic, useEffect } from 'react';
 import { Container } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 
 import type { OptimisticReport } from './types';
 
@@ -11,6 +11,7 @@ import { useBuildingLookup } from './hooks/useBuildingLookup';
 
 // Sub-components
 import { ConfirmEmail } from './components/ConfirmEmail';
+import { NotFound } from './components/NotFound';
 import { AppNavbar } from './components/App/AppNavbar';
 import { AuthModal } from './components/App/AuthModal';
 import { UserGuideModal } from './components/App/UserGuideModal';
@@ -36,6 +37,7 @@ function MainDashboard() {
     bin,
     isPending,
     activeBuilding,
+    buildingNotFound,
     searchError,
     searchData,
     setSearchData,
@@ -133,6 +135,28 @@ function MainDashboard() {
             getStatusPillClass={getStatusPillClass}
             getStatusShortLabel={getStatusShortLabel}
           />
+        ) : buildingNotFound ? (
+          <div
+            className="d-flex flex-column align-items-center justify-content-center text-center py-5 mt-5"
+            style={{ color: 'var(--c-text)' }}
+          >
+            <p
+              className="fw-bold mb-2"
+              style={{ fontSize: '4rem', lineHeight: 1, color: 'var(--c-navy)' }}
+              aria-hidden="true"
+            >
+              404
+            </p>
+            <h2 className="h3 mb-3" style={{ color: 'var(--c-navy)' }}>
+              {t('building_not_found_title')}
+            </h2>
+            <p className="mb-4" style={{ color: 'var(--c-muted)', maxWidth: '24rem' }}>
+              {t('building_not_found_detail')}
+            </p>
+            <Link to="/" className="btn btn-primary">
+              {t('search_again')}
+            </Link>
+          </div>
         ) : activeBuilding && (
           <BuildingPage
             activeBuilding={activeBuilding}
@@ -156,6 +180,7 @@ function App() {
         <Route path="/" element={<MainDashboard />} />
         <Route path="/building/:bin" element={<MainDashboard />} />
         <Route path="/confirm/:uid/:token" element={<ConfirmEmail />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );

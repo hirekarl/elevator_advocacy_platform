@@ -10,6 +10,7 @@ export function useBuildingLookup(primaryBuildingBin: string | null) {
   const { t } = useTranslation();
   const [isPending, startTransition] = useTransition();
   const [activeBuilding, setActiveBuilding] = useState<Building | null>(null);
+  const [buildingNotFound, setBuildingNotFound] = useState(false);
   const [searchError, setSearchError] = useState('');
   const [searchData, setSearchData] = useState({
     house_number: '',
@@ -19,6 +20,7 @@ export function useBuildingLookup(primaryBuildingBin: string | null) {
   const [primaryBuildingStatus, setPrimaryBuildingStatus] = useState<string | null>(null);
 
   const fetchBuilding = useCallback((binId: string) => {
+    setBuildingNotFound(false);
     startTransition(async () => {
       try {
         const response = await fetch(`${API_BASE}/api/buildings/${binId}/`);
@@ -26,13 +28,14 @@ export function useBuildingLookup(primaryBuildingBin: string | null) {
           const data = await response.json();
           setActiveBuilding(data);
         } else {
-          navigate('/');
+          setActiveBuilding(null);
+          setBuildingNotFound(true);
         }
       } catch (error) {
         console.error("Fetch Error:", error);
       }
     });
-  }, [navigate]);
+  }, []);
 
   useEffect(() => {
     if (bin) {
@@ -81,6 +84,7 @@ export function useBuildingLookup(primaryBuildingBin: string | null) {
     bin,
     isPending,
     activeBuilding,
+    buildingNotFound,
     searchError,
     searchData,
     setSearchData,

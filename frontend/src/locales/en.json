@@ -213,5 +213,10 @@
   "adv_council_cta_primary": "Request a District Report",
   "adv_council_cta_secondary": "View Platform Demo",
   "adv_council_footnote": "Data sourced from NYC Open Data, official city building records, and resident reports. Updated continuously.",
-  "adv_council_cta_primary_aria": "Request a district elevator report by email"
+  "adv_council_cta_primary_aria": "Request a district elevator report by email",
+  "page_not_found_title": "Page Not Found",
+  "page_not_found_message": "The page you're looking for doesn't exist.",
+  "building_not_found_title": "Building Not Found",
+  "building_not_found_detail": "We don't have a record for that building ID. Try searching for your address.",
+  "search_again": "Search Again"
 }

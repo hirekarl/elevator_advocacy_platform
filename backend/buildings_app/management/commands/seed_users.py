@@ -54,19 +54,27 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("User seeding complete."))
 
     def _seed_superuser(self, username: str, email: str, password: str) -> None:
-        """Create the Admin superuser if it does not already exist.
+        """Create the Admin superuser if not present, or update the password if it is.
+
+        Password is always synced from the env var so that changing
+        SEED_ADMIN_PASSWORD in Render takes effect on the next deploy.
 
         Args:
             username: Superuser login name.
             email: Superuser email address.
             password: Superuser password.
         """
-        if User.objects.filter(username=username).exists():
-            self.stdout.write(f"  Superuser '{username}' already exists — skipping.")
-            return
+        user, created = User.objects.get_or_create(
+            username=username,
+            defaults={"email": email, "is_staff": True, "is_superuser": True},
+        )
+        user.set_password(password)
+        user.save()
 
-        User.objects.create_superuser(username=username, email=email, password=password)
-        self.stdout.write(self.style.SUCCESS(f"  Created superuser: {username}"))
+        if created:
+            self.stdout.write(self.style.SUCCESS(f"  Created superuser: {username}"))
+        else:
+            self.stdout.write(self.style.SUCCESS(f"  Updated password for superuser: {username}"))
 
     def _seed_tenant_users(self, password: str) -> None:
         """Create the five demo tenant accounts if they do not already exist.

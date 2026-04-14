@@ -29,7 +29,7 @@ fi
 
 # Sync NYC Council member data
 echo "Syncing NYC Council members..."
-uv run python -c "
+uv run python manage.py shell -c "
 from buildings_app.tasks import sync_council_members
 result = sync_council_members.enqueue()
 print(result)

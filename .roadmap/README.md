@@ -14,6 +14,7 @@
 - [Phase 6 (Multi-Agent Analysis):](completed/): Completed.
 
 ## Navigation
-- [Proposals](proposals/): New architectural and feature proposals.
+- [Advocacy](proposals/advocacy/): Community outreach, legislative briefing, and pilot strategy.
+- [Technical](proposals/technical/): Infrastructure, API integration, and MVP specifications.
 - [Completed](completed/): Archived roadmap items.
 - [Sprints](sprints/): Active and historical sprint logs.

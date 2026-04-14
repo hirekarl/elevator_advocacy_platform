@@ -17,9 +17,11 @@ Run that command again to do a full nuclear reset with fresh data.
 
 ## Building A — 2 Gold Street, Manhattan (BIN 1087146)
 
-Expected landing page state: **VERIFIED DOWN** (red badge)
+Expected landing page state: **VERIFIED TRAPPED** (red badge)
 
-Two tenant reports within the 2-hour consensus window (martha + carlos both reported DOWN).
+**Consensus State:**
+- Martha & Yolanda both reported **TRAPPED** within the 2-hour window.
+- Carlos reported **DOWN** 4 hours ago (historical).
 
 | Username        | Password       | Email                  |
 |-----------------|----------------|------------------------|
@@ -27,26 +29,37 @@ Two tenant reports within the 2-hour consensus window (martha + carlos both repo
 | `carlos_mendez` | `ElevatorUp1!` | `carlos@example.com`   |
 | `yolanda_chen`  | `ElevatorUp1!` | `yolanda@example.com`  |
 
+**Features:**
+- 2 Advocacy Logs (311-123456, 311-654321)
+- 1 News Article (Gothamist)
+- 4 SODA historical complaints synced.
+
 ---
 
 ## Building B — 1010 Grand Concourse, Bronx (BIN 2008036)
 
 Expected landing page state: **UNVERIFIED** (amber badge, countdown timer)
 
-One tenant report within the 2-hour window (james reported SLOW — needs a second reporter).
+**Consensus State:**
+- James reported **SLOW** (45m ago).
+- Priya reported **DOWN** (12m ago).
+- Since status reports differ, the status remains **UNVERIFIED**.
 
 | Username       | Password       | Email               |
 |----------------|----------------|---------------------|
 | `james_okafor` | `ElevatorUp1!` | `james@example.com` |
 | `priya_singh`  | `ElevatorUp1!` | `priya@example.com` |
 
+**Features:**
+- 1 Advocacy Log (311-987654)
+- 1 News Article (The City)
+- 0 SODA records found at seed time.
+
 ---
 
 ## Notes
 
-- All regular users have `is_active=True` — no email confirmation needed
-- SODA complaint history was pulled live for both BINs at seed time
-  - BIN 1087146 (2 Gold St): 4 historical complaints synced
-  - BIN 2008036 (1010 Grand Concourse): 0 SODA records found at seed time
+- All regular users have `is_active=True` — no email confirmation needed.
+- SODA complaint history was pulled live for both BINs at seed time.
 - The seeded reports expire from the consensus window after 2 hours;
-  re-run `seed_db` if the badges revert to UNVERIFIED
+  re-run `seed_db` if the badges revert to UNVERIFIED.

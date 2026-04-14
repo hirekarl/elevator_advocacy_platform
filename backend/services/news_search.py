@@ -52,7 +52,7 @@ class NewsSearchService:
             results = serp_client.search(
                 {
                     "engine": "google",
-                    "q": f'"{address}" NYC elevator outage complaint news',
+                    "q": f'"{address}" NYC elevator "outage" OR "broken" OR "stuck" news',
                     "location": "New York, New York, United States",
                 }
             )

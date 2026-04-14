@@ -54,7 +54,10 @@ SUPERUSER = {
 
 
 class Command(BaseCommand):
-    help = "Nuclear reset: wipes the DB and populates it with real buildings and test users."
+    help = (
+        "Nuclear reset: wipes the DB and populates it with real buildings "
+        "and test users."
+    )
 
     def handle(self, *args, **options) -> None:
         self.stdout.write(self.style.WARNING("Flushing database..."))
@@ -65,7 +68,8 @@ class Command(BaseCommand):
         if len(buildings) < 2:
             self.stdout.write(
                 self.style.ERROR(
-                    "Could not geocode both buildings. Aborting — check GeoSearch connectivity."
+                    "Could not geocode both buildings. Aborting — "
+                    "check GeoSearch connectivity."
                 )
             )
             return
@@ -73,6 +77,8 @@ class Command(BaseCommand):
         self._seed_soda_history(buildings)
         users = self._seed_users(buildings)
         self._seed_recent_reports(buildings, users)
+        self._seed_advocacy_logs(buildings, users)
+        self._seed_building_news(buildings)
         self._print_summary(buildings, users)
 
     # ------------------------------------------------------------------
@@ -186,51 +192,188 @@ class Command(BaseCommand):
         self, buildings: list[Building], users: dict[str, User]
     ) -> None:
         """
-        Building A: two DOWN reports from two different users within the 2-hour
-        window → VERIFIED DOWN (red badge).
+        Building A: two TRAPPED reports from different users within the 2-hour
+        window → VERIFIED TRAPPED (red badge).
 
-        Building B: one SLOW report from one user within the window
+        Building B: mixed reports from two different users within the window
         → UNVERIFIED (amber badge, countdown timer visible).
         """
         now = timezone.now()
 
-        # Building A — VERIFIED DOWN
+        # Building A — VERIFIED TRAPPED
         building_a = buildings[0]
         ElevatorReport.objects.create(
             building=building_a,
             user=users["martha_rivera"],
-            status="DOWN",
-            reported_at=now - timedelta(minutes=47),
+            status="TRAPPED",
+            reported_at=now - timedelta(minutes=15),
         )
+        ElevatorReport.objects.create(
+            building=building_a,
+            user=users["yolanda_chen"],
+            status="TRAPPED",
+            reported_at=now - timedelta(minutes=10),
+        )
+        # Add some historical DOWN reports too
         ElevatorReport.objects.create(
             building=building_a,
             user=users["carlos_mendez"],
             status="DOWN",
-            reported_at=now - timedelta(minutes=31),
+            reported_at=now - timedelta(hours=4),
         )
         self.stdout.write(
-            self.style.SUCCESS(f"  Seeded: {building_a.address} → VERIFIED DOWN")
+            self.style.SUCCESS(f"  Seeded: {building_a.address} → VERIFIED TRAPPED")
         )
 
-        # Building B — UNVERIFIED (single report)
+        # Building B — UNVERIFIED (mixed reports)
         building_b = buildings[1]
         ElevatorReport.objects.create(
             building=building_b,
             user=users["james_okafor"],
             status="SLOW",
-            reported_at=now - timedelta(minutes=22),
+            reported_at=now - timedelta(minutes=45),
+        )
+        ElevatorReport.objects.create(
+            building=building_b,
+            user=users["priya_singh"],
+            status="DOWN",
+            reported_at=now - timedelta(minutes=12),
         )
         self.stdout.write(
             self.style.SUCCESS(
-                f"  Seeded: {building_b.address} → UNVERIFIED (SLOW, 1 report)"
+                f"  Seeded: {building_b.address} → UNVERIFIED (mixed: SLOW, DOWN)"
             )
         )
+
+    # ------------------------------------------------------------------
+    # Advocacy Logs
+    # ------------------------------------------------------------------
+
+    def _seed_advocacy_logs(
+        self, buildings: list[Building], users: dict[str, User]
+    ) -> None:
+        from buildings_app.models import AdvocacyLog
+
+        building_a = buildings[0]
+        AdvocacyLog.objects.create(
+            building=building_a,
+            user=users["martha_rivera"],
+            sr_number="311-123456",
+            description=(
+                "Elevator B is jumping and making loud grinding noises. "
+                "Third call this week."
+            ),
+            outcome="In Progress",
+        )
+        AdvocacyLog.objects.create(
+            building=building_a,
+            user=users["carlos_mendez"],
+            sr_number="311-654321",
+            description=(
+                "Inspector came yesterday but the elevator stopped working "
+                "again this morning."
+            ),
+            outcome="Closed - No Violation Found (Challenged)",
+        )
+
+        building_b = buildings[1]
+        AdvocacyLog.objects.create(
+            building=building_b,
+            user=users["james_okafor"],
+            sr_number="311-987654",
+            description=(
+                "Main elevator doors won't open on the 10th floor. "
+                "Seniors are stuck in their units."
+            ),
+            outcome="Pending Inspection",
+        )
+        self.stdout.write(self.style.SUCCESS("  Seeded 3 Advocacy Logs."))
+
+    # ------------------------------------------------------------------
+    # Building News
+    # ------------------------------------------------------------------
+
+    def _seed_building_news(self, buildings: list[Building]) -> None:
+        from datetime import date
+
+        from buildings_app.models import BuildingNews
+        from services.news_search import NewsSearchService
+
+        # Building A: Live AI extraction (Directly calling service to avoid Task object wrapper)
+        building_a = buildings[0]
+        self.stdout.write(f"Fetching live news for {building_a.address}...")
+        try:
+            service = NewsSearchService()
+            articles = service.search_and_extract(building_a.address)
+            added_count = 0
+            for art in articles:
+                if art.relevance_score >= 0.7 and art.summary.lower() != "irrelevant":
+                    _, created = BuildingNews.objects.get_or_create(
+                        url=art.url,
+                        defaults={
+                            "building": building_a,
+                            "title": art.title,
+                            "source": art.source,
+                            "published_date": art.published_date,
+                            "summary": art.summary,
+                            "relevance_score": art.relevance_score,
+                        },
+                    )
+                    if created:
+                        added_count += 1
+            self.stdout.write(
+                self.style.SUCCESS(
+                    f"  Successfully processed {len(articles)} articles "
+                    f"({added_count} new) for {building_a.address}."
+                )
+            )
+        except Exception as e:
+            self.stdout.write(
+                self.style.WARNING(f"  Live news fetch failed: {e}. Seeding mock.")
+            )
+            BuildingNews.objects.get_or_create(
+                url="https://gothamist.com/news/manhattan-elevator-crisis",
+                defaults={
+                    "building": building_a,
+                    "title": f"Ongoing Elevator Crisis at {building_a.address}",
+                    "source": "Gothamist (Mock)",
+                    "published_date": date(2025, 12, 1),
+                    "summary": (
+                        "Tenants at the luxury high-rise report months of "
+                        "intermittent service and entrapments."
+                    ),
+                    "relevance_score": 0.98,
+                },
+            )
+
+        # Building B: Always mock for seed stability
+        building_b = buildings[1]
+        BuildingNews.objects.get_or_create(
+            url="https://thecity.nyc/bronx-building-violations",
+            defaults={
+                "building": building_b,
+                "title": (
+                    f"DOB Cites Bronx Building {building_b.address} "
+                    "for Safety Failures"
+                ),
+                "source": "The City (Mock)",
+                "published_date": date(2026, 1, 15),
+                "summary": (
+                    "Building inspectors found multiple high-priority "
+                    "violations in the elevator machinery room."
+                ),
+                "relevance_score": 0.92,
+            },
+        )
+        self.stdout.write(self.style.SUCCESS("  Seeded news for both buildings."))
 
     # ------------------------------------------------------------------
     # Summary
     # ------------------------------------------------------------------
 
     def _print_summary(self, buildings: list[Building], users: dict[str, User]) -> None:
+        from buildings_app.models import AdvocacyLog, BuildingNews
+
         lines = [
             "",
             "=" * 60,
@@ -245,9 +388,14 @@ class Command(BaseCommand):
         ]
 
         building_a, building_b = buildings[0], buildings[1]
+
+        # Building A Stats
+        logs_a = AdvocacyLog.objects.filter(building=building_a).count()
+        news_a = BuildingNews.objects.filter(building=building_a).count()
         lines += [
             f"  Building A — {building_a.address} (BIN {building_a.bin})",
-            "  Expected status: VERIFIED DOWN (red badge)",
+            "  Expected status: VERIFIED TRAPPED (red badge)",
+            f"  Features: {logs_a} Advocacy Logs, {news_a} News Articles",
             "",
         ]
         for username, _, password, _, bidx in USERS_TO_SEED:
@@ -255,9 +403,13 @@ class Command(BaseCommand):
                 lines.append(f"    {username:<20} pw: {password}")
         lines.append("")
 
+        # Building B Stats
+        logs_b = AdvocacyLog.objects.filter(building=building_b).count()
+        news_b = BuildingNews.objects.filter(building=building_b).count()
         lines += [
-            f"  Building B — {building_b.address} (BIN {building_b.bin})",
+            f"  Building B — {building_b.address} " f"(BIN {building_b.bin})",
             "  Expected status: UNVERIFIED (amber badge)",
+            f"  Features: {logs_b} Advocacy Logs, {news_b} News Articles",
             "",
         ]
         for username, _, password, _, bidx in USERS_TO_SEED:

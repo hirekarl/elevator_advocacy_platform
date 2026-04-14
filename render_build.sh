@@ -2,13 +2,13 @@
 # exit on error
 set -o errexit
 
-# Install uv if not present
-if ! command -v uv &> /dev/null
+# Install uv if not present or if the Render envwrapper shim is broken
+if ! uv --version &> /dev/null
 then
     echo "Installing uv..."
     curl -LsSf https://astral.sh/uv/install.sh | sh
-    source $HOME/.cargo/env
 fi
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
 
 # Clear Render's injected VIRTUAL_ENV so uv resolves the project's own .venv.
 unset VIRTUAL_ENV

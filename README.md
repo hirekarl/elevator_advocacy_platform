@@ -70,6 +70,15 @@ Accessibility isn't a checklist—it's the reason this exists. To make sure the 
 
 ---
 
+## 🏛️ The Systemic Data Gap: A Barrier to Justice
+Accessibility isn't just about screen readers and high contrast; it’s about **access to the truth.** In NYC, the data that should protect tenants is often locked behind the same kind of bureaucratic gatekeeping that keeps an elevator broken for months.
+
+- **The "API Rite of Passage"**: Even in 2026, a developer building a tool for their community must wait days for a "Geoclient" API key to be manually approved. This is a digital mirror of the slow-walked "DOB Inquiry" that tenants face. While the MTA processes OMNY swipes in milliseconds, our city's residential infrastructure data still moves at the speed of a paper filing.
+- **The Real-Time Myth**: The NYC Open Data (SODA) API is a vital resource, but it is nowhere near real-time. This lag means that by the time an official complaint shows up in a city database, a senior has already been trapped on the 10th floor for 48 hours. 
+- **Our Response**: We don't wait for the city to catch up. By using **NYC Planning GeoSearch fallbacks** and our **2-Hour Consensus Engine**, we create our own source of truth. We believe that in an age of instant data, there is no excuse for residential elevators not to have transparent, actionable, and immediate data reporting for the public.
+
+---
+
 ## 💻 Tech Stack
 I chose these tools to keep the platform fast, secure, and easy to maintain:
 

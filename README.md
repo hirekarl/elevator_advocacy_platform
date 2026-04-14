@@ -108,4 +108,4 @@ I maintain high professional standards for this codebase:
 - **UI/UX**: I use intentional empty states and visual pulsing for unverified data. No raw 0s are displayed for empty datasets.
 
 
-For detailed developer instructions, please refer to [GEMINI.md](./GEMINI.md) and [project_spec.md](./project_spec.md).
+For detailed developer instructions, please refer to [GEMINI.md](./GEMINI.md) and [docs/spec.md](./docs/spec.md).

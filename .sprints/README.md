@@ -1,6 +1,7 @@
-# .roadmap/ Registry
+# .sprints/ Registry
 
-## Status
+## Phase completion status
+
 - **Phase 1 (Bootstrapping):** [Completed] - Command Center and Protocols established.
 - **Phase 2 (MVP v1: Verification Engine):** [Completed] - Consensus logic and SODA integration.
 - **Phase 3 (Predictive AI):** [Completed] - Maintenance forecasting and Risk metrics.
@@ -8,13 +9,15 @@
 - **Phase 5 (Local News Integration):** [Completed] - AI-driven news extraction and media timelines.
 - **Phase 6 (Multi-Agent Analysis):** [Completed] - Supervisor-Worker system for building summaries.
 
-- [Phase 3 (Predictive AI):](completed/): Completed.
-- [Phase 4 (Deployment):](proposals/deployment.md): Completed.
-- [Phase 5 (Local News Integration):](proposals/news_integration.md): Completed.
-- [Phase 6 (Multi-Agent Analysis):](completed/): Completed.
-
 ## Navigation
-- [Advocacy](proposals/advocacy/): Community outreach, legislative briefing, and pilot strategy.
-- [Technical](proposals/technical/): Infrastructure, API integration, and MVP specifications.
-- [Completed](completed/): Archived roadmap items.
-- [Sprints](sprints/): Active and historical sprint logs.
+
+- [Archive](archive/): Completed sprints and phases.
+- [Active](active/): Current sprint (in-progress work).
+- [Handoffs](handoffs/): Session handoff notes.
+- [Incidents](incidents/): Bug reports and incident logs.
+- [Remediation](remediation/): Remediation plans.
+- [Seeds](seeds/): Test user credentials and seed data.
+
+## Related
+
+- Advocacy and technical proposals moved to [docs/](../docs/README.md)

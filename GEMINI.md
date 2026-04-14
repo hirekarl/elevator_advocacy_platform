@@ -21,8 +21,8 @@ Store this as `SESSION_OS` (either `macos` or `windows`). **Every specialist inv
 
 When invoking any specialist, include all three of these in the subagent prompt:
 1. Their definition file: `.gemini/agents/[name].md`
-2. Their working memory: `.agents/[name]/memory.md` (if it exists and is non-empty)
-3. Their feedback log: `.agents/[name]/feedback.md` (if it exists and is non-empty)
+2. Their working memory: `.claude/agents/memory/[name].md` (if it exists and is non-empty)
+3. Their feedback log: `.claude/agents/feedback/[name].md` (if it exists and is non-empty)
 
 This is the briefing packet. Specialists have no session memory — without it, they repeat past mistakes.
 
@@ -127,4 +127,4 @@ To maintain surgical precision without redundant web-fetching:
 │   ├── services/       # Decoupled API wrappers
 │   └── buildings/      # Core models and tasks
 ├── frontend/           # React 19 + Vite
-└── project_spec.md     # Technical reference
+└── docs/spec.md        # Technical reference

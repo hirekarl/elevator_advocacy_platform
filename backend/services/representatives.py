@@ -1,24 +1,13 @@
-import json
-import os
-from typing import Dict, Any, Optional
+from typing import Any, Dict
+
+from buildings_app.models import CouncilDistrict
+
 
 class RepresentativeService:
     """
     Service for fetching NYC Representative contact information.
-    Uses a local JSON mapping for all 51 City Council districts.
+    Uses the database-backed CouncilDistrict model for all 51 districts.
     """
-
-    def __init__(self):
-        self.data_path = os.path.join(os.path.dirname(__file__), 'nyc_council_districts.json')
-        self._mapping = {}
-        self._load_mapping()
-
-    def _load_mapping(self):
-        try:
-            with open(self.data_path, 'r') as f:
-                self._mapping = json.load(f)
-        except Exception as e:
-            print(f"Error loading NYC Council mapping: {e}")
 
     def get_representative_for_address(self, address: str) -> Dict[str, Any]:
         """
@@ -29,24 +18,29 @@ class RepresentativeService:
             "title": "Representative",
             "email": "council@council.nyc.gov",
             "phone": "212-788-7100",
-            "district": "NYC"
+            "district": "NYC",
         }
 
     def get_member_by_district(self, district_id: str) -> Dict[str, Any]:
         """
-        Fetches City Council member details by district ID string.
+        Fetches City Council member details by district ID from the database.
         """
+        if not district_id:
+            return self.get_representative_for_address("")
+
         # Clean the district ID (remove leading zeros)
-        clean_id = str(int(district_id)) if district_id and district_id.isdigit() else district_id
+        clean_id = (
+            str(int(district_id)) if district_id and district_id.isdigit() else district_id
+        )
 
-        if clean_id in self._mapping:
-            member = self._mapping[clean_id]
+        try:
+            district = CouncilDistrict.objects.get(district_id=clean_id)
             return {
-                "name": member.get("name"),
+                "name": district.member_name,
                 "title": f"Council Member (District {clean_id})",
-                "email": member.get("email"),
-                "phone": member.get("phone"),
-                "district": clean_id
+                "email": district.email,
+                "phone": district.phone,
+                "district": clean_id,
             }
-
-        return self.get_representative_for_address("")
+        except CouncilDistrict.DoesNotExist:
+            return self.get_representative_for_address("")

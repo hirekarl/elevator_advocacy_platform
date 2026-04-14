@@ -142,3 +142,24 @@ class AdvocacyLog(models.Model):
 
     def __str__(self) -> str:
         return f"SR {self.sr_number} at {self.building.address}"
+
+
+class CouncilDistrict(models.Model):
+    """
+    Stores NYC Council District information and current member contact details.
+    Updated periodically via the Councilmatic API.
+    """
+
+    district_id = models.CharField(max_length=10, primary_key=True)
+    member_name = models.CharField(max_length=100)
+    email = models.EmailField(null=True, blank=True)
+    phone = models.CharField(max_length=20, null=True, blank=True)
+    last_synced = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Council District"
+        verbose_name_plural = "Council Districts"
+        ordering = ["district_id"]
+
+    def __str__(self) -> str:
+        return f"District {self.district_id}: {self.member_name}"

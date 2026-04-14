@@ -1,4 +1,4 @@
-# MVP Pitch Script: The Elevator Advocacy Platform
+# MVP Pitch Script: Elevator Advocate
 **Goal:** 2–3 Minute Direct-to-Camera Video
 **Tone:** Conversational, Urgent, Resilient (The "Fellow New Yorker" voice)
 
@@ -22,7 +22,7 @@ Right now, their only hope is to 'hope and pray' that management feels like fixi
 
 "I’m a software engineer and an AI-Native fellow at Pursuit. And I realized that while I can't personally fix a broken motor, I *can* fix the information gap that lets management get away with this. 
 
-I’m building the **Elevator Advocacy Platform**. 
+I’m building **Elevator Advocate**. 
 
 It’s simple: one button. When the elevator goes down, a tenant pushes a button. In real-time, every neighbor, every family member, and every care provider knows the status. 
 

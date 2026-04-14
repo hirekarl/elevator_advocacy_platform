@@ -30,7 +30,7 @@ export function AppNavbar({
           className="d-flex align-items-center gap-2"
         >
           <span className="brand-mark" aria-hidden="true">▲</span>
-          ELEVATOR ADVOCACY
+          ELEVATOR ADVOCATE
         </Navbar.Brand>
         <div className="d-flex align-items-center ms-auto">
           <Button

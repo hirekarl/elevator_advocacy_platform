@@ -8,7 +8,7 @@
 ---
 
 ### **1. Executive Summary: The "Loss of Service" Crisis**
-Residents at this address are experiencing a systemic failure in elevator reliability. Using verified data from the **Elevator Advocacy Platform**, we have quantified the impact on tenant safety and accessibility.
+Residents at this address are experiencing a systemic failure in elevator reliability. Using verified data from **Elevator Advocate**, we have quantified the impact on tenant safety and accessibility.
 
 **Building Status Metrics (Last 30 Days):**
 - **Loss of Service (LoS) %:** [INSERT LoS %]
@@ -33,7 +33,7 @@ Based on this data, we recommend the following immediate legislative and constit
 
 ---
 
-### **4. About the Elevator Advocacy Platform**
+### **4. About Elevator Advocate**
 We are a data-driven advocacy tool that empowers tenants to hold landlords and the city accountable through transparent metrics and real-time reporting.
 
 **Contact Us:** [INSERT YOUR CONTACT INFO]

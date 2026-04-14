@@ -1,7 +1,7 @@
-# Proposal: District 17 Elevator Advocacy Pilot (Bronx)
+# Proposal: Elevator Advocate — District 17 Pilot (Bronx)
 
 ## Overview
-A strategic pilot program to deploy the Elevator Advocacy Platform in NYC Council District 17 (Rep. Justin Sanchez), focusing on high-density residential corridors in Port Morris, Mott Haven, and Melrose.
+A strategic pilot program to deploy Elevator Advocate in NYC Council District 17 (Rep. Justin Sanchez), focusing on high-density residential corridors in Port Morris, Mott Haven, and Melrose.
 
 ## Strategic Partners (Institutional Sponsorship)
 

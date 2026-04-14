@@ -1,5 +1,5 @@
-# NYC Tenant Elevator Advocacy Platform
-## "Dignity Through Data"
+# Elevator Advocate
+## NYC Tenant Elevator Advocacy Platform · "Dignity Through Data"
 
 Hi, I’m **Karl Johnson**, a resident of District 17 in the Bronx. I am building this platform as a gift of service to my community—born from the daily reality of watching my neighbors, many of whom are seniors or rely on wheelchairs, rendered immobile and oppressed by failing elevators.
 

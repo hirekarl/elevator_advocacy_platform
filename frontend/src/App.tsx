@@ -88,7 +88,7 @@ function MainDashboard() {
   return (
     <Container fluid className="p-0 bg-light min-vh-100">
       <header>
-        <h1 className="visually-hidden">Elevator Advocacy Platform</h1>
+        <h1 className="visually-hidden">Elevator Advocate</h1>
       </header>
       <a
         href="#main-content"

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { HeroSearch } from '../HeroSearch';
 import { BuildingsMap } from '../BuildingsMap';
 import { PrimaryBuildingBanner } from './PrimaryBuildingBanner';
+import { AdvocacySections } from './AdvocacySections';
 
 interface LandingPageProps {
   onSearch: (e?: React.FormEvent) => void;
@@ -67,7 +68,9 @@ export function LandingPage({
             <strong>{t('welcome_back')}, {username}.</strong> {t('set_primary_prompt')}
           </Alert>
         )}
+      </div>
 
+      <div className="container pb-5 px-3">
         <Row className="mt-4 mt-md-5">
           <Col md={12} lg={10} className="mx-auto text-center mb-5">
             <h2 className="fw-bold mb-4 px-3 fs-3 fs-md-2">{t('explore_outages')}</h2>
@@ -77,6 +80,8 @@ export function LandingPage({
           </Col>
         </Row>
       </div>
+
+      <AdvocacySections />
     </>
   );
 }

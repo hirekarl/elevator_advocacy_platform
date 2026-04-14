@@ -1,4 +1,4 @@
-# Project Journal: Elevator Advocacy Platform
+# Project Journal: Elevator Advocate
 
 This journal tracks high-level reflections, architectural shifts, and civic-technical milestones.
 

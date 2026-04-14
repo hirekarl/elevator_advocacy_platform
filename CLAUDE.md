@@ -86,7 +86,7 @@ Include the relevant leaf-file contents in the specialist's task prompt.
 
 ## Project Overview
 
-NYC tenant elevator advocacy platform. Tenants search an address, get a BIN (Building Identification Number), see elevator complaint history from NYC Open Data, and submit status reports. Two independently-submitted matching reports within a 2-hour rolling window trigger "VERIFIED" status. Includes loss-of-service metrics, predictive failure risk scoring, and news intelligence.
+**Elevator Advocate** — NYC tenant elevator advocacy app. Tenants search an address, get a BIN (Building Identification Number), see elevator complaint history from NYC Open Data, and submit status reports. Two independently-submitted matching reports within a 2-hour rolling window trigger "VERIFIED" status. Includes loss-of-service metrics, predictive failure risk scoring, and news intelligence.
 
 ## Tech Stack
 

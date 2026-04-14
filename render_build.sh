@@ -26,3 +26,11 @@ if [ -n "$SEED_ADMIN_PASSWORD" ] && [ -n "$SEED_USER_PASSWORD" ]; then
 else
     echo "Skipping seed_users — SEED_ADMIN_PASSWORD or SEED_USER_PASSWORD not set."
 fi
+
+# Sync NYC Council member data
+echo "Syncing NYC Council members..."
+uv run python -c "
+from buildings_app.tasks import sync_council_members
+result = sync_council_members.enqueue()
+print(result)
+"

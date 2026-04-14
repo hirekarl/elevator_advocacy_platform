@@ -46,35 +46,7 @@ services:
       - key: USE_MOCK_SERPAPI
         value: "False"
 
-  # 2. Django Task Worker
-  - type: worker
-    name: elevator-advocate-worker
-    env: python
-    buildCommand: "./render_build.sh"
-    startCommand: "backend/.venv/bin/python backend/manage.py runworker"
-    envVars:
-      - key: PYTHON_VERSION
-        value: "3.12"
-      - key: DATABASE_URL
-        fromDatabase:
-          name: elevator-advocate-db
-          property: connectionString
-      - key: DJANGO_DEBUG
-        value: "False"
-      - key: CORS_ALLOWED_ORIGINS
-        value: "http://localhost:5173,https://elevator-advocate-frontend.onrender.com"
-      - key: CSRF_TRUSTED_ORIGINS
-        value: "http://localhost:5173,https://elevator-advocate-frontend.onrender.com"
-      - key: DJANGO_TIME_ZONE
-        value: "America/New_York"
-      - key: GEMINI_API_KEY
-        sync: false
-      - key: SERPAPI_KEY
-        sync: false
-      - key: USE_MOCK_SERPAPI
-        value: "False"
-
-  # 3. React Frontend
+  # 2. React Frontend
   - type: web
     name: elevator-advocate-frontend
     env: static

@@ -31,6 +31,20 @@ services:
         sync: false
       - key: SEED_USER_PASSWORD
         sync: false
+      - key: DJANGO_TIME_ZONE
+        value: "America/New_York"
+      - key: NYC_API_KEY
+        sync: false
+      - key: SODA_APP_TOKEN
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: SERPAPI_KEY
+        sync: false
+      - key: USE_MOCK_GEOCLIENT
+        value: "False"
+      - key: USE_MOCK_SERPAPI
+        value: "False"
 
   # 2. Django Task Worker
   - type: worker
@@ -51,7 +65,14 @@ services:
         value: "http://localhost:5173,https://elevator-advocate-frontend.onrender.com"
       - key: CSRF_TRUSTED_ORIGINS
         value: "http://localhost:5173,https://elevator-advocate-frontend.onrender.com"
-
+      - key: DJANGO_TIME_ZONE
+        value: "America/New_York"
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: SERPAPI_KEY
+        sync: false
+      - key: USE_MOCK_SERPAPI
+        value: "False"
 
   # 3. React Frontend
   - type: web

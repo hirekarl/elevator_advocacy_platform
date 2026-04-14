@@ -10,9 +10,6 @@ then
 fi
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
 
-# Allow uv to download a managed Python if the system doesn't have the required version.
-export UV_PYTHON_DOWNLOADS=auto
-
 # Clear Render's injected VIRTUAL_ENV so uv resolves the project's own .venv.
 unset VIRTUAL_ENV
 

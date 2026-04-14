@@ -6,6 +6,8 @@ services:
     buildCommand: "./render_build.sh"
     startCommand: "gunicorn --chdir backend config.wsgi"
     envVars:
+      - key: PYTHON_VERSION
+        value: "3.12"
       - key: DATABASE_URL
         fromDatabase:
           name: elevator-advocate-db
@@ -37,6 +39,8 @@ services:
     buildCommand: "./render_build.sh"
     startCommand: "python backend/manage.py runworker"
     envVars:
+      - key: PYTHON_VERSION
+        value: "3.12"
       - key: DATABASE_URL
         fromDatabase:
           name: elevator-advocate-db

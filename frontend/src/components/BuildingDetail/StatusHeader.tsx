@@ -1,6 +1,7 @@
 import { Card, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import type { Building } from '../../types';
+import { API_BASE } from '../../utils/api';
 
 interface StatusHeaderProps {
   buildingData: Building;
@@ -41,7 +42,7 @@ export function StatusHeader({
               className="rounded-pill px-3 fw-bold"
               onClick={async () => {
                 try {
-                  const res = await fetch('http://localhost:8000/api/auth/set_primary_building/', {
+                  const res = await fetch(`${API_BASE}/api/auth/set_primary_building/`, {
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json',

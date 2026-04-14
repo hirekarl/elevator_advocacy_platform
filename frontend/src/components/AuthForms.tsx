@@ -3,6 +3,7 @@ import { Form, Button, Alert, Card } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
 import type { AuthSuccessData } from '../types';
+import { API_BASE } from '../utils/api';
 
 interface AuthFormsProps {
   onSuccess: (data: AuthSuccessData) => void;
@@ -21,7 +22,7 @@ export function SignupForm({ onSuccess }: AuthFormsProps) {
     setStatus(null);
 
     try {
-      const response = await fetch('/api/auth/signup/', {
+      const response = await fetch(`${API_BASE}/api/auth/signup/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -47,7 +48,7 @@ export function SignupForm({ onSuccess }: AuthFormsProps) {
     setStatus(null);
 
     try {
-      const response = await fetch('/api/auth/login/', {
+      const response = await fetch(`${API_BASE}/api/auth/login/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: formData.username, password: formData.password })

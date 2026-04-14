@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { AuthSuccessData } from '../types';
+import { API_BASE } from '../utils/api';
 
 export function useAuth() {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ export function useAuth() {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          const response = await fetch('http://localhost:8000/api/auth/whoami/', {
+          const response = await fetch(`${API_BASE}/api/auth/whoami/`, {
             headers: { 'Authorization': `Token ${token}` }
           });
           if (response.ok) {

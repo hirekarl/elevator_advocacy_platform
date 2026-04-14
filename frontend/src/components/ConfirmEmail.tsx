@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Container, Alert, Spinner, Card } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import { API_BASE } from '../utils/api';
 
 export function ConfirmEmail() {
   const { uid, token } = useParams();
@@ -12,7 +13,7 @@ export function ConfirmEmail() {
   useEffect(() => {
     const confirm = async () => {
       try {
-        const response = await fetch('/api/auth/confirm_email/', {
+        const response = await fetch(`${API_BASE}/api/auth/confirm_email/`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ uid, token })

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Building, AdvocacyScript, ExecutiveSummary, OptimisticReport } from '../types';
+import { API_BASE } from '../utils/api';
 
 interface UseBuildingAdvocacyProps {
   buildingData: Building;
@@ -42,7 +43,7 @@ export function useBuildingAdvocacy({
   const fetchAdvocacyScript = useCallback(async () => {
     setIsLoadingScript(true);
     try {
-      const response = await fetch(`http://localhost:8000/api/buildings/${buildingData.bin}/advocacy_script/?lang=${i18n.language}`);
+      const response = await fetch(`${API_BASE}/api/buildings/${buildingData.bin}/advocacy_script/?lang=${i18n.language}`);
       if (response.ok) {
         const data = await response.json();
         setAdvocacyScript(data);
@@ -57,7 +58,7 @@ export function useBuildingAdvocacy({
   const fetchExecutiveSummary = useCallback(async () => {
     setIsLoadingSummary(true);
     try {
-      const response = await fetch(`http://localhost:8000/api/buildings/${buildingData.bin}/advocacy_summary/?lang=${i18n.language}`);
+      const response = await fetch(`${API_BASE}/api/buildings/${buildingData.bin}/advocacy_summary/?lang=${i18n.language}`);
       if (response.ok) {
         const data = await response.json();
         setExecutiveSummary(data);
@@ -95,7 +96,7 @@ export function useBuildingAdvocacy({
     }
 
     try {
-      const res = await fetch(`http://localhost:8000/api/buildings/${buildingData.bin}/report_status/`, {
+      const res = await fetch(`${API_BASE}/api/buildings/${buildingData.bin}/report_status/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -123,7 +124,7 @@ export function useBuildingAdvocacy({
     const token = localStorage.getItem('token');
 
     try {
-      const res = await fetch(`http://localhost:8000/api/buildings/${buildingData.bin}/log_advocacy_action/`, {
+      const res = await fetch(`${API_BASE}/api/buildings/${buildingData.bin}/log_advocacy_action/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -152,7 +153,7 @@ export function useBuildingAdvocacy({
     if (!token) return triggerToast(t('login_required'), 'warning');
     setIsRefreshingNews(true);
     try {
-      const res = await fetch(`http://localhost:8000/api/buildings/${buildingData.bin}/refresh_news/`, {
+      const res = await fetch(`${API_BASE}/api/buildings/${buildingData.bin}/refresh_news/`, {
         method: 'POST',
         headers: { 'Authorization': `Token ${token}` }
       });

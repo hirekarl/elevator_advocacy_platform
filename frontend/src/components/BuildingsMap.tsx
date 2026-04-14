@@ -4,6 +4,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Badge, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import { API_BASE } from '../utils/api';
 
 // Fix for default marker icons in React Leaflet
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
@@ -40,7 +41,7 @@ export function BuildingsMap({ onBuildingSelect }: BuildingsMapProps) {
   const [buildings, setBuildings] = useState<MapBuilding[]>([]);
 
   useEffect(() => {
-    fetch('/api/buildings/map/')
+    fetch(`${API_BASE}/api/buildings/map/`)
       .then(res => res.json())
       .then(data => setBuildings(data))
       .catch(err => console.error("Map Fetch Error:", err));

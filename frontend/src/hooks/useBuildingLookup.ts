@@ -2,6 +2,7 @@ import { useState, useTransition, useCallback, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import type { Building } from '../types';
+import { API_BASE } from '../utils/api';
 
 export function useBuildingLookup(primaryBuildingBin: string | null) {
   const { bin } = useParams();
@@ -20,7 +21,7 @@ export function useBuildingLookup(primaryBuildingBin: string | null) {
   const fetchBuilding = useCallback((binId: string) => {
     startTransition(async () => {
       try {
-        const response = await fetch(`http://localhost:8000/api/buildings/${binId}/`);
+        const response = await fetch(`${API_BASE}/api/buildings/${binId}/`);
         if (response.ok) {
           const data = await response.json();
           setActiveBuilding(data);
@@ -43,7 +44,7 @@ export function useBuildingLookup(primaryBuildingBin: string | null) {
 
   useEffect(() => {
     if (primaryBuildingBin && !bin) {
-      fetch(`http://localhost:8000/api/buildings/${primaryBuildingBin}/`)
+      fetch(`${API_BASE}/api/buildings/${primaryBuildingBin}/`)
         .then(res => res.ok ? res.json() : null)
         .then(data => { if (data) setPrimaryBuildingStatus(data.verified_status ?? null); })
         .catch(() => {});
@@ -61,7 +62,7 @@ export function useBuildingLookup(primaryBuildingBin: string | null) {
         const { house_number, street, borough } = searchData;
         if (!house_number || !street) return;
         const query = new URLSearchParams({ house_number, street, borough }).toString();
-        const response = await fetch(`http://localhost:8000/api/buildings/lookup/?${query}`);
+        const response = await fetch(`${API_BASE}/api/buildings/lookup/?${query}`);
 
         if (response.ok) {
           const data = await response.json();

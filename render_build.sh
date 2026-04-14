@@ -18,3 +18,11 @@ cd backend
 uv sync --frozen
 uv run python manage.py collectstatic --no-input
 uv run python manage.py migrate
+
+# Seed initial user accounts if credentials are configured
+if [ -n "$SEED_ADMIN_PASSWORD" ] && [ -n "$SEED_USER_PASSWORD" ]; then
+    echo "Seeding initial user accounts..."
+    uv run python manage.py seed_users
+else
+    echo "Skipping seed_users — SEED_ADMIN_PASSWORD or SEED_USER_PASSWORD not set."
+fi

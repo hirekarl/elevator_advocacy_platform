@@ -21,6 +21,14 @@ services:
         generateValue: true
       - key: DJANGO_ALLOWED_HOSTS
         value: "elevator-advocacy-api.onrender.com,localhost,127.0.0.1" # Update after first deploy with actual domain
+      - key: SEED_ADMIN_USERNAME
+        value: "admin"
+      - key: SEED_ADMIN_EMAIL
+        value: "admin@elevatoradvocate.nyc"
+      - key: SEED_ADMIN_PASSWORD
+        sync: false
+      - key: SEED_USER_PASSWORD
+        sync: false
 
   # 2. Django Task Worker
   - type: worker

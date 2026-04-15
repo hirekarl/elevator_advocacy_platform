@@ -13,6 +13,9 @@
     <meta name="keywords" content="NYC elevator outage, NYCHA elevator down, broken elevator New York City, tenant advocacy NYC, report elevator 311, housing accountability NYC, Loss of Service metric, elevator tracking public housing, NYC Council district housing data, NYCHA elevator repair, Bronx housing advocacy, tenant rights New York" />
     <meta name="author" content="Karl Johnson" />
     <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0d1b2a" />
+    <link rel="canonical" href="https://elevatoradvocate.nyc" />
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
 
     <!-- Open Graph (social sharing + LinkedIn preview) -->
     <meta property="og:type" content="website" />
@@ -24,6 +27,7 @@
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:alt" content="Elevator Advocate — Real-time NYC elevator outage tracking for tenants" />
     <meta property="og:locale" content="en_US" />
 
     <!-- Twitter / X Card -->
@@ -79,7 +83,55 @@
           "@type": "Audience",
           "audienceType": "Housing court advocates and legal aid attorneys"
         }
-      ]
+      ],
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://api.elevatoradvocate.nyc/api/buildings/lookup/?house_number={house_number}&street={street}&borough={borough}"
+        },
+        "query-input": [
+          "required name=house_number",
+          "required name=street",
+          "required name=borough"
+        ]
+      }
+    }
+    </script>
+
+    <!-- Structured Data: Dataset -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Dataset",
+      "name": "NYC Elevator Outage Reports",
+      "description": "Crowd-verified elevator outage reports for NYC residential buildings, cross-referenced with NYC Department of Buildings complaint history. Reports achieve verified status via 2-hour consensus from independent tenant submissions.",
+      "url": "https://elevatoradvocate.nyc",
+      "creator": {
+        "@type": "Person",
+        "name": "Karl Johnson",
+        "sameAs": [
+          "https://www.linkedin.com/in/hirekarl",
+          "https://github.com/hirekarl"
+        ]
+      },
+      "license": "https://creativecommons.org/licenses/by/4.0/",
+      "isAccessibleForFree": true,
+      "keywords": [
+        "elevator outage", "NYC housing", "tenant advocacy",
+        "NYCHA", "Loss of Service", "DOB complaints", "Building Identification Number"
+      ],
+      "spatialCoverage": {
+        "@type": "City",
+        "name": "New York City",
+        "sameAs": "https://www.wikidata.org/wiki/Q60"
+      },
+      "temporalCoverage": "2024/..",
+      "distribution": {
+        "@type": "DataDownload",
+        "encodingFormat": "application/json",
+        "contentUrl": "https://api.elevatoradvocate.nyc/api/buildings/map/"
+      }
     }
     </script>
   </head>

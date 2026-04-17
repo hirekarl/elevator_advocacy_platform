@@ -181,13 +181,57 @@ function MainDashboard() {
   );
 }
 
+function DataPage() {
+  const { i18n } = useTranslation();
+
+  const {
+    isLoggedIn,
+    username,
+    showAuthModal,
+    setShowAuthModal,
+    showGuide,
+    setShowGuide,
+    handleLogout,
+    handleAuthSuccess
+  } = useAuth();
+
+  const toggleLanguage = () => {
+    const next = i18n.language === 'en' ? 'es' : 'en';
+    i18n.changeLanguage(next);
+    document.documentElement.lang = next;
+  };
+
+  return (
+    <>
+      <AppNavbar
+        isLoggedIn={isLoggedIn}
+        username={username}
+        onLogout={handleLogout}
+        onShowAuthModal={() => setShowAuthModal(true)}
+        onShowGuide={() => setShowGuide(true)}
+        toggleLanguage={toggleLanguage}
+      />
+      <AuthModal
+        show={showAuthModal}
+        onHide={() => setShowAuthModal(false)}
+        onSuccess={handleAuthSuccess}
+      />
+      <UserGuideModal
+        show={showGuide}
+        onHide={() => setShowGuide(false)}
+      />
+      <DataStories />
+    </>
+  );
+}
+
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<MainDashboard />} />
         <Route path="/building/:bin" element={<MainDashboard />} />
-        <Route path="/data" element={<DataStories />} />
+        <Route path="/data" element={<DataPage />} />
         <Route path="/confirm/:uid/:token" element={<ConfirmEmail />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

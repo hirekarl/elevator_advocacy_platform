@@ -1402,3 +1402,230 @@ h1, h2, h3, h4, h5, h6,
 .ds-nav-link:hover {
   color: #fff !important;
 }
+
+/* === ACCESSIBILITY SECTION ============================= */
+.ac-section {
+  background-color: var(--c-ivory);
+  padding: 5rem 0;
+}
+
+.ac-section-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--c-amber-on-light);
+}
+
+.ac-heading {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.4rem, 3.5vw, 2.1rem);
+  letter-spacing: -0.04em;
+  color: var(--c-navy);
+  margin-bottom: 0.75rem;
+}
+
+.ac-subheading {
+  font-family: 'Mulish', sans-serif;
+  font-size: 1rem;
+  color: var(--c-muted);
+  line-height: 1.7;
+  max-width: 580px;
+  margin-bottom: 0;
+}
+
+/* Martha card */
+.ac-martha-card {
+  background-color: var(--c-white);
+  border-left: 4px solid var(--c-navy);
+  border-radius: 0;
+  padding: 1.5rem 1.75rem;
+}
+
+.ac-martha-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--c-muted);
+  margin-bottom: 0.35rem;
+}
+
+.ac-martha-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: -0.03em;
+  color: var(--c-navy);
+  margin-bottom: 0.2rem;
+}
+
+.ac-martha-context {
+  font-family: 'Mulish', sans-serif;
+  font-size: 0.85rem;
+  color: var(--c-muted);
+  margin-bottom: 1rem;
+}
+
+.ac-martha-jobs {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+}
+
+.ac-martha-jobs li {
+  font-family: 'Mulish', sans-serif;
+  font-size: 0.9rem;
+  color: var(--c-text);
+  padding: 0.3rem 0;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.ac-martha-jobs li::before {
+  content: '→';
+  color: var(--c-navy);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.ac-martha-note {
+  font-family: 'Mulish', sans-serif;
+  font-size: 0.82rem;
+  font-style: italic;
+  color: var(--c-muted);
+  line-height: 1.6;
+  margin-bottom: 0;
+  border-top: 1px solid var(--c-border);
+  padding-top: 0.85rem;
+}
+
+/* Scores card */
+.ac-scores-card {
+  background-color: var(--c-white);
+  padding: 1.5rem 1.75rem;
+  border-radius: 0;
+}
+
+.ac-scores-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--c-muted);
+  margin-bottom: 1rem;
+}
+
+.ac-score-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.ac-score-item:last-of-type {
+  margin-bottom: 0;
+}
+
+.ac-score-num {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 2.6rem;
+  line-height: 1;
+  color: var(--c-navy);
+  letter-spacing: -0.04em;
+}
+
+.ac-score-item--perfect .ac-score-num {
+  color: var(--c-amber-on-light);
+}
+
+.ac-score-denom {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--c-muted);
+  margin-right: 0.5rem;
+}
+
+.ac-score-desc {
+  font-family: 'Mulish', sans-serif;
+  font-size: 0.82rem;
+  color: var(--c-muted);
+}
+
+.ac-scores-note {
+  font-family: 'Mulish', sans-serif;
+  font-size: 0.78rem;
+  color: var(--c-muted);
+  font-style: italic;
+  margin-top: 1rem;
+  margin-bottom: 0;
+  border-top: 1px solid var(--c-border);
+  padding-top: 0.75rem;
+}
+
+/* Methods card */
+.ac-methods-card {
+  background-color: var(--c-white);
+  padding: 1.5rem 1.75rem;
+  border-radius: 0;
+}
+
+.ac-methods-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--c-muted);
+  margin-bottom: 1rem;
+}
+
+.ac-methods-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.25rem;
+}
+
+.ac-methods-list li {
+  font-family: 'Mulish', sans-serif;
+  font-size: 0.88rem;
+  color: var(--c-text);
+  padding: 0.25rem 0;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.ac-method-check {
+  color: var(--c-amber-on-light);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.ac-test-count {
+  border-top: 1px solid var(--c-border);
+  padding-top: 0.85rem;
+}
+
+.ac-test-num {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 3rem;
+  line-height: 1;
+  color: var(--c-navy);
+  letter-spacing: -0.04em;
+}
+
+.ac-test-label {
+  font-family: 'Mulish', sans-serif;
+  font-size: 0.78rem;
+  color: var(--c-muted);
+  margin-top: 0.25rem;
+}

@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { AccessibilitySection } from './AccessibilitySection';
 
 export function AdvocacySections() {
   const { t } = useTranslation();
@@ -134,7 +135,10 @@ export function AdvocacySections() {
         </div>
       </section>
 
-      {/* Section 4: Movement Timeline */}
+      {/* Section 4: Accessibility */}
+      <AccessibilitySection />
+
+      {/* Section 5: Movement Timeline */}
       <section className="advocacy-section advocacy-movement" aria-label="The tenant justice movement">
         <div className="container">
           <div className="text-center mb-5">

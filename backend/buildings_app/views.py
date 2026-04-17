@@ -404,6 +404,39 @@ class BuildingViewSet(viewsets.ReadOnlyModelViewSet[Building]):
             }
         )
 
+    @action(
+        detail=False,
+        methods=["get"],
+        permission_classes=[permissions.AllowAny],
+        url_path="city-stats",
+    )
+    def city_stats(self, request) -> Response:  # type: ignore[override]
+        """
+        Returns aggregated city-wide elevator complaint statistics.
+
+        Proxies SODAService.get_city_stats() directly — no serializer needed
+        because the data is already shaped for the frontend. Available to
+        anonymous users; no authentication required.
+
+        Returns:
+            A JSON response containing:
+                - total_complaints_12mo: Total complaints across all boroughs
+                  in the last 12 months.
+                - borough_breakdown: List of {name, count, pct} dicts sorted
+                  by count descending.
+                - top_buildings: Up to 15 buildings with highest complaint
+                  volume in the last 12 months.
+                - monthly_current_year: 12-item list of {month, count} dicts
+                  for the current calendar year, Jan through Dec.
+
+            On SODA errors the lists are empty and total is 0 (graceful
+            degradation — never returns 500 for a third-party API failure).
+        """
+        from services.soda import SODAService
+
+        data = SODAService().get_city_stats()
+        return Response(data)
+
     @action(detail=False, methods=["get"])
     def lookup(self, request):
         """

@@ -68,13 +68,39 @@ graph TD
 ---
 
 ## ♿ Accessibility & Inclusive Design: The "Martha-First" Protocol
-Accessibility isn't a checklist—it's the reason this exists. To make sure the platform works for the seniors and residents with mobility impairments who need it most, we design for **"Martha."** She is a 72-year-old neighbor with limited mobility who uses a walker and an older smartphone. If it doesn't work for her, it doesn't work at all.
+Accessibility isn't a checklist—it's the reason this exists. To make sure the platform works for the seniors and residents with mobility impairments who need it most, we design for **"Martha."** She is a 72-year-old neighbor in the Bronx with limited mobility who uses a walker and an older smartphone. If it doesn't work for her, it doesn't work at all. Every design decision is tested against her three jobs: (1) tell neighbors the elevator is down, (2) call 311 to file a complaint, (3) alert her daughter.
 
-- **Martha-First UX**: We prioritize high-contrast text, large touch targets, and full screen-reader support (WCAG 2.2).
-- **Plain-Language Alerts**: We translate technical data like "SODA API Lags" into clear status blocks (e.g., *"Elevator is NOT WORKING. 3 neighbors have confirmed this."*).
-- **Stable Performance**: We use React 19 features like `useOptimistic()` and `Suspense` so the app stays fast and responsive even on slow mobile networks.
-- **Automated Testing**: Our CI/CD pipeline runs **"Martha's Journey"**—a specialized test suite that uses **Playwright + Axe-Core** to verify that critical paths like reporting an outage are fully accessible.
-- **Spanish Internationalization**: A significant portion of residents in District 17 speak Spanish at home. We are providing full Spanish localization to ensure that every neighbor can use these tools with dignity. We are currently seeking qualified volunteers or consultants to audit our translations for idiomatic accuracy and technical clarity.
+### Automated quality proof
+
+We run **Lighthouse CI** on every build targeting two routes:
+
+| Route | Accessibility | SEO | Best Practices |
+|-------|--------------|-----|----------------|
+| `/` (home) | **93 / 100** | 100 / 100 | 96 / 100 |
+| `/data` (data stories) | **100 / 100** | 100 / 100 | 96 / 100 |
+
+Run it yourself:
+```bash
+cd frontend
+npm run build
+npm run lhci
+```
+
+We also run **6 axe-core + Playwright tests** covering "Martha's Journey" scenarios: address search → building detail → status report → VERIFIED confirmation, plus full-page axe scans of the landing page and the `/data` route at rest.
+
+```bash
+cd frontend
+npx playwright test
+```
+
+### WCAG 2.2 AA compliance
+
+All text meets the **4.5:1 contrast ratio** required for small text. A concrete example: we added a `--c-amber-on-light: #9a5a00` design token (4.8:1 on ivory, 5.4:1 on white) specifically because the standard amber (`#E8920A`, 2.96:1 on light backgrounds) fails WCAG on light sections. Every color decision runs through Lighthouse CI before it ships.
+
+- **Martha-First UX**: High-contrast text, large touch targets, full screen-reader support (WCAG 2.2 AA).
+- **Plain-Language Alerts**: Technical data translated into clear status blocks (e.g., *"Elevator is NOT WORKING. 3 neighbors have confirmed this."*).
+- **Stable Performance**: React 19 `useOptimistic()` and `Suspense` keep the app fast on slow mobile networks.
+- **Spanish Internationalization**: Full EN/ES localization. Seeking qualified volunteers to audit translations for idiomatic accuracy.
 
 ---
 
@@ -130,11 +156,11 @@ jupyter lab
 ## 💻 Tech Stack
 I chose these tools to keep the platform fast, secure, and easy to maintain:
 
-- **Backend**: Django 6.0, DRF, PostgreSQL.
-- **Frontend**: React 19, TypeScript, Vite, Tailwind CSS.
+- **Backend**: Django 6.0, Django REST Framework, PostgreSQL.
+- **Frontend**: React 19, TypeScript, Vite, React Bootstrap 5, Leaflet maps, i18next (EN/ES).
 - **Orchestration**: Custom Python multi-agent system (Gemini 2.5 Flash).
 - **Package Management**: `uv` for fast, reproducible Python environments.
-- **Standards**: Strict PEP-8 compliance via **Ruff** and full type-safety.
+- **Standards**: Ruff + mypy for Python; tsc + ESLint for TypeScript; Playwright + axe-core for accessibility.
 
 ---
 

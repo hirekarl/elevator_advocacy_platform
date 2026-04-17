@@ -9,20 +9,23 @@
 
 Dear Councilmember Sanchez,
 
-My name is Karl Johnson. I’m a resident here in District 17 and a fellow at Pursuit. I’m writing to you today not just as a constituent, but as someone who has watched my neighbors—seniors who rely on walkers and parents with young children—be rendered immobile and trapped when the elevators in our buildings fail. 
+My name is Karl Johnson. I’m a resident here in District 17 and a fellow at Pursuit. I’m writing to you today not just as a constituent, but as someone who has watched my neighbors—seniors who rely on walkers and parents with young children—be rendered immobile and trapped when the elevators in our buildings fail.
 
-In our district, a broken elevator is more than a maintenance delay; it is a crisis of mobility and dignity. I’ve built a platform called **Elevator Advocate** to turn these daily frustrations into the hard data we need for collective advocacy and survival. It is now live and ready for a demo at: **https://www.elevatoradvocate.nyc**
+I’ve put together a short video showing exactly what that looks like — and what I’ve built to address it. I’d be grateful if you gave it two minutes:
 
-**The platform provides a suite of tools designed for self-advocacy:**
+**[VIDEO LINK]**
 
-*   **Logging & Outage History:** A simple interface for neighbors to log outages and review a building’s verified history. This creates a record that landlords cannot ignore.
-*   **Actionable AI-Powered Advocacy:** Even a senior citizen using an older smartphone can generate AI-enhanced 311 scripts and advocacy emails tailored to their specific building’s issues.
-*   **Safety & Support Networks:** The app includes tools for tracking 311 contacts and instantly reaching out to family and neighbors to let them know when help is needed because the elevator is down.
-*   **The 2-Hour Consensus Rule:** We don’t wait for official city data, which often lags behind reality. An outage is "Verified" on our platform as soon as two different neighbors report it within a two-hour window.
+In District 17, a broken elevator is more than a maintenance delay; it is a crisis of mobility and dignity. And the timing of this letter is not accidental: an analysis of NYC’s own complaint data shows that elevator failures spike every summer, with July averaging **33% more complaints** than the rest of the year. For the rent-stabilized and NYCHA buildings in Port Morris, Mott Haven, and Melrose, that window is weeks away.
 
-Our goal is simple: **Close the information gap between residents and property owners.** When we move from anecdotes to evidence, we make sure landlords treat accessibility as a fundamental right, not a suggestion.
+The platform in the video is called **Elevator Advocate**. It turns these seasonal crises into hard, actionable data:
 
-I would love to give you or your housing team a brief walkthrough of how we are mapping building outages across the district and how this data can support your office's advocacy for Bronx tenants.
+*   **Verified Outage History:** Neighbors log outages in real time. Two independent reports within two hours creates a verified record — one that management cannot dismiss and that holds up in Housing Court.
+*   **One-Tap Advocacy:** Any tenant, on any phone, can generate a 311 script or a direct email to your office tailored to their building’s specific complaint history.
+*   **Safety Networks:** When the elevator goes down, the app immediately alerts family members and neighbors — so no one is left stranded and alone on their floor.
+
+Our goal is simple: **close the information gap between residents and property owners.** Community organizations already doing this work in District 17 — including CASA and Mothers on the Move — are natural partners for a pilot here.
+
+I would love to give you or your housing team a brief live walkthrough before summer arrives. This data belongs to your constituents, and I’d like to put it to work for them.
 
 Thank you for your service to our community. I look forward to hearing from you.
 

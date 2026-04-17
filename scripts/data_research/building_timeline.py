@@ -3,18 +3,18 @@ building_timeline.py — One Building's Full Story
 
 Narrative: "This isn't a one-time problem. Look at the pattern."
 
-Shows every complaint on record for a specific address: date, category code,
-and an annual summary. Use this when you have a building to spotlight — in a
-council briefing, a press pitch, or as evidence in Housing Court.
+Shows every complaint on record for a specific address: date, category, and
+annual summary. Use this to spotlight a building in a council briefing, a
+press pitch, or as evidence in Housing Court.
 
 Usage:
-    python building_timeline.py --address "341 EAST 162 ST" --borough bronx
-    python building_timeline.py --address "150 LEFFERTS AVE" --borough brooklyn
-    python building_timeline.py --address "1150 TIFFANY ST" --borough bronx
-    python building_timeline.py --address "509 WEST 155 ST" --borough manhattan
+    python building_timeline.py --number 341 --street "EAST 162 STREET" --cb 203
+    python building_timeline.py --number 150 --street "LEFFERTS AVENUE" --cb 309
+    python building_timeline.py --number 1016 --street "BRYANT AVENUE" --cb 202
+    python building_timeline.py --bin 2034290
 
-Address must match SODA format: uppercase, abbreviated street type
-(ST, AVE, BLVD, etc.). Use quotes around the address.
+Address must use SODA format: uppercase, no house number in --street.
+Community board: 3-digit code (borough digit + 2-digit CB, e.g. 203 = Bronx CB3).
 """
 
 import argparse
@@ -34,81 +34,106 @@ except ImportError:
 SODA_URL = "https://data.cityofnewyork.us/resource/kqwi-7ncn.json"
 APP_TOKEN = os.getenv("SODA_APP_TOKEN")
 
+BOROUGH_FROM_CB = {
+    "1": "Manhattan", "2": "Bronx", "3": "Brooklyn",
+    "4": "Queens", "5": "Staten Island",
+}
+
 CATEGORY_LABELS = {
     "6S": "Elevator complaint",
-    "6M": "Elevator/escalator",
-    "81": "Inoperative (retired code)",
-    "63": "Failed inspection (retired code)",
-}
-
-BOROUGH_MAP = {
-    "bronx": "BRONX",
-    "brooklyn": "BROOKLYN",
-    "manhattan": "MANHATTAN",
-    "queens": "QUEENS",
-    "staten island": "STATEN ISLAND",
+    "6M": "Elevator/escalator complaint",
 }
 
 
-def fetch_complaints(address: str, borough: str) -> list[dict]:
-    soda_borough = BOROUGH_MAP.get(borough.lower(), borough.upper())
-    # Use LIKE to handle minor address normalization differences
-    where = (
-        f"incident_address LIKE '{address}%' "
-        f"AND borough='{soda_borough}'"
+def fetch_by_address(house_number: str, house_street: str, cb: str) -> list[dict]:
+    qs = (
+        f"$where=house_number='{house_number}'"
+        f" AND house_street='{house_street.upper()}'"
+        f" AND community_board='{cb}'"
+        f"&$order=date_entered DESC"
+        f"&$limit=1000"
     )
-    params = {
-        "$select": "incident_address, borough, complaint_category, date_entered, status, bin",
-        "$where": where,
-        "$order": "date_entered DESC",
-        "$limit": 1000,
-    }
     if APP_TOKEN:
-        params["$$app_token"] = APP_TOKEN
-
-    resp = requests.get(SODA_URL, params=params, timeout=15)
+        qs += f"&$$app_token={APP_TOKEN}"
+    resp = requests.get(SODA_URL + "?" + qs, timeout=15)
     resp.raise_for_status()
     return resp.json()
 
 
+def fetch_by_bin(bin_id: str) -> list[dict]:
+    qs = (
+        f"$where=bin='{bin_id}'"
+        f"&$order=date_entered DESC"
+        f"&$limit=1000"
+    )
+    if APP_TOKEN:
+        qs += f"&$$app_token={APP_TOKEN}"
+    resp = requests.get(SODA_URL + "?" + qs, timeout=15)
+    resp.raise_for_status()
+    return resp.json()
+
+
+def parse_year(date_str: str) -> str:
+    """Extract year from MM/DD/YYYY format."""
+    parts = date_str.split("/")
+    return parts[2] if len(parts) == 3 else "?"
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--address", required=True,
-                        help='Address in SODA format, e.g. "341 EAST 162 ST"')
-    parser.add_argument("--borough", required=True,
-                        choices=["bronx", "brooklyn", "manhattan", "queens", "staten island"],
-                        help="Borough (lowercase)")
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("--bin", help="Look up by BIN number")
+    group.add_argument("--number", help="House number (e.g. 341)")
+    parser.add_argument("--street", help='Street name in caps, no house number (e.g. "EAST 162 STREET")')
+    parser.add_argument("--cb", help="Community board code (e.g. 203 = Bronx CB3)")
     args = parser.parse_args()
 
-    if not APP_TOKEN:
-        print("Warning: SODA_APP_TOKEN not set. Request may be rate-limited.")
+    if args.number and not (args.street and args.cb):
+        parser.error("--number requires --street and --cb")
 
-    print(f"\nFetching complaint history for: {args.address}, {args.borough.title()}...")
+    if not APP_TOKEN:
+        print("SODA_APP_TOKEN not set.")
+        print("  export SODA_APP_TOKEN=<your_token>")
+        sys.exit(1)
+
     try:
-        complaints = fetch_complaints(args.address, args.borough)
+        if args.bin:
+            records = fetch_by_bin(args.bin)
+            lookup = f"BIN {args.bin}"
+        else:
+            records = fetch_by_address(args.number, args.street, args.cb)
+            lookup = f"{args.number} {args.street.upper()}, CB{args.cb}"
     except requests.RequestException as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
 
-    if not complaints:
-        print("No complaints found. Check address format (must be uppercase, abbreviated).")
+    # Filter to elevator categories only for the timeline; show all for BIN lookup
+    elevator_records = [r for r in records if r.get("complaint_category") in ("6S", "6M")]
+
+    if not elevator_records:
+        if records:
+            print(f"\nFound {len(records)} total records for {lookup}, but none are elevator complaints (6S/6M).")
+        else:
+            print(f"\nNo records found for {lookup}.")
+            print("Check that house number, street name, and community board are correct.")
         sys.exit(0)
 
-    # Normalize address from first result
-    resolved_address = complaints[0].get("incident_address", args.address)
-    resolved_bin = complaints[0].get("bin", "Unknown")
+    rec0 = elevator_records[0]
+    resolved_addr = rec0.get("house_number", "") + " " + rec0.get("house_street", "")
+    resolved_bin = rec0.get("bin", "Unknown")
+    cb = rec0.get("community_board", "")
+    borough = BOROUGH_FROM_CB.get(cb[0], "?") if cb else "?"
 
-    print(f"\n{'='*60}")
-    print(f"  {resolved_address}, {args.borough.title()}")
-    print(f"  BIN: {resolved_bin} | Total complaints on record: {len(complaints)}")
-    print(f"{'='*60}")
+    print(f"\n{'='*62}")
+    print(f"  {resolved_addr}, {borough}")
+    print(f"  BIN: {resolved_bin}  |  Community Board: CB{cb}")
+    print(f"  Elevator complaints (6S/6M) on record: {len(elevator_records)}")
+    print(f"{'='*62}")
 
     # Annual summary
     by_year: Counter = Counter()
-    for c in complaints:
-        raw_date = c.get("date_entered", "")
-        if raw_date:
-            by_year[raw_date[:4]] += 1
+    for r in elevator_records:
+        by_year[parse_year(r.get("date_entered", ""))] += 1
 
     print("\n  COMPLAINTS BY YEAR")
     print("  " + "-" * 40)
@@ -117,33 +142,29 @@ def main() -> None:
         bar = "█" * count
         print(f"  {year}  {count:4d}  {bar}")
 
-    # Full timeline (most recent first, limit to 50 for readability)
-    print(f"\n  COMPLAINT TIMELINE (most recent {min(len(complaints), 50)})")
-    print("  " + "-" * 56)
-    print(f"  {'Date':<22}  {'Code':<4}  {'Description':<30}")
-    print("  " + "-" * 56)
-    for c in complaints[:50]:
-        raw_date = c.get("date_entered", "")
-        date_str = raw_date[:10] if raw_date else "Unknown"
-        code = c.get("complaint_category", "?")
+    # Full timeline
+    display_count = min(len(elevator_records), 50)
+    print(f"\n  COMPLAINT TIMELINE (most recent {display_count})")
+    print("  " + "-" * 54)
+    print(f"  {'Date':<14}  {'Code':<4}  {'Category':<32}  {'Status'}")
+    print("  " + "-" * 54)
+    for r in elevator_records[:50]:
+        date = r.get("date_entered", "Unknown")
+        code = r.get("complaint_category", "?")
         label = CATEGORY_LABELS.get(code, code)
-        complaint_status = c.get("status", "")
-        detail = f"{label}"
-        if complaint_status:
-            detail += f" [{complaint_status}]"
-        print(f"  {date_str:<22}  {code:<4}  {detail:<30}")
+        status = r.get("status", "")
+        print(f"  {date:<14}  {code:<4}  {label:<32}  {status}")
 
-    if len(complaints) > 50:
-        print(f"  ... and {len(complaints) - 50} more (use $limit in a custom query to see all)")
+    if len(elevator_records) > 50:
+        print(f"  ... and {len(elevator_records) - 50} more")
 
-    # Loss-of-service estimate (rough: each complaint = 1 incident)
-    recent = [c for c in complaints if c.get("date_entered", "")[:4] in
-              [str(y) for y in range(2023, 2026)]]
-    print(f"\n  SUMMARY (2023–2025): {len(recent)} complaints over ~3 years")
-    if recent:
-        first = min(c.get("date_entered", "")[:10] for c in recent)
-        last = max(c.get("date_entered", "")[:10] for c in recent)
-        print(f"  Earliest: {first}  |  Most recent: {last}")
+    # Summary stats
+    dates = sorted([r.get("date_entered", "") for r in elevator_records if r.get("date_entered")])
+    if dates:
+        print(f"\n  Earliest on record: {dates[0]}")
+        print(f"  Most recent:        {dates[-1]}")
+        recent_3yr = [r for r in elevator_records if parse_year(r.get("date_entered", "")) in ("2023", "2024", "2025")]
+        print(f"  Last 3 years (2023–2025): {len(recent_3yr)} complaints")
     print()
 
 

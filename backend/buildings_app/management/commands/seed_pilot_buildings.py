@@ -204,12 +204,17 @@ class Command(BaseCommand):
         Queries the SODA complaint dataset for a BIN matching this address.
         The dataset stores BINs on every complaint record — no Geoclient needed.
         """
+        # Derive house_street from soda_address by stripping the house number prefix.
+        # e.g. "341 EAST 162 ST" → house_number="341", house_street="EAST 162 ST"
+        house_number = str(spec["house_number"])
+        house_street = str(spec["soda_address"]).split(" ", 1)[1]
         params: dict[str, Any] = {
             "$where": (
-                f"incident_address='{spec['soda_address']}' "
-                f"AND complaint_category IN ('6S', '6M')"
+                f"house_number='{house_number}'"
+                f" AND house_street='{house_street}'"
+                f" AND complaint_category IN ('6S', '6M')"
             ),
-            "$select": "bin,incident_address,latitude,longitude",
+            "$select": "bin,house_number,house_street,latitude,longitude",
             "$limit": 1,
         }
         if app_token:

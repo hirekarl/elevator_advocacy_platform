@@ -19,12 +19,11 @@ from pathlib import Path
 
 import requests
 
-# Load .env from repo root so SODA_APP_TOKEN is available
 try:
     from dotenv import load_dotenv
     load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 except ImportError:
-    pass  # dotenv not available; rely on shell env
+    pass
 
 SODA_URL = "https://data.cityofnewyork.us/resource/kqwi-7ncn.json"
 APP_TOKEN = os.getenv("SODA_APP_TOKEN")
@@ -32,49 +31,30 @@ APP_TOKEN = os.getenv("SODA_APP_TOKEN")
 MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
           "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
+# date_entered is MM/DD/YYYY text — use LIKE month patterns
+MONTH_PREFIXES = ["01/", "02/", "03/", "04/", "05/", "06/",
+                  "07/", "08/", "09/", "10/", "11/", "12/"]
 
-def fetch_monthly_counts(year: int | None = None) -> list[dict]:
-    where = "complaint_category IN ('6S', '6M')"
-    if year:
-        where += f" AND date_entered >= '{year}-01-01T00:00:00' AND date_entered < '{year + 1}-01-01T00:00:00'"
-    else:
-        where += " AND date_entered >= '2018-01-01T00:00:00' AND date_entered < '2026-01-01T00:00:00'"
 
-    params = {
-        "$select": "date_trunc_ym(date_entered) AS month, count(*) AS complaint_count",
-        "$where": where,
-        "$group": "date_trunc_ym(date_entered)",
-        "$order": "date_trunc_ym(date_entered) ASC",
-        "$limit": 120,
-    }
+def fetch_month_count(month_prefix: str, year: int) -> int:
+    """Fetch complaint count for one month via LIKE pattern."""
+    qs = (
+        f"$select=count(*) AS cnt"
+        f"&$where=complaint_category IN ('6S','6M')"
+        f" AND date_entered LIKE '{month_prefix}%/{year}'"
+    )
     if APP_TOKEN:
-        params["$$app_token"] = APP_TOKEN
-
-    resp = requests.get(SODA_URL, params=params, timeout=15)
+        qs += f"&$$app_token={APP_TOKEN}"
+    resp = requests.get(SODA_URL + "?" + qs, timeout=15)
     resp.raise_for_status()
-    return resp.json()
-
-
-def parse_records(records: list[dict]) -> dict[int, dict[int, int]]:
-    """Returns {year: {month_num: count}}."""
-    data: dict[int, dict[int, int]] = {}
-    for rec in records:
-        raw = rec.get("month", "")
-        count = int(rec.get("complaint_count", 0))
-        if not raw:
-            continue
-        parts = raw[:7].split("-")
-        if len(parts) < 2:
-            continue
-        y, m = int(parts[0]), int(parts[1])
-        data.setdefault(y, {})[m] = count
-    return data
+    data = resp.json()
+    return int(data[0].get("cnt", 0)) if data else 0
 
 
 def print_year(year: int, monthly: dict[int, int]) -> None:
     total = sum(monthly.values())
     avg = total / 12 if total else 0
-    print(f"\n  {year}  (annual avg: {avg:.0f}/month)")
+    print(f"\n  {year}  (annual avg: {avg:.0f}/month, total: {total:,})")
     print("  " + "-" * 58)
     for m in range(1, 13):
         count = monthly.get(m, 0)
@@ -85,11 +65,11 @@ def print_year(year: int, monthly: dict[int, int]) -> None:
 
 
 def print_averages(data: dict[int, dict[int, int]]) -> None:
-    """Print average complaint count per calendar month across all years."""
     monthly_totals: dict[int, list[int]] = {m: [] for m in range(1, 13)}
     for yearly in data.values():
         for m, count in yearly.items():
-            monthly_totals[m].append(count)
+            if count > 0:
+                monthly_totals[m].append(count)
 
     avgs = {m: sum(v) / len(v) for m, v in monthly_totals.items() if v}
     overall_avg = sum(avgs.values()) / len(avgs) if avgs else 0
@@ -111,32 +91,41 @@ def main() -> None:
     args = parser.parse_args()
 
     if not APP_TOKEN:
-        print("Warning: SODA_APP_TOKEN not set. Request may be rate-limited.")
-
-    print("Fetching monthly complaint data from NYC Open Data...")
-    try:
-        records = fetch_monthly_counts(args.year)
-    except requests.RequestException as e:
-        print(f"Error: {e}", file=sys.stderr)
+        print("Warning: SODA_APP_TOKEN not set — set it in your shell or .env file.")
+        print("  export SODA_APP_TOKEN=<your_token>")
         sys.exit(1)
 
-    data = parse_records(records)
-    if not data:
-        print("No data returned.")
-        sys.exit(0)
+    years = [args.year] if args.year else list(range(2018, 2026))
 
     print(f"\n{'='*62}")
     print("  NYC ELEVATOR COMPLAINTS — MONTHLY BREAKDOWN")
     print(f"  Dataset: kqwi-7ncn | Codes: 6S, 6M | Source: NYC Open Data")
     print(f"{'='*62}")
+    print(f"  Fetching {len(years) * 12} monthly counts — one moment...")
 
-    for year in sorted(data.keys()):
-        if args.year and year != args.year:
-            continue
-        print_year(year, data[year])
+    all_data: dict[int, dict[int, int]] = {}
 
-    if not args.year:
-        print_averages(data)
+    for year in years:
+        sys.stdout.write(f"  {year}: ")
+        sys.stdout.flush()
+        monthly: dict[int, int] = {}
+        for m_idx, prefix in enumerate(MONTH_PREFIXES, 1):
+            try:
+                count = fetch_month_count(prefix, year)
+                monthly[m_idx] = count
+                sys.stdout.write(".")
+                sys.stdout.flush()
+            except requests.RequestException as e:
+                print(f"\n  Error fetching {MONTHS[m_idx-1]} {year}: {e}")
+                monthly[m_idx] = 0
+        print()
+        all_data[year] = monthly
+
+    for year in years:
+        print_year(year, all_data[year])
+
+    if not args.year and len(years) > 1:
+        print_averages(all_data)
 
     print()
 

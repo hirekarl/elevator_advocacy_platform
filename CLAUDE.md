@@ -86,9 +86,11 @@ Include the relevant leaf-file contents in the specialist's task prompt.
 
 ## 🏃 Current Sprint
 
-**Active Sprint**: [Sprint 13: Building Health Reports & Resident Dashboard](./.sprints/active/sprint_13_building_health_reports.md)
+**Active Sprints**:
+- [Sprint 13: Building Health Reports & Resident Dashboard](./.sprints/active/sprint_13_building_health_reports.md) — in progress
+- [Sprint 14: SSR and Indexability](./.sprints/active/sprint_14_ssr_and_indexability.md) — **COMPLETE** as of 2026-04-17 (`/api/data-ssr/` shipped)
 
-### Next Steps:
+### Next Steps (Sprint 13):
 1.  **Backend Automation**: Implement `buildings_app/signals.py` to trigger report refreshes on critical status transitions.
 2.  **Comparative Analysis**: Implement `ConsensusManager.get_district_benchmarks()` to ground building health in local context.
 3.  **Resident Dashboard**: Scaffold `DashboardView.tsx` with high-impact health visuals.
@@ -146,7 +148,7 @@ uv run pytest -v                                 # Verbose
 
 Pytest config lives in `backend/pyproject.toml` (`[tool.pytest.ini_options]`). Set `USE_MOCK_GEOCLIENT=True` in `.env` to skip real Geoclient API calls in tests.
 
-Frontend has no test runner configured.
+Frontend e2e tests run via Playwright + axe-core: `npx playwright test` (from `frontend/`). Test suite is `frontend/e2e/martha.spec.ts` — Martha's Journey accessibility scenarios. Lighthouse CI: `npm run build && npm run lhci`.
 
 ## Linting & Type Checking
 

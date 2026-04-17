@@ -212,7 +212,6 @@ class Command(BaseCommand):
             "$where": (
                 f"house_number='{house_number}'"
                 f" AND house_street='{house_street}'"
-                f" AND complaint_category IN ('6S', '6M')"
             ),
             "$select": "bin,house_number,house_street,latitude,longitude",
             "$limit": 1,

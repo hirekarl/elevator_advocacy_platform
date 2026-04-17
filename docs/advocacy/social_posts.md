@@ -35,13 +35,13 @@ We're in MVP now, targeting six priority council districts in the Bronx and Broo
 
 > NYC elevator complaints spike 33% every July.
 >
-> Not occasionally. Every year, going back to 2018. City data confirms it.
+> Every year, going back to 2018 — without exception.
 >
-> For seniors on walkers and parents with strollers in Bronx high-rises, that's not a statistic — that's being trapped on your floor.
+> For seniors on walkers and parents with strollers in the Bronx, that's not a statistic — that's being trapped on your floor.
 >
 > I built something about it: elevatoradvocate.nyc
 
-*(~280 characters — fits as a single tweet)*
+*(275 characters)*
 
 ---
 

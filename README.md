@@ -79,6 +79,46 @@ Accessibility isn't just about screen readers and high contrast; it’s about **
 
 ---
 
+## 📊 Data Research & Insights
+The project includes a suite of standalone scripts and Jupyter notebooks used to generate the "Dignity Through Data" narratives. These allow for rapid exploration of NYC elevator complaint data (2018–2026) without requiring a full Django environment.
+
+### 🐍 Standalone Scripts
+Located in `scripts/data_research/`, these Python scripts provide high-signal output for briefings and demos.
+
+| Script | Narrative |
+|---|---|
+| `city_overview.py` | The Scale of the Problem (City-wide leaderboards & borough stats) |
+| `seasonal_trends.py` | The Summer Spike (33% jump in July complaints since 2018) |
+| `district_hotspots.py` | Worst Buildings Per District (Targeted lists for Councilmembers) |
+| `building_timeline.py` | One Building's Full Story (Long-term patterns of failure) |
+
+**Sample Output (`city_overview.py`):**
+```text
+  NYC ELEVATOR COMPLAINTS — CITY-WIDE OVERVIEW
+  Years: 2024 | Codes: 6S, 6M | Source: NYC Open Data
+  --------------------------------------------------------------
+  Total complaints in period: 12,565
+
+  COMPLAINTS BY BOROUGH
+  Bronx              4,010  (31.9%)  ████████████████████████████
+  Brooklyn           3,313  (26.4%)  ███████████████████████
+  Manhattan          3,171  (25.2%)  ██████████████████████
+  Queens             1,922  (15.3%)  █████████████
+  Staten Island        148  ( 1.2%)  █
+```
+
+### 📓 Jupyter Notebooks
+For presentation-ready visuals (matplotlib) and interactive filtering, visit `scripts/data_research/notebooks/`.
+
+**Setup:**
+```bash
+cd scripts/data_research
+pip install -r requirements.txt
+jupyter lab
+```
+
+---
+
 ## 💻 Tech Stack
 I chose these tools to keep the platform fast, secure, and easy to maintain:
 

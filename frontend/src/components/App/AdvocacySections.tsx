@@ -202,7 +202,7 @@ export function AdvocacySections() {
                 {t('adv_builder_linkedin')}
               </a>
               <a
-                href="https://github.com/hirekarl/elevator_advocacy_platform"
+                href="https://github.com/hirekarl/elevator_advocate"
                 className="advocacy-builder-btn-outline"
                 target="_blank"
                 rel="noopener noreferrer"

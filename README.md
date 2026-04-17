@@ -5,8 +5,6 @@ Hi, I’m **Karl Johnson**, a resident of District 17 in the Bronx. I am buildin
 
 In my building, a broken elevator is more than a maintenance delay—it's a crisis that strips people of their mobility and dignity. I’ve seen neighbors trapped on their floors for weeks at a time. This project, started during my AI-Native fellowship at **Pursuit**, is my response. We are turning these daily frustrations into the hard data needed for collective advocacy and survival.
 
----
-
 ## ✊ The Mission
 The goal is simple: **Close the information gap between residents and property owners.** 
 
@@ -16,6 +14,16 @@ Currently, the city's 311 system is slow, and official NYC Open Data (SODA) ofte
 - **Service Metrics**: We calculate a **"Loss of Service" (LoS) %**—turning downtime into the kind of data used in Housing Court or legislative briefings.
 - **Direct Advocacy**: We map buildings to NYC Council Districts and provide residents with AI-powered 311 scripts and direct email links to their representatives.
 - **Support Networks**: Status updates help family members and care providers know if their loved ones can actually get in and out of their building.
+
+### 🥀 The Stakes: Why This Matters
+Accessibility is a life-safety issue. Recent data and reporting from early 2026 reveal the lethal cost of the status quo:
+- **Lethal Isolation**: In 2025, a Bronx resident passed away during a heat wave because they were physically unable to leave their 4th-floor apartment during an extended elevator outage.
+- **Seniors "Imprisoned"**: At Surfside Gardens in Coney Island, seniors like Aleksandra (79) and Valeriy (85) reported 47 outages in a single year, missing critical medical appointments and being unable to access food.
+- **The Month-Long Outage**: In Queens, a 100-year-old resident was trapped in her home for over 30 days due to management's failure to perform repairs.
+
+**Data is the only way to prove these aren't "isolated incidents."**
+
+---
 
 ## 🛠️ How It Works: The Data Synthesis Engine
 The platform acts as a reasoning layer that correlates real-time tenant observations with official city records.

@@ -27,7 +27,7 @@ and timing. The July premium is consistent across every year in the dataset.
 
 ```bash
 python seasonal_trends.py
-python seasonal_trends.py --year 2024   # single year
+python seasonal_trends.py --years 2024   # single year
 ```
 
 ---
@@ -42,9 +42,9 @@ De La Rosa D10). Use this when briefing a specific councilmember or preparing
 for a meeting with a community organization.
 
 ```bash
-python district_hotspots.py                    # all six priority districts
-python district_hotspots.py --borough bronx    # one borough
-python district_hotspots.py --months 6         # shorter window (default: 12)
+python district_hotspots.py                      # all six priority districts
+python district_hotspots.py --district sanchez   # one councilmember
+python district_hotspots.py --years 2024 2025    # custom year range
 ```
 
 ---
@@ -57,8 +57,8 @@ year-over-year summary. Use this when you have a specific building to spotlight 
 in a council briefing, a press clip, or a Housing Court case.
 
 ```bash
-python building_timeline.py --address "341 EAST 162 ST" --borough bronx
-python building_timeline.py --address "150 LEFFERTS AVE" --borough brooklyn
+python building_timeline.py --number 341 --street "EAST 162 STREET" --cb 203
+python building_timeline.py --bin 2034290
 ```
 
 ---
@@ -72,8 +72,8 @@ stat table. Use this for Pursuit demos, press pitches, or any audience that need
 to understand the full scope before you narrow to a specific district.
 
 ```bash
-python city_overview.py                  # last 12 months
-python city_overview.py --months 24      # two-year view
+python city_overview.py                  # last 12 months (2025-2026)
+python city_overview.py --years 2024     # single year
 python city_overview.py --top 50         # expand the leaderboard
 ```
 

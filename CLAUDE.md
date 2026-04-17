@@ -84,6 +84,23 @@ Include the relevant leaf-file contents in the specialist's task prompt.
 
 ---
 
+## 🏃 Current Sprint
+
+**Active Sprint**: [Sprint 13: Building Health Reports & Resident Dashboard](./.sprints/active/sprint_13_building_health_reports.md)
+
+### Next Steps:
+1.  **Backend Automation**: Implement `buildings_app/signals.py` to trigger report refreshes on critical status transitions.
+2.  **Comparative Analysis**: Implement `ConsensusManager.get_district_benchmarks()` to ground building health in local context.
+3.  **Resident Dashboard**: Scaffold `DashboardView.tsx` with high-impact health visuals.
+
+### Core Narrative Grounding:
+All "High-Risk" and "Critical" health reports must be synthesized using the **human-stakes narratives** discovered in recent 2026 reporting:
+- **Bronx Heat Wave (2025)**: Lethal isolation during outages.
+- **Surfside Gardens (Coney Island)**: Senior "imprisonment" due to 47+ outages/year.
+- **Sherwood Village (Queens)**: 100-year-old resident trapped for 30+ days.
+
+---
+
 ## Project Overview
 
 **Elevator Advocate** — NYC tenant elevator advocacy app. Tenants search an address, get a BIN (Building Identification Number), see elevator complaint history from NYC Open Data, and submit status reports. Two independently-submitted matching reports within a 2-hour rolling window trigger "VERIFIED" status. Includes loss-of-service metrics, predictive failure risk scoring, and news intelligence.

@@ -241,5 +241,6 @@
   "ds_lag_cta": "Report your building's status now — before it shows up in a dataset.",
   "ds_complaints_label": "complaints",
   "ds_district_line": "District {{district}} · {{rep}}",
-  "ds_data_loaded": "NYC elevator complaint data loaded."
+  "ds_data_loaded": "NYC elevator complaint data loaded.",
+  "ds_page_title": "NYC Elevator Complaint Data"
 }

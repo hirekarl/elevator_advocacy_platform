@@ -241,5 +241,6 @@
   "ds_lag_cta": "Reporta el estado de tu edificio ahora — antes de que aparezca en los datos.",
   "ds_complaints_label": "quejas",
   "ds_district_line": "Distrito {{district}} · {{rep}}",
-  "ds_data_loaded": "Se cargaron los datos de quejas de ascensores de NYC."
+  "ds_data_loaded": "Se cargaron los datos de quejas de ascensores de NYC.",
+  "ds_page_title": "Datos de Quejas de Ascensores de NYC"
 }

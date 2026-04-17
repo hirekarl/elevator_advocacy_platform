@@ -88,10 +88,11 @@ export function BuildingsMap({ onBuildingSelect }: BuildingsMapProps) {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         {buildings.map(b => (
-          <Marker 
-            key={b.bin} 
+          <Marker
+            key={b.bin}
             position={[b.latitude, b.longitude]}
             icon={createIcon(b.verified_status)}
+            title={`${b.address} — ${b.verified_status}`}
           >
             <Popup minWidth={200}>
               <div className="p-2">

@@ -2,7 +2,6 @@ import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 const MOCK_BIN = '1234567';
-const BASE_API_URL = 'http://localhost:8000/api';
 
 const MOCK_CITY_STATS = {
   total_complaints_12mo: 45230,
@@ -33,13 +32,13 @@ test.describe("Martha's Journey (Vulnerable User UX)", () => {
   // Global mocks for every test to avoid hanging on non-critical API calls
   test.beforeEach(async ({ page }) => {
     await page.route(
-      url => url.href.startsWith(`${BASE_API_URL}/buildings/${MOCK_BIN}/advocacy_script/`),
+      url => url.pathname.startsWith(`/api/buildings/${MOCK_BIN}/advocacy_script/`),
       async route => {
         await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ headline: 'Mock Script', script: 'Mock content', legal_reference: 'Mock law' }) });
       }
     );
     await page.route(
-      url => url.href.startsWith(`${BASE_API_URL}/buildings/${MOCK_BIN}/advocacy_summary/`),
+      url => url.pathname.startsWith(`/api/buildings/${MOCK_BIN}/advocacy_summary/`),
       async route => {
         await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ risk_level: 'Low', historical_patterns: 'Mock history', community_sentiment: 'Mock sentiment', legal_standing: 'Mock legal', recommended_action: 'Mock action', confidence_score: 0.9 }) });
       }
@@ -48,7 +47,7 @@ test.describe("Martha's Journey (Vulnerable User UX)", () => {
 
   test('Scenario 1: Critical Outage (DOWN) - Should show emergency block and call 311', async ({ page }) => {
     // Mock the building API response for a DOWN status
-    await page.route(`${BASE_API_URL}/buildings/${MOCK_BIN}/`, async route => {
+    await page.route(url => url.pathname === `/api/buildings/${MOCK_BIN}/`, async route => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -92,7 +91,7 @@ test.describe("Martha's Journey (Vulnerable User UX)", () => {
 
   test('Scenario 2: Auth Friction - Clicking "Not Working" while logged out should trigger auth modal', async ({ page }) => {
     // Mock the building API response for an UP status
-    await page.route(`${BASE_API_URL}/buildings/${MOCK_BIN}/`, async route => {
+    await page.route(url => url.pathname === `/api/buildings/${MOCK_BIN}/`, async route => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -141,7 +140,7 @@ test.describe("Martha's Journey (Vulnerable User UX)", () => {
 
   test('Scenario 3: Unverified Status - Should show neighbor verification prompt', async ({ page }) => {
     // Mock the building API response for an UNVERIFIED status
-    await page.route(`${BASE_API_URL}/buildings/${MOCK_BIN}/`, async route => {
+    await page.route(url => url.pathname === `/api/buildings/${MOCK_BIN}/`, async route => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -164,7 +163,7 @@ test.describe("Martha's Journey (Vulnerable User UX)", () => {
   });
 
   test('Scenario 4: Verified Status - axe scan on VERIFIED consensus state', async ({ page }) => {
-    await page.route(`${BASE_API_URL}/buildings/${MOCK_BIN}/`, async route => {
+    await page.route(url => url.pathname === `/api/buildings/${MOCK_BIN}/`, async route => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',

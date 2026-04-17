@@ -221,7 +221,8 @@ function DataStoriesInner() {
   const cutoffLabel = getDataCutoff(stats.monthly_current_year);
 
   return (
-    <div className="ds-page">
+    <main className="ds-page" aria-labelledby="ds-page-title">
+      <h1 id="ds-page-title" className="visually-hidden">{t('ds_page_title')}</h1>
       <span className="visually-hidden" role="status" aria-live="polite">{t('ds_data_loaded')}</span>
       {/* Page header */}
       <section className="ds-hero advocacy-section" aria-label="NYC elevator complaints overview">
@@ -241,7 +242,7 @@ function DataStoriesInner() {
           {/* Borough breakdown */}
           {stats.borough_breakdown.length > 0 && (
             <div className="ds-borough-chart mt-5" aria-label="Complaints by borough">
-              <h3 className="ds-chart-heading">{t('ds_borough_heading')}</h3>
+              <h2 className="ds-chart-heading">{t('ds_borough_heading')}</h2>
               <div className="ds-borough-list">
                 {(() => {
                   const maxPct = Math.max(...stats.borough_breakdown.map((b) => b.pct));
@@ -320,7 +321,7 @@ function DataStoriesInner() {
           </Link>
         </div>
       </section>
-    </div>
+    </main>
   );
 }
 

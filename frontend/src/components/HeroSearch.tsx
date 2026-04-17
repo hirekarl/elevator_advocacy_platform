@@ -32,7 +32,7 @@ export function HeroSearch({ onSearch, searchData, setSearchData, isPending }: H
             <legend className="visually-hidden">{t('search_address')}</legend>
             <Row className="align-items-end g-3">
               <Col xs={4} md={2}>
-                <Form.Group>
+                <Form.Group controlId="search-house-number">
                   <Form.Label className="small fw-bold text-uppercase">{t('house_number')}</Form.Label>
                   <Form.Control
                     type="text"
@@ -46,7 +46,7 @@ export function HeroSearch({ onSearch, searchData, setSearchData, isPending }: H
                 </Form.Group>
               </Col>
               <Col xs={8} md={5}>
-                <Form.Group>
+                <Form.Group controlId="search-street">
                   <Form.Label className="small fw-bold text-uppercase">{t('street')}</Form.Label>
                   <Form.Control
                     type="text"
@@ -60,7 +60,7 @@ export function HeroSearch({ onSearch, searchData, setSearchData, isPending }: H
                 </Form.Group>
               </Col>
               <Col xs={12} md={3}>
-                <Form.Group>
+                <Form.Group controlId="search-borough">
                   <Form.Label className="small fw-bold text-uppercase">{t('borough')}</Form.Label>
                   <Form.Select
                     size="lg"

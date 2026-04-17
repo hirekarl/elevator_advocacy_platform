@@ -100,11 +100,53 @@
           "required name=street",
           "required name=borough"
         ]
+      },
+      "hasPart": {
+        "@type": "Dataset",
+        "name": "NYC Elevator Complaint Statistics — City-Wide Analysis",
+        "url": "https://elevatoradvocate.nyc/data",
+        "description": "City-wide analysis of NYC elevator complaints sourced from NYC Open Data (SODA dataset kqwi-7ncn), including borough breakdowns, seasonal trends, and building-level leaderboards."
       }
     }
     </script>
 
-    <!-- Structured Data: Dataset -->
+    <!-- Structured Data: /data page city-stats Dataset (updated by React once data loads) -->
+    <script id="data-page-jsonld" type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Dataset",
+      "name": "NYC Elevator Complaint Statistics — City-Wide Analysis",
+      "description": "City-wide analysis of NYC elevator complaints from 2018–2026, sourced from NYC Open Data (SODA dataset kqwi-7ncn). Covers borough breakdowns, seasonal trends (complaints spike 33% in July), and building-level leaderboards. Built for tenant advocates and elected officials.",
+      "url": "https://elevatoradvocate.nyc/data",
+      "creator": {
+        "@type": "Person",
+        "name": "Karl Johnson",
+        "sameAs": ["https://www.linkedin.com/in/hirekarl", "https://github.com/hirekarl"]
+      },
+      "license": "https://creativecommons.org/licenses/by/4.0/",
+      "isAccessibleForFree": true,
+      "keywords": [
+        "elevator complaints", "NYC Open Data", "SODA", "borough breakdown",
+        "seasonal trends", "tenant advocacy", "NYC Council", "NYCHA"
+      ],
+      "spatialCoverage": { "@type": "Place", "name": "New York City", "sameAs": "https://www.wikidata.org/wiki/Q60" },
+      "temporalCoverage": "2018/..",
+      "variableMeasured": [
+        { "@type": "PropertyValue", "name": "Total elevator complaints (12 months)", "description": "Count of elevator-related 311 complaints (codes 6S and 6M) in the trailing 12 months" },
+        { "@type": "PropertyValue", "name": "Borough breakdown", "description": "Complaint counts and percentages by NYC borough" },
+        { "@type": "PropertyValue", "name": "Seasonal index", "description": "Monthly complaint index normalised to annual average; July peaks at 135 (35% above average), based on 2018–2025 data" },
+        { "@type": "PropertyValue", "name": "Building leaderboard", "description": "Top 15 buildings ranked by complaint volume with NYC Council district attribution" }
+      ],
+      "isBasedOn": {
+        "@type": "Dataset",
+        "name": "NYC DOB Elevator Complaints",
+        "url": "https://data.cityofnewyork.us/resource/kqwi-7ncn.json",
+        "creator": { "@type": "Organization", "name": "NYC Department of Buildings" }
+      }
+    }
+    </script>
+
+    <!-- Structured Data: home-page Dataset -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",

@@ -1,4 +1,4 @@
-import { use, Suspense, Component } from 'react';
+import { use, Suspense, Component, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -210,9 +210,64 @@ function getDataCutoff(monthly: { month: string; count: number }[]): string {
 
 // ── Inner component (uses React 19 use()) ─────────────────────────────────────
 
+const HOME_TITLE = 'Elevator Advocate — Real-Time NYC Elevator Outage Tracking & Tenant Advocacy';
+const HOME_DESC = 'Track NYC elevator outages in real time. When two neighbors confirm a breakdown within 2 hours, it becomes a verified record — with Loss of Service metrics ready for Housing Court or a Council briefing. Built by a Bronx resident for his community.';
+
 function DataStoriesInner() {
   const { t } = useTranslation();
   const stats = use(getStatsPromise());
+
+  useEffect(() => {
+    if (!stats || stats.total_complaints_12mo === 0) return;
+
+    const total = stats.total_complaints_12mo.toLocaleString();
+    const topBorough = stats.borough_breakdown[0]?.name ?? 'the Bronx';
+    const topBoroughPct = stats.borough_breakdown[0]?.pct ?? 0;
+
+    document.title = `NYC Elevator Data — ${total} complaints in 12 months | Elevator Advocate`;
+
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute('content',
+        `NYC recorded ${total} elevator complaints in the last 12 months. ` +
+        `${topBorough} leads all boroughs at ${topBoroughPct}%. Complaints spike 33% every July. ` +
+        `Explore borough breakdowns, seasonal patterns, and the buildings with the worst records.`
+      );
+    }
+
+    const ldScript = document.getElementById('data-page-jsonld');
+    if (ldScript) {
+      ldScript.textContent = JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Dataset',
+        name: 'NYC Elevator Complaint Statistics — City-Wide Analysis',
+        description:
+          `NYC recorded ${total} elevator complaints in the last 12 months. ` +
+          `${topBorough} accounts for ${topBoroughPct}% of all complaints. ` +
+          `Complaints spike 33% every July based on 2018–2025 data. ` +
+          `Sourced from NYC Open Data (SODA dataset kqwi-7ncn).`,
+        url: 'https://elevatoradvocate.nyc/data',
+        creator: { '@type': 'Person', name: 'Karl Johnson', sameAs: ['https://www.linkedin.com/in/hirekarl'] },
+        license: 'https://creativecommons.org/licenses/by/4.0/',
+        isAccessibleForFree: true,
+        keywords: ['elevator complaints', 'NYC Open Data', 'SODA', 'borough breakdown', 'seasonal trends', 'tenant advocacy', 'NYC Council', 'NYCHA'],
+        spatialCoverage: { '@type': 'Place', name: 'New York City', sameAs: 'https://www.wikidata.org/wiki/Q60' },
+        temporalCoverage: '2018/..',
+        isBasedOn: {
+          '@type': 'Dataset',
+          name: 'NYC DOB Elevator Complaints',
+          url: 'https://data.cityofnewyork.us/resource/kqwi-7ncn.json',
+          creator: { '@type': 'Organization', name: 'NYC Department of Buildings' },
+        },
+      });
+    }
+
+    return () => {
+      document.title = HOME_TITLE;
+      const desc = document.querySelector('meta[name="description"]');
+      if (desc) desc.setAttribute('content', HOME_DESC);
+    };
+  }, [stats]);
 
   if (!stats || stats.total_complaints_12mo === 0) {
     return <ErrorState />;

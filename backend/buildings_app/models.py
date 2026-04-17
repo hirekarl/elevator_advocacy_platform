@@ -149,13 +149,21 @@ class AdvocacyLog(models.Model):
 class CouncilDistrict(models.Model):
     """
     Stores NYC Council District information and current member contact details.
-    Populated via the council_districts fixture; update the fixture after each election cycle.
+
+    Populated via the council_districts fixture; update after each election cycle.
     """
 
     district_id = models.CharField(max_length=10, primary_key=True)
     member_name = models.CharField(max_length=100)
     email = models.EmailField(null=True, blank=True)
     phone = models.CharField(max_length=20, null=True, blank=True)
+    committees = models.JSONField(
+        default=list,
+        blank=True,
+        help_text=(
+            "NYC Council committee memberships, e.g. ['Housing & Buildings (Chair)']"
+        ),
+    )
     last_synced = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     class Meta:

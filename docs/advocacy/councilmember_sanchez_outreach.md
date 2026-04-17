@@ -1,4 +1,15 @@
 # Outreach: Councilmember Justin Sanchez (District 17)
+
+## Strategic Context
+
+**Justin Sanchez's committees:** Environmental Protection & Waterfronts, Finance, Land Use, Public Safety, Sanitation & Solid Waste Management **(Chair)**, Transportation & Infrastructure.
+
+He is **not** on Housing & Buildings — so this outreach is constituent-engagement framing, not committee jurisdiction. That's still valid (D17 resident reaching out about a platform for D17 tenants), but the Housing & Buildings Committee is the institutional home for elevator safety. See [Next Targets](#next-targets) below.
+
+**Status:** Email sent 2026-04-17. Awaiting response. Recommended follow-up window: 1–2 weeks.
+
+---
+
 ## Engagement Email Draft
 
 **Recipient:** Councilmember Justin Sanchez  
@@ -34,3 +45,23 @@ In service,
 **Karl Johnson**  
 District 17 Resident | Pursuit AI-Native Fellow  
 [https://www.elevatoradvocate.nyc](https://www.elevatoradvocate.nyc)
+
+---
+
+## Next Targets
+
+Housing & Buildings Committee members are the highest-leverage contacts after Sanchez responds. Reach out to committee members only — not the full 51.
+
+**Recommended order:**
+
+| Priority | Member | District | Role | Notes |
+|---|---|---|---|---|
+| 1 | **Pierina Ana Sanchez** | 14 (Bronx) | Housing & Buildings **(Chair)** | Highest leverage; district covers NYCHA-dense areas in the Bronx. Elevator outage + heat risk overlap is strongest here. |
+| 2 | **Yusef Salaam** | 9 (Harlem/West Bronx) | Housing & Buildings | Large NYCHA footprint; vocal on tenant safety. |
+| 3 | **Shaun Abreu** | 7 (Upper Manhattan) | Housing & Buildings | Also chairs Transportation & Infrastructure; policy-oriented. |
+| 4 | **Oswald Feliz** | 15 (Tremont/Fordham) | Housing & Buildings | Bronx district with significant elevator complaint volume. |
+| 5 | **Kevin C. Riley** | 12 (Norwood/Fordham) | Housing & Buildings | Also chairs Land Use; engaged on building stock issues. |
+
+**Timing:** Draft outreach to Pierina Ana Sanchez once Justin Sanchez's office responds (or after 2 weeks of silence). Her chair role makes a warm intro from him ideal — but not required.
+
+**Committee data source:** `backend/buildings_app/fixtures/council_districts.json` — sourced from `council.nyc.gov`, April 2026.

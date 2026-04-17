@@ -153,6 +153,84 @@ jupyter lab
 
 ---
 
+## 🤖 Multi-Agent Development: How This Was Built
+
+This project is simultaneously a civic advocacy platform and a practical experiment in multi-agent software development on consumer workstations. The entire MVP — Django backend, React frontend, two external API integrations, predictive ML scoring, an accessibility test suite, and full EN/ES localization — was built in **five days** using a structured team of AI specialists running inside Claude Code (Windows) and Gemini CLI (macOS).
+
+### The Team
+
+A persistent **Lead Orchestrator** named **Sol** manages six domain specialists. Sol reads this project's session instructions on every startup, decomposes the user's request into atomic tasks, assigns them to the right specialists, and reviews the integrated result. The specialists never see each other's output — Sol is the integration point.
+
+| Specialist | Domain | Runs in parallel with |
+|---|---|---|
+| **Maya** | React 19, TypeScript, design system, i18n | Elias, Kiran |
+| **Elias** | Django 6.0, DRF, migrations, services | Maya, Kiran |
+| **Kiran** | SODA/Geoclient data pipeline, Gemini API, ML scoring | Maya, Elias |
+| **Juno** | WCAG 2.2 UX audits, Martha accessibility test | Elias, Kiran |
+| **Blythe** | Pre-flight gate: ruff, mypy, ESLint, jargon sweep | Nobody — runs last |
+| **Aris** | Post-sprint memory sync, knowledge base maintenance | Nobody — runs last |
+
+Each specialist is a stateless sub-agent launched with the `Agent` tool. Because they have no session memory, Sol pastes the full specialist definition — role, constraints, tool permissions, and task — into every invocation prompt. This is intentional: it makes each agent's behavior reproducible and auditable.
+
+### How agents are invoked
+
+```
+Agent(
+    description="Maya — add AccessibilitySection to landing page",
+    subagent_type="general-purpose",
+    model="sonnet",
+    prompt="""
+[Full contents of .claude/agents/maya.md]
+
+---
+
+## Your Task
+
+Create frontend/src/components/App/AccessibilitySection.tsx.
+Three visual blocks: Martha dossier, Lighthouse scores, axe methodology.
+Add all CSS to index.css under /* === ACCESSIBILITY SECTION */.
+Wire into AdvocacySections.tsx between "How It Works" and "Movement Timeline".
+Run tsc and eslint before returning. Zero warnings.
+"""
+)
+```
+
+Maya and Elias frequently run in parallel — their file trees (`frontend/` and `backend/`) never overlap, so there are no merge conflicts. Blythe always runs last and nothing ships until she clears it.
+
+### Cross-environment: Claude Code + Gemini CLI
+
+The specialist definitions are maintained in two formats in this repository:
+
+- **`.claude/agents/`** — Claude Code format (markdown personas, invoked via the `Agent` tool)
+- **`.gemini/agents/`** — Gemini CLI format (YAML frontmatter + markdown, invoked via `@agent` syntax)
+
+The two environments have different tool names and invocation syntax, but the underlying specialist logic — role, constraints, parallelization rules — is identical. Work started on Gemini CLI (macOS) in the early sprints and moved primarily to Claude Code (Windows) for later sprints. The knowledge base (`.knowledge_base/`) is environment-agnostic and shared by both.
+
+### The Knowledge Base (Two-Hop Protocol)
+
+Before delegating any implementation task, Sol consults the knowledge base to avoid hallucinated APIs and outdated patterns:
+
+1. **Hop 1** — open the domain map (e.g., `.knowledge_base/django_6_0_map.md`)
+2. **Hop 2** — follow the pointer to the leaf file with current implementation details (e.g., `django_6_0/orm_fields.md`)
+
+If a topic is missing, Aris performs a one-time fetch, decomposes it into the map structure, and the knowledge propagates to all future sessions. The maps cover Django 6.0, React 19, the NYC API ecosystem, Gemini AI integration, and dev tooling.
+
+### What five days produced
+
+Starting from `git init` on April 12, 2026, the team shipped:
+
+- Django REST API with 2-hour consensus engine, predictive failure scoring, and news intelligence
+- React 19 frontend with address search, interactive Leaflet map, building detail action center, and `/data` stories page
+- NYC Open Data (SODA) pipeline for 300K+ elevator complaints; NYC Geoclient v2 integration for address → BIN resolution
+- EN/ES localization across 80+ UI strings
+- Token authentication, user profiles, and per-user advocacy logs
+- WCAG 2.2 AA accessibility: custom contrast tokens, 6 axe-core + Playwright tests on "Martha's Journey" scenarios, Lighthouse CI (93/100 home, 100/100 /data)
+- Render.com deployment with Django task worker, gunicorn, and static React build
+
+The 62-commit log (`git log --oneline`) is the clearest artifact of how this system operates in practice.
+
+---
+
 ## 💻 Tech Stack
 I chose these tools to keep the platform fast, secure, and easy to maintain:
 

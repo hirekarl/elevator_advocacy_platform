@@ -4,6 +4,26 @@ import AxeBuilder from '@axe-core/playwright';
 const MOCK_BIN = '1234567';
 const BASE_API_URL = 'http://localhost:8000/api';
 
+const MOCK_CITY_STATS = {
+  total_complaints_12mo: 45230,
+  borough_breakdown: [
+    { name: 'Bronx',         count: 15032, pct: 33.2 },
+    { name: 'Brooklyn',      count: 13985, pct: 30.9 },
+    { name: 'Manhattan',     count: 10012, pct: 22.1 },
+    { name: 'Queens',        count:  5018, pct: 11.1 },
+    { name: 'Staten Island', count:  1183, pct:  2.7 },
+  ],
+  top_buildings: Array.from({ length: 15 }, (_, i) => ({
+    address: `${100 + i} MOCK AVE`,
+    borough: 'Bronx',
+    count: 47 - i,
+    council_district: String(i + 1),
+    rep_name: `Council Member ${i + 1}`,
+  })),
+  monthly_current_year: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+    .map((month, i) => ({ month, count: i < 4 ? 3200 + i * 80 : 0 })),
+};
+
 test.describe("Martha's Journey (Vulnerable User UX)", () => {
 
   // Force mobile viewport to ensure consistent layout and that BuildingDetail is visible
@@ -104,10 +124,16 @@ test.describe("Martha's Journey (Vulnerable User UX)", () => {
     // The Auth Modal should pop up immediately
     const authModal = page.getByRole('dialog', { name: /Sign in or create account/i });
     await expect(authModal).toBeVisible();
-    
+
     const authHeading = authModal.getByRole('heading', { name: /Sign In/i });
     await expect(authHeading).toBeVisible();
-    
+
+    // Accessibility audit scoped to the modal — validates focus trap, aria-modal, dialog role
+    const accessibilityScanResults = await new AxeBuilder({ page })
+      .include('[role="dialog"]')
+      .analyze();
+    expect(accessibilityScanResults.violations).toEqual([]);
+
     // Ensure no passive toast is shown
     const toast = page.locator('.toast');
     await expect(toast).not.toBeVisible();
@@ -135,6 +161,74 @@ test.describe("Martha's Journey (Vulnerable User UX)", () => {
     const unverifiedAlert = page.locator('.alert-warning', { hasText: 'Elevator Status Not Yet Confirmed' });
     await expect(unverifiedAlert).toBeVisible();
     await expect(unverifiedAlert).toContainText('One neighbor has reported this');
+  });
+
+  test('Scenario 4: Verified Status - axe scan on VERIFIED consensus state', async ({ page }) => {
+    await page.route(`${BASE_API_URL}/buildings/${MOCK_BIN}/`, async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          bin: MOCK_BIN,
+          address: '123 MARTHA ST',
+          borough: 'Manhattan',
+          verified_status: 'VERIFIED',
+          recent_reports: [],
+          loss_of_service_30d: 3,
+          failure_risk: { risk_score: 20 },
+        }),
+      });
+    });
+
+    await page.goto(`/building/${MOCK_BIN}`);
+
+    // Wait for the VERIFIED ribbon — role="status" aria-live="polite" in StatusHeader
+    const statusRibbon = page.getByRole('status').filter({ hasText: 'VERIFIED' });
+    await expect(statusRibbon).toBeVisible();
+
+    const accessibilityScanResults = await new AxeBuilder({ page })
+      .include('#main-content')
+      .analyze();
+    expect(accessibilityScanResults.violations).toEqual([]);
+  });
+
+});
+
+test.describe('Data Stories Page (/data)', () => {
+
+  test('axe scan after city stats load', async ({ page }) => {
+    await page.route(
+      url => url.pathname === '/api/buildings/city-stats/',
+      async route => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(MOCK_CITY_STATS),
+        });
+      }
+    );
+
+    await page.goto('/data');
+
+    // Wait for Suspense to resolve — the hero stat number signals data is rendered
+    await expect(page.locator('.ds-hero-stat')).toBeVisible();
+
+    const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
+    expect(accessibilityScanResults.violations).toEqual([]);
+  });
+
+});
+
+test.describe('Landing Page (pre-search)', () => {
+
+  test('axe scan on pre-search state', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+
+    const accessibilityScanResults = await new AxeBuilder({ page })
+      .include('#main-content')
+      .analyze();
+    expect(accessibilityScanResults.violations).toEqual([]);
   });
 
 });

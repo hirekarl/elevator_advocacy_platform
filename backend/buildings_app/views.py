@@ -237,8 +237,14 @@ class BuildingViewSet(viewsets.ReadOnlyModelViewSet[Building]):
         ).data
 
         # Auto-fetch news on first visit if it has never been fetched.
+        # Run in a daemon thread so ImmediateBackend doesn't block the response.
         if not instance.last_news_refresh:
-            fetch_building_news.enqueue(bin=instance.bin)
+            import threading
+            threading.Thread(
+                target=fetch_building_news.enqueue,
+                kwargs={"bin": instance.bin},
+                daemon=True,
+            ).start()
 
         return Response(data)
 

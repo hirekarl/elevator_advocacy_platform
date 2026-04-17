@@ -159,7 +159,12 @@ function MainDashboard() {
               {t('search_again')}
             </Link>
           </div>
-        ) : activeBuilding && (
+        ) : !activeBuilding ? (
+          <div className="d-flex flex-column align-items-center justify-content-center py-5 mt-5">
+            <div className="spinner-border text-primary mb-3" role="status" aria-label="Loading building data" />
+            <p className="text-muted small">{t('building_details')}…</p>
+          </div>
+        ) : (
           <BuildingPage
             activeBuilding={activeBuilding}
             isLoggedIn={isLoggedIn}

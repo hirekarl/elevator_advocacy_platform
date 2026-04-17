@@ -21,7 +21,12 @@ from django.urls import include, path
 
 
 def robots_txt(request: object) -> HttpResponse:
-    return HttpResponse("User-agent: *\nDisallow: /\n", content_type="text/plain")
+    content = (
+        "User-agent: *\n"
+        "Allow: /api/data-ssr/\n"
+        "Disallow: /\n"
+    )
+    return HttpResponse(content, content_type="text/plain")
 
 
 urlpatterns = [

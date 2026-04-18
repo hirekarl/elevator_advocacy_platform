@@ -1,4 +1,4 @@
-# MVP Pitch Script: Elevator Advocate
+# MVP Pitch Scripts: Elevator Advocate
 **Goal:** 2–3 Minute Direct-to-Camera Video
 **Tone:** Conversational, Urgent, Resilient (The "Fellow New Yorker" voice)
 
@@ -54,3 +54,24 @@ I’m Karl Johnson. Let’s get to work."
 - **The "311" Beat:** When you mention 311, use a bit of 'New Yorker' frustration. Everyone knows that struggle.
 - **The "One Button" Beat:** Use a hand gesture here to show simplicity. This appeals to the "Universal Accessibility" part of your mission.
 - **The "Loss of Service" Beat:** Speak this clearly and firmly. This is the technical 'hook' for the Pursuit higher-ups and the 'legislative' hook for the reps.
+
+---
+
+## Script 2: User-Facing Video Pitch (2026-04-17)
+**Goal:** 2-Minute Direct-to-User Video
+**Tone:** Urgent, grounded, neighbor-to-neighbor
+**Audience:** NYC tenants above the 3rd floor — potential app users
+
+---
+
+| Visuals | Audio |
+|---|---|
+| NYC skyline in summer heat, slow push in | **"Summer is coming."** |
+| High-rise exterior looking up, then a stalled elevator door | **"Last year, a heat wave swept through New York City. In high-rises across every borough, seniors were trapped — elevators out, no way down, no way to get help. In Coney Island, one building logged more than 47 outages in a single year. In Queens, a hundred-year-old woman was stuck in her apartment for over thirty days."** |
+| Elderly person gripping a stair railing | **"I live in the Bronx. I've seen this. I know what it looks like when a neighbor can't get downstairs, and building management isn't picking up the phone."** |
+| Karl on camera, direct address | **"The thing is — we already know when the elevator is out. We see it. We hear about it in the hallway. We just have no way to make that knowledge count. That's what we wanted to change."** |
+| Neighbors talking in a hallway, a hand knocking on a door | *(pause — let the visuals breathe)* |
+| App screen recording (45 sec) | **"Go to elevatoradvocate.nyc, type in your address, and in seconds you'll see your building's elevator complaint history — pulled directly from NYC open data. Real complaints. Real dates. Right there. If your elevator goes out, flag it. When a neighbor confirms it, it gets marked Verified. Now it's not just your word against management's — it's a record. It's real. And the people who can fight for you have something to stand on."** |
+| City street level, people walking together | **"311 is slow. Building management doesn't always respond. But we know what's happening in our own buildings. Elevator Advocate is how we make that count — together, before the next heat wave, not after."** |
+| Slow fade to app logo | **"Search your building at elevatoradvocate.nyc."** |
+| Hold on logo | ***"Is your elevator working today?"*** |

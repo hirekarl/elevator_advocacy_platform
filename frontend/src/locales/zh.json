@@ -266,5 +266,12 @@
   "ac_method_lhci": "每次构建运行Lighthouse CI",
   "ac_method_wcag": "WCAG 2.2 AA色彩令牌",
   "ac_test_count_label": "Martha旅程测试数",
-  "toggle_language": "切换语言"
+  "toggle_language": "切换语言",
+  "complaint_history_title": "投诉历史",
+  "complaint_history_empty": "未找到该建筑的投诉记录。",
+  "complaint_history_show_all": "显示全部 {{count}} 条投诉",
+  "complaint_history_show_less": "收起",
+  "complaint_history_filed": "提交日期",
+  "complaint_history_inspected": "检查日期",
+  "complaint_history_resolved": "解决日期"
 }

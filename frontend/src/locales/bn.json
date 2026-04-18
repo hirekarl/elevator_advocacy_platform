@@ -266,5 +266,12 @@
   "ac_method_lhci": "প্রতিটি বিল্ডে Lighthouse CI",
   "ac_method_wcag": "WCAG 2.2 AA রঙের টোকেন",
   "ac_test_count_label": "Martha যাত্রার পরীক্ষা সংখ্যা",
-  "toggle_language": "ভাষা পরিবর্তন করুন"
+  "toggle_language": "ভাষা পরিবর্তন করুন",
+  "complaint_history_title": "অভিযোগের ইতিহাস",
+  "complaint_history_empty": "এই ভবনের জন্য কোনো অভিযোগের রেকর্ড পাওয়া যায়নি।",
+  "complaint_history_show_all": "সব {{count}}টি অভিযোগ দেখুন",
+  "complaint_history_show_less": "কম দেখুন",
+  "complaint_history_filed": "দাখিলের তারিখ",
+  "complaint_history_inspected": "পরিদর্শনের তারিখ",
+  "complaint_history_resolved": "সমাধানের তারিখ"
 }

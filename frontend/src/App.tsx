@@ -84,11 +84,9 @@ function MainDashboard() {
     return labels[status] ?? status;
   };
 
-  const toggleLanguage = () => {
-    const cycle: Record<string, string> = { en: 'es', es: 'zh', zh: 'bn', bn: 'en' };
-    const next = cycle[i18n.language] ?? 'en';
-    i18n.changeLanguage(next);
-    document.documentElement.lang = next;
+  const changeLanguage = (lang: string) => {
+    i18n.changeLanguage(lang);
+    document.documentElement.lang = lang;
   };
 
   return (
@@ -110,7 +108,7 @@ function MainDashboard() {
         onLogout={handleLogout}
         onShowAuthModal={() => setShowAuthModal(true)}
         onShowGuide={() => setShowGuide(true)}
-        toggleLanguage={toggleLanguage}
+        changeLanguage={changeLanguage}
       />
 
       <AuthModal
@@ -206,11 +204,9 @@ function DataPage() {
     return () => { document.head.removeChild(link); };
   }, []);
 
-  const toggleLanguage = () => {
-    const cycle: Record<string, string> = { en: 'es', es: 'zh', zh: 'bn', bn: 'en' };
-    const next = cycle[i18n.language] ?? 'en';
-    i18n.changeLanguage(next);
-    document.documentElement.lang = next;
+  const changeLanguage = (lang: string) => {
+    i18n.changeLanguage(lang);
+    document.documentElement.lang = lang;
   };
 
   return (
@@ -221,7 +217,7 @@ function DataPage() {
         onLogout={handleLogout}
         onShowAuthModal={() => setShowAuthModal(true)}
         onShowGuide={() => setShowGuide(true)}
-        toggleLanguage={toggleLanguage}
+        changeLanguage={changeLanguage}
       />
       <AuthModal
         show={showAuthModal}

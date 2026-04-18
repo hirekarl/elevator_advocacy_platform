@@ -19,6 +19,17 @@ export interface AdvocacyLog {
   created_at: string;
 }
 
+export interface SodaComplaint {
+  complaint_number?: string;
+  date_entered: string;
+  complaint_category: string;
+  unit?: string;
+  status?: string;
+  inspection_date?: string;
+  disposition_date?: string;
+  disposition_code?: string;
+}
+
 export interface NewsArticle {
   title: string;
   summary: string;
@@ -47,6 +58,7 @@ export interface Building {
   recent_reports: ElevatorReport[];
   advocacy_logs: AdvocacyLog[];
   news_articles: NewsArticle[];
+  soda_complaints?: SodaComplaint[];
   is_mocked?: boolean;
 }
 

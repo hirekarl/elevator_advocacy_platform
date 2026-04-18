@@ -266,5 +266,12 @@
   "ac_method_lhci": "Lighthouse CI on every build",
   "ac_method_wcag": "WCAG 2.2 AA color tokens",
   "ac_test_count_label": "Martha journey tests",
-  "toggle_language": "Switch language"
+  "toggle_language": "Switch language",
+  "complaint_history_title": "Complaint History",
+  "complaint_history_empty": "No complaint records found for this building.",
+  "complaint_history_show_all": "Show all {{count}} complaints",
+  "complaint_history_show_less": "Show fewer",
+  "complaint_history_filed": "Filed",
+  "complaint_history_resolved": "Resolved",
+  "complaint_history_inspected": "Inspected"
 }

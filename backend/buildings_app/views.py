@@ -1,4 +1,5 @@
 from datetime import timedelta
+from typing import Any, Dict, List
 
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
@@ -238,6 +239,36 @@ class BuildingViewSet(viewsets.ReadOnlyModelViewSet[Building]):
         data["recent_reports"] = ElevatorReportSerializer(
             recent_reports, many=True
         ).data
+
+        soda_complaints: List[Dict[str, Any]] = []
+        try:
+            from datetime import datetime
+
+            from services.soda import SODAService
+
+            _keep = {
+                "complaint_number",
+                "date_entered",
+                "complaint_category",
+                "unit",
+                "status",
+                "inspection_date",
+                "disposition_date",
+                "disposition_code",
+            }
+            raw = SODAService().get_elevator_complaints(instance.bin)
+            filtered = [{k: v for k, v in c.items() if k in _keep} for c in raw]
+
+            def _parse_date(c: Dict[str, Any]) -> datetime:
+                try:
+                    return datetime.strptime(c.get("date_entered", ""), "%m/%d/%Y")
+                except ValueError:
+                    return datetime.min
+
+            soda_complaints = sorted(filtered, key=_parse_date, reverse=True)
+        except Exception:
+            soda_complaints = []
+        data["soda_complaints"] = soda_complaints
 
         # Auto-fetch news on first visit if it has never been fetched.
         # Run in a daemon thread so ImmediateBackend doesn't block the response.

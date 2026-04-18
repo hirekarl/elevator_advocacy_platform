@@ -18,6 +18,7 @@ import { NewsSection } from './BuildingDetail/NewsSection';
 import { AdvocacyModal } from './BuildingDetail/AdvocacyModal';
 import { ToastNotifier } from './BuildingDetail/ToastNotifier';
 import { StatusHeader } from './BuildingDetail/StatusHeader';
+import { ComplaintHistory } from './BuildingDetail/ComplaintHistory';
 
 interface BuildingDetailProps {
   buildingData: Building;
@@ -162,6 +163,9 @@ export function BuildingDetail({
             isLoadingSummary={isLoadingSummary}
             onRefresh={fetchExecutiveSummary}
           />
+          <div className="px-4">
+            <ComplaintHistory complaints={buildingData.soda_complaints ?? []} />
+          </div>
         </>
       )}
 
@@ -206,6 +210,9 @@ export function BuildingDetail({
             isLoadingSummary={isLoadingSummary}
             onRefresh={fetchExecutiveSummary}
           />
+          <div className="px-4">
+            <ComplaintHistory complaints={buildingData.soda_complaints ?? []} />
+          </div>
         </>
       )}
 

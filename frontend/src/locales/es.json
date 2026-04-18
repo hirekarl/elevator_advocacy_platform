@@ -266,5 +266,12 @@
   "ac_method_lhci": "Lighthouse CI en cada compilación",
   "ac_method_wcag": "Tokens de color WCAG 2.2 AA",
   "ac_test_count_label": "pruebas del recorrido de Martha",
-  "toggle_language": "Cambiar idioma"
+  "toggle_language": "Cambiar idioma",
+  "complaint_history_title": "Historial de Quejas",
+  "complaint_history_empty": "No se encontraron registros de quejas para este edificio.",
+  "complaint_history_show_all": "Ver las {{count}} quejas",
+  "complaint_history_show_less": "Ver menos",
+  "complaint_history_filed": "Presentada",
+  "complaint_history_resolved": "Resuelta",
+  "complaint_history_inspected": "Inspeccionada"
 }

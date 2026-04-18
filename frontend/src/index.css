@@ -78,6 +78,47 @@ h1, h2, h3, h4, h5, h6,
   flex-shrink: 0;
 }
 
+/* === LANGUAGE TOGGLE =================================== */
+.lang-toggle,
+.lang-toggle:hover,
+.lang-toggle:focus,
+.lang-toggle:active,
+.lang-toggle.show {
+  background-color: transparent !important;
+  color: #fff !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.lang-toggle:hover,
+.lang-toggle:focus {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* === DROPDOWN ========================================== */
+.dropdown-menu {
+  background-color: var(--c-navy);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.dropdown-item {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background-color: var(--c-navy-mid);
+  color: #fff;
+}
+
+.dropdown-item.active,
+.dropdown-item:active {
+  background-color: var(--c-amber);
+  color: var(--c-navy);
+}
+
 /* === COLOR OVERRIDES =================================== */
 .bg-primary   { background-color: var(--c-navy) !important; }
 .bg-danger    { background-color: var(--c-red) !important; }

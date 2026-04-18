@@ -72,19 +72,18 @@ The platform acts as a reasoning layer that correlates real-time tenant observat
 
 ```mermaid
 graph TD
-    A[Resident Enters Address] --> B{Geocoding Service}
-    B -->|Primary| C[NYC Geoclient v2 API]
-    B -->|Fallback| D[NYC Planning GeoSearch]
+    A[Resident Enters Address] --> B[NYC Planning GeoSearch API]
     
-    C --> E[BIN, Coordinates, Political Districts]
-    D --> E
+    B --> C[BIN + Coordinates]
+    C --> D[NYC Open Data: Council District Spatial Lookup]
+    D --> E[BIN, Coordinates, Council District]
     
     E --> F[Data Collection Pipeline]
     
     subgraph "External Data Fetching"
         F --> G[NYC Open Data: SODA API]
         F --> H[SerpAPI: Local News Search]
-        F --> I[NYC Council Data: District Mapping]
+        F --> I[NYC Open Data: District Boundaries]
     end
     
     G --> J[Consensus Manager]
@@ -153,9 +152,8 @@ All text meets the **4.5:1 contrast ratio** required for small text. A concrete 
 
 Accessibility isn't just about screen readers and high contrast; it's about **access to the truth.** In NYC, the data that should protect tenants is often locked behind the same kind of bureaucratic gatekeeping that keeps an elevator broken for months.
 
-- **The "API Rite of Passage"**: Even in 2026, a developer building a tool for their community must wait days for a "Geoclient" API key to be manually approved. This is a digital mirror of the slow-walked "DOB Inquiry" that tenants face. While the MTA processes OMNY swipes in milliseconds, our city's residential infrastructure data still moves at the speed of a paper filing.
 - **The Real-Time Myth**: The NYC Open Data (SODA) API is a vital resource, but it is nowhere near real-time. This lag means that by the time an official complaint shows up in a city database, a senior has already been trapped on the 10th floor for 48 hours.
-- **Our Response**: We don't wait for the city to catch up. By using **NYC Planning GeoSearch fallbacks** and our **2-Hour Consensus Engine**, we create our own source of truth. We believe that in an age of instant data, there is no excuse for residential elevators not to have transparent, actionable, and immediate data reporting for the public.
+- **Our Response**: We don't wait for the city to catch up. By using **NYC Planning GeoSearch** (no API key, no approval wait) and our **2-Hour Consensus Engine**, we create our own source of truth. We believe that in an age of instant data, there is no excuse for residential elevators not to have transparent, actionable, and immediate data reporting for the public.
 
 ---
 
@@ -213,7 +211,7 @@ A persistent **Lead Orchestrator** named **Sol** manages six domain specialists.
 |---|---|---|
 | **Maya** | React 19, TypeScript, design system, i18n | Elias, Kiran |
 | **Elias** | Django 6.0, DRF, migrations, services | Maya, Kiran |
-| **Kiran** | SODA/Geoclient data pipeline, Gemini API, ML scoring | Maya, Elias |
+| **Kiran** | SODA/GeoSearch data pipeline, Gemini API, ML scoring | Maya, Elias |
 | **Juno** | WCAG 2.2 UX audits, Martha accessibility test | Elias, Kiran |
 | **Blythe** | Pre-flight gate: ruff, mypy, ESLint, jargon sweep | Nobody — runs last |
 | **Aris** | Post-sprint memory sync, knowledge base maintenance | Nobody — runs last |
@@ -271,7 +269,7 @@ Starting from `git init` on April 12, 2026, the team shipped:
 
 - Django REST API with 2-hour consensus engine, predictive failure scoring, and news intelligence
 - React 19 frontend with address search, interactive Leaflet map, building detail action center, and [`/data`](https://elevatoradvocate.nyc/data) stories page
-- NYC Open Data (SODA) pipeline for 300K+ elevator complaints; NYC Geoclient v2 integration for address → BIN resolution
+- NYC Open Data (SODA) pipeline for 300K+ elevator complaints; NYC Planning GeoSearch for address → BIN resolution (no API key required)
 - EN/ES localization across 80+ UI strings
 - Token authentication, user profiles, and per-user advocacy logs
 - WCAG 2.2 AA accessibility: custom contrast tokens, 6 axe-core + Playwright tests on "Martha's Journey" scenarios, Lighthouse CI (93/100 home, 100/100 /data)

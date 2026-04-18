@@ -1,15 +1,40 @@
-from typing import Any
+from typing import Any, Optional
 
 import requests
+
+COUNCIL_DISTRICTS_URL = "https://data.cityofnewyork.us/resource/872g-cjhh.json"
+
+
+def district_from_coordinates(lat: float, lon: float) -> Optional[str]:
+    """
+    Returns the NYC Council district number for a lat/lon via a
+    point-in-polygon spatial query against NYC Open Data (no API key needed).
+    """
+    try:
+        response = requests.get(
+            COUNCIL_DISTRICTS_URL,
+            params={
+                "$where": f"intersects(the_geom, 'POINT ({lon} {lat})')",
+                "$select": "coundist",
+                "$limit": "1",
+            },
+            timeout=5,
+        )
+        response.raise_for_status()
+        results = response.json()
+        if results:
+            return str(results[0].get("coundist"))
+    except Exception:
+        pass
+    return None
 
 
 class GeoSearchService:
     """
     Geocoder backed by the NYC Planning Labs GeoSearch API.
 
-    No authentication required. Used as a fallback when the NYC Geoclient
-    subscription key is not yet active. Returns the same shape as
-    GeoclientService so the two are interchangeable at the call site.
+    No authentication required. Primary geocoder for address → BIN resolution.
+    Also performs a council district spatial lookup from the returned coordinates.
 
     Reference: https://geosearch.planninglabs.nyc/v2
     """
@@ -18,12 +43,13 @@ class GeoSearchService:
 
     # GeoSearch uses Pelias borough names; map our app's values to its expectation.
     BOROUGH_ALIASES: dict[str, str] = {
-        "manhattan": "Manhattan",
-        "brooklyn": "Brooklyn",
-        "queens": "Queens",
-        "bronx": "Bronx",
-        "staten island": "Staten Island",
-        "staten_island": "Staten Island",
+        "manhattan": "manhattan",
+        "brooklyn": "brooklyn",
+        "queens": "queens",
+        "bronx": "bronx",
+        "the bronx": "bronx",
+        "staten island": "staten island",
+        "staten_island": "staten island",
     }
 
     def get_bin_with_coordinates(
@@ -36,7 +62,8 @@ class GeoSearchService:
         GeoSearch `/search` endpoint, then extracts the BIN from the PAD
         addendum on the first result.
         """
-        borough_display = self.BOROUGH_ALIASES.get(borough.lower(), borough)
+        borough_key = self.BOROUGH_ALIASES.get(borough.lower(), borough.lower())
+        borough_display = borough_key.title()
         query = f"{house_number} {street}, {borough_display}, NY"
 
         try:
@@ -59,10 +86,23 @@ class GeoSearchService:
             if not bin_id or not coords:
                 return {}
 
+            returned_borough = self.BOROUGH_ALIASES.get(
+                props.get("borough", "").lower(), props.get("borough", "").lower()
+            )
+            if returned_borough and returned_borough != borough_key:
+                print(
+                    f"GeoSearch borough mismatch: requested '{borough}', "
+                    f"got '{props.get('borough')}' — rejecting result."
+                )
+                return {}
+
+            council_district = district_from_coordinates(coords[1], coords[0])
+
             return {
                 "bin": str(bin_id),
                 "latitude": str(coords[1]),
                 "longitude": str(coords[0]),
+                "city_council_district": council_district,
             }
 
         except (requests.RequestException, KeyError, IndexError) as exc:

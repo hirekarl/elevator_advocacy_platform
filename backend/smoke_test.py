@@ -22,14 +22,14 @@ def run_smoke_test():
     load_dotenv(root_dir / ".env")
 
     # Check for Mock Mode
-    mock_mode = os.getenv("USE_MOCK_GEOCLIENT", "False") == "True"
+    mock_mode = os.getenv("USE_MOCK_GEOCODER", "False") == "True"
     print(f"--- 🚀 Initializing Smoke Test (Mock Mode: {mock_mode}) ---")
 
     manager = ConsensusManager()
     soda = SODAService()
 
-    # 1. Test Geoclient (120 Broadway, Manhattan)
-    print("\n1. Testing Geoclient (Address -> BIN)...")
+    # 1. Test GeoSearch (120 Broadway, Manhattan)
+    print("\n1. Testing GeoSearch (Address -> BIN)...")
     building = manager.get_or_create_building("120", "Broadway", "Manhattan")
 
     if building:
@@ -37,7 +37,7 @@ def run_smoke_test():
         bin_id = building.bin
     else:
         print(
-            "❌ Geoclient Failed. Check your NYC_API_KEY or set USE_MOCK_GEOCLIENT=True in .env"
+            "❌ GeoSearch Failed. Check network connectivity or set USE_MOCK_GEOCODER=True in .env"
         )
         return
 

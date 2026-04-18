@@ -6,8 +6,8 @@ from django.contrib.auth.models import User
 from django.db.models import Count
 from django.utils import timezone
 
-from services.geoclient import GeoclientService
-from services.geoclient_mock import MockGeoclientService
+from services.geosearch import GeoSearchService
+from services.geosearch_mock import MockGeoSearchService
 
 from .models import Building, ElevatorReport
 
@@ -19,18 +19,18 @@ class ConsensusManager:
 
     CONSENSUS_WINDOW_MINUTES = 120
 
-    def __init__(self, geoclient: Optional[Any] = None):
-        if geoclient:
-            self.geoclient = geoclient
-        elif os.getenv("USE_MOCK_GEOCLIENT", "False") == "True":
-            self.geoclient = MockGeoclientService()
+    def __init__(self, geocoder: Optional[Any] = None):
+        if geocoder:
+            self.geocoder = geocoder
+        elif os.getenv("USE_MOCK_GEOCODER", "False") == "True":
+            self.geocoder = MockGeoSearchService()
         else:
-            self.geoclient = GeoclientService()
+            self.geocoder = GeoSearchService()
 
     @property
     def is_mocked(self) -> bool:
-        """Returns True if the underlying geoclient is a mock."""
-        return getattr(self.geoclient, "is_mocked", False)
+        """Returns True if the underlying geocoder is a mock."""
+        return getattr(self.geocoder, "is_mocked", False)
 
     def get_or_create_building(
         self, house_number: str, street: str, borough: str
@@ -47,12 +47,10 @@ class ConsensusManager:
         self, house_number: str, street: str, borough: str
     ) -> tuple[Optional[Building], bool]:
         """
-        Retrieves a building by BIN, creating it via Geoclient if it doesn't exist.
+        Retrieves a building by BIN, creating it via GeoSearch if it doesn't exist.
         Returns a tuple (Building, created).
         """
-        geo_data = self.geoclient.get_bin_with_coordinates(
-            house_number, street, borough
-        )
+        geo_data = self.geocoder.get_bin_with_coordinates(house_number, street, borough)
         bin_id = geo_data.get("bin")
 
         if not bin_id:
@@ -71,8 +69,8 @@ class ConsensusManager:
             },
         )
 
-        # Backfill: If the building exists but lacks district data (e.g., from a previous GeoSearch fallback),
-        # and we now have district data from Geoclient, update it.
+        # Backfill: if the building exists but was geocoded before district lookup
+        # was added to GeoSearchService, populate it now.
         if not created and not building.city_council_district:
             if geo_data.get("city_council_district"):
                 building.city_council_district = geo_data.get("city_council_district")

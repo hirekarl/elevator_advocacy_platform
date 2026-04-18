@@ -270,27 +270,25 @@ class SODAService:
             )
 
         # --- Enrich top buildings with council district data ---
-        use_mock = os.getenv("USE_MOCK_GEOCLIENT", "False").strip().lower() == "true"
+        use_mock = os.getenv("USE_MOCK_GEOCODER", "False").strip().lower() == "true"
 
         if not use_mock:
+            from buildings_app.models import Building as BuildingModel
             from buildings_app.models import CouncilDistrict
-            from services.geoclient import GeoclientService
+            from services.geosearch import district_from_coordinates
 
             def _lookup_district(index: int, bin_val: str) -> tuple[int, Optional[str]]:
                 """Return (index, council_district_str) for a given BIN."""
                 try:
-                    geo_response = GeoclientService().get_address_details(bin_val)
-                    district: Optional[str] = geo_response.get("bin", {}).get(
-                        "cityCouncilDistrict"
-                    )
-                    if not district:
-                        district = geo_response.get("address", {}).get(
-                            "cityCouncilDistrict"
+                    db_building = BuildingModel.objects.get(bin=bin_val)
+                    if db_building.latitude and db_building.longitude:
+                        district = district_from_coordinates(
+                            float(db_building.latitude), float(db_building.longitude)
                         )
-                    return (index, str(district).strip() if district else None)
+                        return (index, district)
                 except Exception as exc:
-                    print(f"Geoclient district lookup error for BIN {bin_val}: {exc}")
-                    return (index, None)
+                    print(f"District lookup error for BIN {bin_val}: {exc}")
+                return (index, None)
 
             district_futures: dict[Any, int] = {}
             with ThreadPoolExecutor(max_workers=5) as geo_pool:
@@ -305,7 +303,7 @@ class SODAService:
                         result_idx, council_district = fut.result()
                         top_buildings[result_idx]["council_district"] = council_district
                     except Exception as exc:
-                        print(f"Geoclient future error: {exc}")
+                        print(f"District future error: {exc}")
 
             # Resolve rep names from CouncilDistrict model (one query per building, ≤15)
             for building in top_buildings:

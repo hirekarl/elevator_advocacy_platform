@@ -57,21 +57,49 @@ I’m Karl Johnson. Let’s get to work."
 
 ---
 
-## Script 2: User-Facing Video Pitch (2026-04-17)
-**Goal:** 2-Minute Direct-to-User Video
+## Script 2: User-Facing Demo Video (2026-04-17, revised)
+**Goal:** ~2-Minute Direct-to-User Video
 **Tone:** Urgent, grounded, neighbor-to-neighbor
 **Audience:** NYC tenants above the 3rd floor — potential app users
+**Screen recording runtime:** ~66 seconds (8 acts; see `demo/elevator_advocate_demo.spec.ts`)
+
+> **Production note — district:** The demo building (1853 Anthony Avenue, BIN 2007566) is in **Council District 15**, not District 17. Karl lives in District 17; the demo building was chosen for complaint volume, not district alignment. Script 1's "ask" to District 17 reps remains accurate for Karl's own advocacy. If you want Script 1 and the demo to reference the same district, either swap the demo building for one in District 17, or update Script 1's ask to District 15 rep Pierina Sanchez.
 
 ---
 
-| Visuals | Audio |
-|---|---|
-| NYC skyline in summer heat, slow push in | **"Summer is coming."** |
-| High-rise exterior looking up, then a stalled elevator door | **"Last year, a heat wave swept through New York City. In high-rises across every borough, seniors were trapped — elevators out, no way down, no way to get help. In Coney Island, one building logged more than 47 outages in a single year. In Queens, a hundred-year-old woman was stuck in her apartment for over thirty days."** |
-| Elderly person gripping a stair railing | **"I live in the Bronx. I've seen this. I know what it looks like when a neighbor can't get downstairs, and building management isn't picking up the phone."** |
-| Karl on camera, direct address | **"The thing is — we already know when the elevator is out. We see it. We hear about it in the hallway. We just have no way to make that knowledge count. That's what we wanted to change."** |
-| Neighbors talking in a hallway, a hand knocking on a door | *(pause — let the visuals breathe)* |
-| App screen recording (45 sec) | **"Go to elevatoradvocate.nyc, type in your address, and in seconds you'll see your building's elevator complaint history — pulled directly from NYC open data. Real complaints. Real dates. Right there. If your elevator goes out, flag it. When a neighbor confirms it, it gets marked Verified. Now it's not just your word against management's — it's a record. It's real. And the people who can fight for you have something to stand on."** |
-| City street level, people walking together | **"311 is slow. Building management doesn't always respond. But we know what's happening in our own buildings. Elevator Advocate is how we make that count — together, before the next heat wave, not after."** |
-| Slow fade to app logo | **"Search your building at elevatoradvocate.nyc."** |
-| Hold on logo | ***"Is your elevator working today?"*** |
+### Part 1 — B-Roll + Direct Address (0:00 – 0:55)
+
+| Time | Visuals | Audio |
+|---|---|---|
+| 0:00 | NYC skyline in summer heat haze, slow push in | **"Summer is coming."** |
+| 0:04 | High-rise exterior, looking straight up; cut to stalled elevator doors | **"Last year, a heat wave swept through New York City. In high-rises across every borough, seniors were trapped — elevators out, no way down, no way to get help. In Coney Island, one building logged more than 47 outages in a single year. In Queens, a hundred-year-old woman was stuck in her apartment for over thirty days."** |
+| 0:28 | Elderly person gripping a stair railing, slow steps | **"I live in the Bronx. I've seen this. I know what it looks like when a neighbor can't get downstairs and building management isn't picking up the phone."** |
+| 0:38 | Karl on camera, direct address | **"We already know when the elevator is out — we see it, we hear about it in the hallway. We just have no way to make that knowledge count. That's what we built Elevator Advocate to change."** |
+| 0:52 | Neighbors talking in a hallway | *(brief pause — let the visuals breathe, prep for screen cut)* |
+
+---
+
+### Part 2 — App Screen Recording (0:55 – 2:01, ~66 sec)
+
+*Cut to 1600×900 screen recording. No voiceover transitions — each narration line plays while the action is on screen.*
+
+| Time | What's on screen (demo act) | Narration |
+|---|---|---|
+| 0:55 | **ACT 1** — Landing page hero loads; slow scroll through advocacy sections | **"Go to elevatoradvocate.nyc."** *(let the hero breathe — 3 seconds of silence)* |
+| 1:10 | **ACT 2** — Scroll back to top; "1853" typed into house number, "Anthony Avenue" into street, "Bronx" selected from dropdown | **"Type in your address."** |
+| 1:22 | **ACT 3** — Building detail page loads; status header visible, action center prominent | **"In seconds — here's your building. Every elevator complaint the city has ever logged, right there."** |
+| 1:30 | **ACT 4** — Smooth scroll into building metrics cards | **"Loss of service. Days down. Outage frequency. Hard numbers."** |
+| 1:38 | **ACT 5** — AI Executive Summary appears; "CRITICAL" badge visible | **"An AI summary reads the full complaint record and flags the risk level. This building? Critical."** |
+| 1:48 | **ACT 6** — Complaint History expands; full list scrolls into view, oldest to newest | **"Fifty complaints. Real dates. Filed with the city. This is the paper trail management hopes you never find."** |
+| 1:55 | **ACT 7** — Advocacy Center section; 311 call button scrolls into view | **"One tap to call 311 — right from the same screen."** |
+| 1:58 | **ACT 8** — Talking points / advocacy script section | **"And a script of exactly what to say when they pick up."** |
+
+---
+
+### Part 3 — Closing (2:01 – 2:20)
+
+| Time | Visuals | Audio |
+|---|---|---|
+| 2:01 | City street level, neighbors walking together | **"311 is slow. Building management doesn't always respond. But we know what's happening in our own buildings — Elevator Advocate is how we make that count. Together. Before the next heat wave, not after."** |
+| 2:14 | Slow fade to app logo on dark background | **"Search your building at elevatoradvocate.nyc."** |
+| 2:18 | Hold on logo | ***"Is your elevator working today?"*** |

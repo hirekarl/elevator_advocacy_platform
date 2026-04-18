@@ -6,7 +6,7 @@ from django.test import TestCase
 from django.utils import timezone
 from rest_framework.test import APITestCase
 
-from services.geoclient import GeoclientService
+from services.geosearch import GeoSearchService
 
 from .logic import ConsensusManager
 from .models import Building, ElevatorReport
@@ -19,8 +19,8 @@ class ConsensusManagerTests(TestCase):
 
     def setUp(self):
         # Mock Geoclient to avoid external API calls
-        self.mock_geoclient = MagicMock(spec=GeoclientService)
-        self.manager = ConsensusManager(geoclient=self.mock_geoclient)
+        self.mock_geocoder = MagicMock(spec=GeoSearchService)
+        self.manager = ConsensusManager(geocoder=self.mock_geocoder)
 
         self.building = Building.objects.create(
             bin="1234567", address="123 Broadway", borough="Manhattan"

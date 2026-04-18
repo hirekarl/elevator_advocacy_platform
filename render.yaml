@@ -33,15 +33,13 @@ services:
         sync: false
       - key: DJANGO_TIME_ZONE
         value: "America/New_York"
-      - key: NYC_API_KEY
-        sync: false
       - key: SODA_APP_TOKEN
         sync: false
       - key: GEMINI_API_KEY
         sync: false
       - key: SERPAPI_KEY
         sync: false
-      - key: USE_MOCK_GEOCLIENT
+      - key: USE_MOCK_GEOCODER
         value: "False"
       - key: USE_MOCK_SERPAPI
         value: "False"

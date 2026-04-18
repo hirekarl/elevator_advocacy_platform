@@ -18,7 +18,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from buildings_app.models import Building, ElevatorReport, UserProfile
-from services.geoclient import GeoclientService
+from services.geosearch import GeoSearchService
 from services.soda import SODAService
 
 BUILDINGS_TO_SEED = [
@@ -86,12 +86,12 @@ class Command(BaseCommand):
     # ------------------------------------------------------------------
 
     def _seed_buildings(self) -> list[Building]:
-        geoclient = GeoclientService()
+        geocoder = GeoSearchService()
         seeded: list[Building] = []
 
         for spec in BUILDINGS_TO_SEED:
             self.stdout.write(f"Geocoding {spec['label']}...")
-            geo = geoclient.get_bin_with_coordinates(
+            geo = geocoder.get_bin_with_coordinates(
                 spec["house_number"], spec["street"], spec["borough"]
             )
 

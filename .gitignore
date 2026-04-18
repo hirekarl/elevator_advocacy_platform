@@ -481,5 +481,9 @@ $RECYCLE.BIN/
 # Playwright
 frontend/playwright-report/
 frontend/test-results/
+frontend/demo/recordings/
 # Lighthouse CI output
 .lighthouseci/
+
+# Local presentation assets
+preso/

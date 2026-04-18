@@ -112,7 +112,7 @@ All "High-Risk" and "Critical" health reports must be synthesized using the **hu
 - **Backend**: Django 6.0, Django REST Framework, Python 3.12+, `uv` package manager
 - **Frontend**: React 19, TypeScript, Vite, React Bootstrap, Leaflet maps, i18next (EN/ES)
 - **Database**: SQLite (dev), PostgreSQL (prod via Render.com)
-- **External APIs**: NYC Geoclient v2, NYC SODA (`kqwi-7ncn`), Google Gemini (`gemini-2.5-flash`), SerpAPI
+- **External APIs**: NYC Planning GeoSearch, NYC SODA (`kqwi-7ncn`), Google Gemini (`gemini-2.5-flash`), SerpAPI
 - **Task Queue**: Django Tasks Framework (`ImmediateBackend` dev, `DatabaseBackend` prod)
 
 ## Development Commands
@@ -146,7 +146,7 @@ uv run pytest buildings_app/tests.py::ClassName  # Single class
 uv run pytest -v                                 # Verbose
 ```
 
-Pytest config lives in `backend/pyproject.toml` (`[tool.pytest.ini_options]`). Set `USE_MOCK_GEOCLIENT=True` in `.env` to skip real Geoclient API calls in tests.
+Pytest config lives in `backend/pyproject.toml` (`[tool.pytest.ini_options]`). Set `USE_MOCK_GEOCODER=True` in `.env` to use `MockGeoSearchService` in tests (no external calls).
 
 Frontend e2e tests run via Playwright + axe-core: `npx playwright test` (from `frontend/`). Test suite is `frontend/e2e/martha.spec.ts` — Martha's Journey accessibility scenarios. Lighthouse CI: `npm run build && npm run lhci`.
 
@@ -173,12 +173,11 @@ Copy `.env.example` to `.env`. Key variables:
 
 | Variable | Purpose |
 |---|---|
-| `NYC_API_KEY` | NYC Geoclient v2 |
 | `SODA_APP_TOKEN` | NYC Open Data (Socrata) |
 | `GEMINI_API_KEY` | Google Gemini (news extraction) |
 | `SERPAPI_KEY` | SerpAPI (Google Search) |
 | `DJANGO_SECRET_KEY` | Django secret (`openssl rand -base64 32`) |
-| `USE_MOCK_GEOCLIENT` | `True` to skip Geoclient in dev/test |
+| `USE_MOCK_GEOCODER` | `True` to use `MockGeoSearchService` in dev/test |
 | `USE_MOCK_SERPAPI` | `True` to skip SerpAPI in dev |
 | `DJANGO_TIME_ZONE` | Must be `America/New_York` (2-hour window logic depends on it) |
 
@@ -188,7 +187,7 @@ Copy `.env.example` to `.env`. Key variables:
 
 ```
 HeroSearch (address input)
-  → POST /api/buildings/lookup/       → Geoclient API → BIN
+  → POST /api/buildings/lookup/       → GeoSearch → BIN + district
   → GET  /api/buildings/{bin}/        → BuildingViewSet → aggregated data
   → POST /api/reports/                → ReportViewSet → ConsensusManager
 ```
@@ -199,7 +198,7 @@ HeroSearch (address input)
 
 ### Data Pipeline (`buildings_app/views.py`, `services/`)
 
-1. **Geocoding** (`services/geoclient.py`): Address → BIN via NYC Geoclient
+1. **Geocoding** (`services/geosearch.py`): Address → BIN + council district via NYC Planning GeoSearch + NYC Open Data spatial query (`872g-cjhh`)
 2. **SODA queries** (`services/soda.py`): Elevator complaints from dataset `kqwi-7ncn` (active codes: `6S` = elevator complaint, `6M` = elevator/escalator; codes `81` and `63` are retired and must not be used)
 3. **Predictive engine** (`buildings_app/ai_logic.py`): 7-day failure risk score using 180-day baseline vs. 14-day recent volatility
 4. **News intelligence** (`services/news_search.py`): SerpAPI → Gemini extraction → relevance score (0–1); 24-hour refresh cooldown per building to protect API quotas

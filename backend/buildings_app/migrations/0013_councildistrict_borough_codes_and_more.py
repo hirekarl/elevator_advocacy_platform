@@ -4,20 +4,27 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('buildings_app', '0012_building_management_company_building_owner_name'),
+        ("buildings_app", "0012_building_management_company_building_owner_name"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='councildistrict',
-            name='borough_codes',
-            field=models.JSONField(blank=True, default=list, help_text="SODA borough codes (e.g., ['2', '1'])"),
+            model_name="councildistrict",
+            name="borough_codes",
+            field=models.JSONField(
+                blank=True,
+                default=list,
+                help_text="SODA borough codes (e.g., ['2', '1'])",
+            ),
         ),
         migrations.AddField(
-            model_name='councildistrict',
-            name='boroughs',
-            field=models.JSONField(blank=True, default=list, help_text="Borough names (e.g., ['Bronx', 'Manhattan'])"),
+            model_name="councildistrict",
+            name="boroughs",
+            field=models.JSONField(
+                blank=True,
+                default=list,
+                help_text="Borough names (e.g., ['Bronx', 'Manhattan'])",
+            ),
         ),
     ]

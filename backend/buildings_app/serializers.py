@@ -12,7 +12,14 @@ class CouncilDistrictSerializer(serializers.ModelSerializer[CouncilDistrict]):
 
     class Meta:
         model = CouncilDistrict
-        fields = ["district_id", "member_name", "email", "phone", "committees", "last_synced"]
+        fields = [
+            "district_id",
+            "member_name",
+            "email",
+            "phone",
+            "committees",
+            "last_synced",
+        ]
 
 
 class BuildingNewsSerializer(serializers.ModelSerializer[BuildingNews]):

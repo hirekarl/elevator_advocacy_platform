@@ -1,5 +1,6 @@
 from typing import Final
 
+from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.functions import Now
 
@@ -26,9 +27,6 @@ class Building(models.Model):
 
     def __str__(self) -> str:
         return f"{self.address} (BIN: {self.bin})"
-
-
-from django.contrib.auth.models import User
 
 
 class ElevatorReport(models.Model):
@@ -166,8 +164,14 @@ class CouncilDistrict(models.Model):
             "NYC Council committee memberships, e.g. ['Housing & Buildings (Chair)']"
         ),
     )
-    boroughs = models.JSONField(default=list, blank=True, help_text="Borough names (e.g., ['Bronx', 'Manhattan'])")
-    borough_codes = models.JSONField(default=list, blank=True, help_text="SODA borough codes (e.g., ['2', '1'])")
+    boroughs = models.JSONField(
+        default=list,
+        blank=True,
+        help_text="Borough names (e.g., ['Bronx', 'Manhattan'])",
+    )
+    borough_codes = models.JSONField(
+        default=list, blank=True, help_text="SODA borough codes (e.g., ['2', '1'])"
+    )
     last_synced = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     class Meta:

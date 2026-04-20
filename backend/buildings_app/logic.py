@@ -230,16 +230,19 @@ class ConsensusManager:
         STRICTLY bypasses fetch_building_news to conserve SerpAPI tokens.
         """
         from datetime import datetime
+
         from services.soda import SODAService
 
         synced_count = 0
         soda_service = SODAService()
-        
+
         # Performance: Pre-resolve all BINs for the target district if specified
         allowed_bins = None
         if target_district:
             allowed_bins = set(soda_service.get_district_bins(target_district))
-            print(f"Pre-filtered to {len(allowed_bins)} BINs for District {target_district}")
+            print(
+                f"Pre-filtered to {len(allowed_bins)} BINs for District {target_district}"
+            )
 
         # Group reports by BIN
         reports_by_bin: Dict[str, List[Dict[str, Any]]] = {}
@@ -272,19 +275,21 @@ class ConsensusManager:
                         "5": "Staten Island",
                     }
                     borough_name = borough_map.get(cb[0] if cb else "", "")
-                    
+
                     # This triggers geocoding which includes district lookup
                     building, created = self.get_or_create_building_with_status(
                         house_number=house_num,
                         street=street,
                         borough=borough_name,
                     )
-                
+
                 if not building:
                     continue
 
                 # 3. Double check target district (allowed_bins should handle this, but for safety)
-                if target_district and str(building.city_council_district) != str(target_district):
+                if target_district and str(building.city_council_district) != str(
+                    target_district
+                ):
                     continue
 
                 # 4. Enrich with management data if missing
@@ -293,7 +298,9 @@ class ConsensusManager:
                     if mgmt_data["management_company"] or mgmt_data["owner_name"]:
                         building.management_company = mgmt_data["management_company"]
                         building.owner_name = mgmt_data["owner_name"]
-                        building.save(update_fields=["management_company", "owner_name"])
+                        building.save(
+                            update_fields=["management_company", "owner_name"]
+                        )
 
                 # 5. Sync reports (Batch check existence)
                 existing_keys = set(
@@ -304,7 +311,9 @@ class ConsensusManager:
 
                 new_reports = []
                 for report in reports:
-                    unique_key = report.get("unique_key") or report.get("complaint_number")
+                    unique_key = report.get("unique_key") or report.get(
+                        "complaint_number"
+                    )
                     if not unique_key or unique_key in existing_keys:
                         continue
 
@@ -329,7 +338,7 @@ class ConsensusManager:
                             reported_at=reported_at,
                         )
                     )
-                
+
                 if new_reports:
                     ElevatorReport.objects.bulk_create(new_reports)
                     synced_count += len(new_reports)

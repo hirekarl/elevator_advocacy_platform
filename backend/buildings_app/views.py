@@ -63,12 +63,10 @@ class DistrictViewSet(viewsets.ReadOnlyModelViewSet[CouncilDistrict]):
             )
 
         manager = ConsensusManager()
-        
+
         # Aggregated Metrics
         total_buildings = buildings.count()
-        los_values = [
-            manager.get_loss_of_service_percentage(b) for b in buildings
-        ]
+        los_values = [manager.get_loss_of_service_percentage(b) for b in buildings]
         avg_los = sum(los_values) / len(los_values) if los_values else 0.0
 
         # Active Outages (Verified DOWN)
@@ -85,33 +83,38 @@ class DistrictViewSet(viewsets.ReadOnlyModelViewSet[CouncilDistrict]):
                 reported_at__gte=timezone.now() - timedelta(days=30)
             ).count()
             if complaint_count > 0:
-                offender_list.append({
-                    "bin": b.bin,
-                    "address": b.address,
-                    "management_company": b.management_company or "Unknown Management",
-                    "owner_name": b.owner_name or "Unknown Owner",
-                    "complaint_count": complaint_count,
-                    "loss_of_service": manager.get_loss_of_service_percentage(b)
-                })
-        
+                offender_list.append(
+                    {
+                        "bin": b.bin,
+                        "address": b.address,
+                        "management_company": b.management_company
+                        or "Unknown Management",
+                        "owner_name": b.owner_name or "Unknown Owner",
+                        "complaint_count": complaint_count,
+                        "loss_of_service": manager.get_loss_of_service_percentage(b),
+                    }
+                )
+
         top_offenders = sorted(
             offender_list, key=lambda x: x["complaint_count"], reverse=True
         )[:10]
 
-        return Response({
-            "district": district.district_id,
-            "member": district.member_name,
-            "contact": {
-                "email": district.email,
-                "phone": district.phone,
-            },
-            "stats": {
-                "total_buildings": total_buildings,
-                "avg_loss_of_service": round(avg_los, 2),
-                "active_outages": active_outages,
-            },
-            "top_offenders": top_offenders,
-        })
+        return Response(
+            {
+                "district": district.district_id,
+                "member": district.member_name,
+                "contact": {
+                    "email": district.email,
+                    "phone": district.phone,
+                },
+                "stats": {
+                    "total_buildings": total_buildings,
+                    "avg_loss_of_service": round(avg_los, 2),
+                    "active_outages": active_outages,
+                },
+                "top_offenders": top_offenders,
+            }
+        )
 
 
 class AuthViewSet(viewsets.ViewSet):

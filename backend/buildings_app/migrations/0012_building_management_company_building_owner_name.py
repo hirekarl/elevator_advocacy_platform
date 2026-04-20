@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('buildings_app', '0011_councildistrict_committees'),
+        ("buildings_app", "0011_councildistrict_committees"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='building',
-            name='management_company',
+            model_name="building",
+            name="management_company",
             field=models.CharField(blank=True, max_length=200, null=True),
         ),
         migrations.AddField(
-            model_name='building',
-            name='owner_name',
+            model_name="building",
+            name="owner_name",
             field=models.CharField(blank=True, max_length=200, null=True),
         ),
     ]

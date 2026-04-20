@@ -36,7 +36,7 @@ Different readers come here for different reasons. Here's where to focus.
 
 | You are… | Start here | Key links |
 |---|---|---|
-| **A local rep or staffer** | [The Stakes](#-the-stakes-why-this-matters) → [Data Research](#-data-research--insights) → [Strategic Path](#-strategic-path-forward) | [District 17 Pilot Brief](./docs/advocacy/district_17_pilot.md) · [Legislative Briefing Template](./docs/advocacy/legislative_briefing_template.md) · [Outreach Docs](./docs/advocacy/) |
+| **A local rep or staffer** | [The Stakes](#-the-stakes-why-this-matters) → [Data Research](#-data-research--insights) → [Strategic Path](#-strategic-path-forward) | [Multi-District Sync Protocol](./docs/development/multi_district_sync_protocol.md) · [Legislative Briefing Template](./docs/advocacy/legislative_briefing_template.md) · [Outreach Docs](./docs/advocacy/) |
 | **A community org or tenant advocate** | [The Mission](#-the-mission) → [How It Works](#️-how-it-works-the-data-synthesis-engine) → [Live Platform](https://elevatoradvocate.nyc) | [Pilot Synthesis](./docs/advocacy/pilot_synthesis_summary.md) · [Council Coalition Plan](./docs/council_coalition.md) |
 | **A Pursuit peer or fellow** | [Multi-Agent Development](#-multi-agent-development-how-this-was-built) → [Tech Stack](#-tech-stack) → [Getting Started](#-getting-started) | [Agent Definitions](./.claude/agents/) · [Sprint 13 Active](./.sprints/active/sprint_13_building_health_reports.md) · [Architecture Spec](./docs/spec.md) |
 | **A civic data person** | [Data Research](#-data-research--insights) → [How It Works](#️-how-it-works-the-data-synthesis-engine) → [Data Stories Page](https://elevatoradvocate.nyc/data) | [Research Scripts](./scripts/data_research/) · [Knowledge Base](./.knowledge_base/) · [SODA Dataset `kqwi-7ncn`](https://data.cityofnewyork.us/resource/kqwi-7ncn.json) |
@@ -320,6 +320,8 @@ Translation files live in `frontend/src/locales/`. Each language is a single fla
    uv sync
    cp .env.example .env # Add your NYC Open Data & Gemini keys
    uv run python manage.py migrate
+   uv run python manage.py loaddata buildings_app/fixtures/council_districts.json
+   uv run python manage.py generate_district_reports --district 17 # Full historical sync
    uv run python manage.py runserver
    ```
 2. **Frontend**:

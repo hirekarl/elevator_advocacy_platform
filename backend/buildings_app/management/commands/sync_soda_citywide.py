@@ -23,17 +23,14 @@ class Command(BaseCommand):
         time_msg = f"last {hours} hours" if hours > 0 else "ALL-TIME"
         self.stdout.write(f"Fetching SODA reports for {time_msg}...")
         
-        # Determine borough if district is provided
-        borough_code = "2" if district_id == "17" else None
-        
         soda = SODAService()
-        reports = soda.get_recent_outages(hours=hours, borough_code=borough_code)
+        reports = soda.get_recent_outages(hours=hours, district_id=district_id)
         
         if not reports:
             self.stdout.write(self.style.WARNING("No reports found in the specified window."))
             return
 
-        self.stdout.write(f"Found {len(reports)} reports. Syncing to database...")
+        self.stdout.write(f"Found {len(reports)} reports. Filtering and Syncing to database...")
         
         manager = ConsensusManager()
         synced_count = manager.sync_citywide_soda_reports(reports, target_district=district_id)

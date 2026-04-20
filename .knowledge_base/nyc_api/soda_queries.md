@@ -10,32 +10,29 @@ The project queries the NYC SODA API (Dataset `kqwi-7ncn`) using Socrata Query L
 To ensure we only track relevant elevator issues, we filter by `complaint_category`:
 - **`6S`**: Elevator complaints (active, 2018–present)
 - **`6M`**: Elevator/escalator complaints (active, 2018–present)
-
-> **Do not use** codes `81` (retired 2007) or `63` (retired 2016) — they return no results on current data.
+- **`81`**, **`63`**: Retired historical categories (used ONLY for all-time historical syncs).
 
 ## Common Query Patterns
 
 ### 1. Fetching by BIN
 Used to retrieve history for a specific building.
 ```python
-where_clause = "bin='{bin}' AND complaint_category IN ('6S', '6M')"
-params = {
-    "$where": where_clause,
-    "$limit": 50,
-    "$$app_token": self.app_token,
-}
+unique_key = report.get("unique_key") or report.get("complaint_number") # Use complaint_number fallback
 ```
 
-### 2. Fetching Recent Outages (Last 24 Hours)
-Used for the global "Loss of Service" dashboard and real-time alerts.
+### 2. Fetching Recent Outages (Lookback Window)
+Because SODA `date_entered` is MM/DD/YYYY text (not ISO), we cannot use SoQL `>` for date filtering. Instead, we:
+1.  Order by `complaint_number DESC`.
+2.  Fetch in batches of 5,000.
+3.  Parse and filter for `threshold` (e.g., last 24 hours) in Python.
+
 ```python
-limit_date = "2026-04-13T10:00:00" # Example timestamp
-where_clause = f"complaint_category IN ('6S', '6M') AND date_entered > '{limit_date}'"
 params = {
-    "$where": where_clause,
-    "$$app_token": self.app_token,
+    "$order": "complaint_number DESC",
+    "$limit": 5000,
+    "$offset": offset,
 }
 ```
 
-### 3. Ordering
-Results are typically ordered by `date_entered DESC` to show the most recent complaints first.
+### 3. Historical Ingestion (Pagination)
+For all-time syncs (e.g. 75k+ records for Bronx), we use `$offset` pagination to capture the full dataset.

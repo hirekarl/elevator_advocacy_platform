@@ -1,3 +1,4 @@
+import time
 from typing import Any, Optional
 
 import requests
@@ -5,12 +6,34 @@ import requests
 COUNCIL_DISTRICTS_URL = "https://data.cityofnewyork.us/resource/872g-cjhh.json"
 
 
-def district_from_coordinates(lat: float, lon: float) -> Optional[str]:
+class RateLimiter:
+    """Simple rate limiter for GeoSearch and SODA spatial queries."""
+
+    def __init__(self, delay_ms: int = 100):
+        self.delay = delay_ms / 1000.0
+        self.last_call = 0.0
+
+    def wait(self):
+        elapsed = time.time() - self.last_call
+        if elapsed < self.delay:
+            time.sleep(self.delay - elapsed)
+        self.last_call = time.time()
+
+
+# Global limiter for standalone function calls
+_global_limiter = RateLimiter(delay_ms=150)
+
+
+def district_from_coordinates(
+    lat: float, lon: float, limiter: Optional[RateLimiter] = None
+) -> Optional[str]:
     """
     Returns the NYC Council district number for a lat/lon via a
     point-in-polygon spatial query against NYC Open Data (no API key needed).
     """
+    wait_limiter = limiter or _global_limiter
     try:
+        wait_limiter.wait()
         response = requests.get(
             COUNCIL_DISTRICTS_URL,
             params={
@@ -52,6 +75,9 @@ class GeoSearchService:
         "staten_island": "staten island",
     }
 
+    def __init__(self):
+        self.limiter = RateLimiter(delay_ms=200)
+
     def get_bin_with_coordinates(
         self, house_number: str, street: str, borough: str
     ) -> dict[str, Any]:
@@ -67,6 +93,7 @@ class GeoSearchService:
         query = f"{house_number} {street}, {borough_display}, NY"
 
         try:
+            self.limiter.wait()
             response = requests.get(
                 self.BASE_URL,
                 params={"text": query, "size": "1"},
@@ -96,7 +123,9 @@ class GeoSearchService:
                 )
                 return {}
 
-            council_district = district_from_coordinates(coords[1], coords[0])
+            council_district = district_from_coordinates(
+                coords[1], coords[0], limiter=self.limiter
+            )
 
             return {
                 "bin": str(bin_id),

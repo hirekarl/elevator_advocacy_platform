@@ -1,4 +1,5 @@
 import os
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import timedelta
 from typing import Any, Dict, List, Optional
@@ -6,6 +7,20 @@ from typing import Any, Dict, List, Optional
 import requests
 from django.core.cache import cache
 from django.utils import timezone
+
+
+class RateLimiter:
+    """Simple rate limiter to prevent hitting NYC Open Data limits."""
+
+    def __init__(self, delay_ms: int = 150):
+        self.delay = delay_ms / 1000.0
+        self.last_call = 0.0
+
+    def wait(self):
+        elapsed = time.time() - self.last_call
+        if elapsed < self.delay:
+            time.sleep(self.delay - elapsed)
+        self.last_call = time.time()
 
 
 class SODAService:
@@ -18,6 +33,18 @@ class SODAService:
 
     def __init__(self, app_token: Optional[str] = None):
         self.app_token = app_token or os.getenv("SODA_APP_TOKEN")
+        self.limiter = RateLimiter(delay_ms=200)
+
+    def get_borough_codes_for_district(self, district_id: str) -> List[str]:
+        """
+        Retrieves the SODA borough codes associated with a council district.
+        """
+        from buildings_app.models import CouncilDistrict
+        try:
+            district = CouncilDistrict.objects.get(district_id=district_id)
+            return district.borough_codes or []
+        except CouncilDistrict.DoesNotExist:
+            return []
 
     def get_elevator_complaints(
         self, bin: str, limit: int = 50
@@ -25,6 +52,7 @@ class SODAService:
         """
         Fetches complaints for a specific BIN, filtered by elevator-related categories.
         """
+        self.limiter.wait()
         # Active category codes as of 2018: '6S' (elevator complaints) and '6M' (elevator/escalator).  # noqa: E501
         # Codes '81' (retired 2007) and '63' (retired 2016) must not be used for current data.  # noqa: E501
         where_clause = f"bin='{bin}' AND complaint_category IN ('6S', '6M')"
@@ -47,47 +75,169 @@ class SODAService:
             return []
 
     def get_recent_outages(
-        self, hours: int = 24, borough_code: Optional[str] = None
+        self, 
+        hours: int = 24, 
+        borough_code: Optional[str] = None, 
+        district_id: Optional[str] = None,
+        max_records: int = 100000
     ) -> List[Dict[str, Any]]:
         """
-        Fetches elevator-related outages across NYC.
-        If hours > 0: Fetches outages from the last N hours.
-        If hours == 0: Fetches ALL-TIME outages (limited to 50k for safety).
-        If borough_code is provided (e.g. '2' for Bronx), filters by that borough.
+        Fetches elevator-related outages across NYC with pagination support.
+        Filters by borough_code OR district_id (which resolves to borough codes).
         """
-        base_where = "complaint_category IN ('6S', '6M')"
-        if borough_code:
-            # SODA community_board starts with borough code (1=MN, 2=BX, etc)
-            base_where += f" AND community_board LIKE '{borough_code}%'"
+        from datetime import datetime
 
+        # SODA date_entered is MM/DD/YYYY text, so we can't query > natively with ISO strings.
+        # If hours > 0, we fetch a large recent batch and filter in Python.
+        # If hours == 0, we perform a full historical ingestion.
+        
+        if hours == 0:
+            categories = "('6S', '6M', '81', '63')"
+            where_clause = f"complaint_category IN {categories}"
+        else:
+            # For recent syncs, we only look at modern codes
+            categories = "('6S', '6M')"
+            where_clause = f"complaint_category IN {categories}"
+
+        # Resolve borough codes from district if provided
+        codes = []
+        if borough_code:
+            codes = [borough_code]
+        elif district_id:
+            codes = self.get_borough_codes_for_district(district_id)
+
+        if codes:
+            code_filters = [f"community_board LIKE '{c}%'" for c in codes]
+            where_clause += f" AND ({' OR '.join(code_filters)})"
+
+        all_reports = []
+        limit = 5000
+        offset = 0
+        
+        # Determine lookback threshold
+        threshold = None
         if hours > 0:
-            limit_date = (timezone.now() - timedelta(hours=hours)).strftime(
-                "%Y-%m-%dT%H:%M:%S"
-            )
-            where_clause = f"{base_where} AND date_entered > '{limit_date}'"
+            threshold = timezone.now() - timedelta(hours=hours)
+
+        while len(all_reports) < max_records:
             params: Dict[str, Any] = {
                 "$where": where_clause,
+                "$limit": limit,
+                "$offset": offset,
+                "$order": "complaint_number DESC", # Best proxy for "recent"
                 "$$app_token": self.app_token,
             }
-        else:
-            # All-time historical ingestion
-            params = {
-                "$where": base_where,
-                "$order": "date_entered DESC",
-                "$limit": 50000,
-                "$$app_token": self.app_token,
-            }
+            
+            self.limiter.wait()
+            try:
+                response = requests.get(self.BASE_URL, params=params, timeout=60)
+                response.raise_for_status()
+                data = response.json()
+                
+                if not data or not isinstance(data, list):
+                    break
+                
+                # Filter by date in Python if lookback window is specified
+                if threshold:
+                    chunk_processed = []
+                    stop_pagination = False
+                    for row in data:
+                        raw_date = row.get("date_entered")
+                        if raw_date:
+                            try:
+                                # Parse MM/DD/YYYY
+                                dt = datetime.strptime(raw_date, "%m/%d/%Y").replace(tzinfo=timezone.get_current_timezone())
+                                if dt >= threshold:
+                                    chunk_processed.append(row)
+                                else:
+                                    # Since we order by complaint_number DESC, we assume older numbers are older dates
+                                    # But SODA isn't 100% sequential by date, so we'll be slightly generous.
+                                    # If we hit a date much older than the threshold, we might stop.
+                                    if (threshold - dt).days > 7:
+                                        stop_pagination = True
+                            except ValueError:
+                                continue
+                    
+                    all_reports.extend(chunk_processed)
+                    if stop_pagination or len(data) < limit:
+                        break
+                else:
+                    all_reports.extend(data)
+                    if len(data) < limit:
+                        break
+                    
+                offset += limit
+                if not threshold:
+                    print(f"Fetched {len(all_reports)} reports so far...")
+                
+            except requests.RequestException as e:
+                print(f"SODA Sync Error at offset {offset}: {e}")
+                break
 
-        try:
-            response = requests.get(self.BASE_URL, params=params, timeout=60)
-            response.raise_for_status()
-            data = response.json()
-            if isinstance(data, list):
-                return data
+        return all_reports
+
+    def get_district_bins(self, district_id: str) -> List[str]:
+        """
+        Retrieves all BINs within a given NYC Council District.
+        Uses MapPLUTO (64uk-42ks) to find BBLs, then Building Footprints (5zhs-2jue) to map to BINs.
+        """
+        PLUTO_URL = "https://data.cityofnewyork.us/resource/64uk-42ks.json"
+        FOOTPRINTS_URL = "https://data.cityofnewyork.us/resource/5zhs-2jue.json"
+        
+        # 1. Get all BBLs for the district
+        all_bbls = []
+        limit = 5000
+        offset = 0
+        
+        print(f"Resolving BBLs for District {district_id}...")
+        while True:
+            self.limiter.wait()
+            params = {
+                "council": district_id,
+                "$select": "bbl",
+                "$limit": limit,
+                "$offset": offset,
+                "$$app_token": self.app_token
+            }
+            resp = requests.get(PLUTO_URL, params=params, timeout=30)
+            resp.raise_for_status()
+            data = resp.json()
+            if not data:
+                break
+            all_bbls.extend([str(row["bbl"]).split(".")[0] for row in data if "bbl" in row])
+            if len(data) < limit:
+                break
+            offset += limit
+            
+        if not all_bbls:
             return []
-        except requests.RequestException as e:
-            print(f"SODA Sync Error: {e}")
-            return []
+            
+        print(f"Found {len(all_bbls)} BBLs. Mapping to BINs...")
+        
+        # 2. Map BBLs to BINs via Footprints (using $where IN for efficiency)
+        all_bins = set()
+        chunk_size = 500
+        for i in range(0, len(all_bbls), chunk_size):
+            chunk = all_bbls[i:i + chunk_size]
+            bbl_list = ",".join([f"'{bbl}'" for bbl in chunk])
+            
+            self.limiter.wait()
+            params = {
+                "$select": "bin",
+                "$where": f"mappluto_bbl IN ({bbl_list})",
+                "$limit": 10000,
+                "$$app_token": self.app_token
+            }
+            resp = requests.get(FOOTPRINTS_URL, params=params, timeout=30)
+            resp.raise_for_status()
+            data = resp.json()
+            for row in data:
+                if "bin" in row:
+                    all_bins.add(row["bin"])
+                    
+        result = list(all_bins)
+        print(f"Resolved {len(result)} BINs for District {district_id}.")
+        return result
 
     def get_management_data(self, bin: str) -> Dict[str, Optional[str]]:
         """
@@ -100,6 +250,7 @@ class SODAService:
         
         try:
             # Step A: Get BBL
+            self.limiter.wait()
             f_resp = requests.get(FOOTPRINTS_URL, params={"bin": bin, "$limit": 1}, timeout=10)
             f_resp.raise_for_status()
             f_data = f_resp.json()
@@ -111,6 +262,7 @@ class SODAService:
                 return {"management_company": None, "owner_name": None}
 
             # Step B: Get Owner from PLUTO
+            self.limiter.wait()
             p_resp = requests.get(PLUTO_URL, params={"bbl": bbl, "$limit": 1}, timeout=10)
             p_resp.raise_for_status()
             p_data = p_resp.json()

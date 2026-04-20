@@ -196,7 +196,7 @@ class ConsensusManager:
         from datetime import datetime
 
         for report in soda_reports:
-            unique_key = report.get("unique_key")
+            unique_key = report.get("unique_key") or report.get("complaint_number")
             if not unique_key:
                 continue
 
@@ -235,19 +235,27 @@ class ConsensusManager:
         synced_count = 0
         soda_service = SODAService()
         
+        # Performance: Pre-resolve all BINs for the target district if specified
+        allowed_bins = None
+        if target_district:
+            allowed_bins = set(soda_service.get_district_bins(target_district))
+            print(f"Pre-filtered to {len(allowed_bins)} BINs for District {target_district}")
+
         # Group reports by BIN
         reports_by_bin: Dict[str, List[Dict[str, Any]]] = {}
         for r in soda_reports:
             bin_id = r.get("bin")
             if bin_id:
+                if allowed_bins is not None and bin_id not in allowed_bins:
+                    continue
                 reports_by_bin.setdefault(bin_id, []).append(r)
 
-        # 1. Pre-fetch existing buildings
-        existing_bins = set(
-            Building.objects.filter(bin__in=reports_by_bin.keys()).values_list("bin", flat=True)
-        )
+        total_bins = len(reports_by_bin)
+        print(f"Processing {total_bins} unique BINs after district pre-filtering...")
 
-        for bin_id, reports in reports_by_bin.items():
+        for i, (bin_id, reports) in enumerate(reports_by_bin.items()):
+            if i % 10 == 0:  # More frequent updates for filtered list
+                print(f"Progress: {i}/{total_bins} BINs processed...")
             try:
                 # 2. Get or create building
                 building = Building.objects.filter(bin=bin_id).first()
@@ -265,6 +273,7 @@ class ConsensusManager:
                     }
                     borough_name = borough_map.get(cb[0] if cb else "", "")
                     
+                    # This triggers geocoding which includes district lookup
                     building, created = self.get_or_create_building_with_status(
                         house_number=house_num,
                         street=street,
@@ -274,8 +283,8 @@ class ConsensusManager:
                 if not building:
                     continue
 
-                # 3. Filter by target district if specified
-                if target_district and building.city_council_district != target_district:
+                # 3. Double check target district (allowed_bins should handle this, but for safety)
+                if target_district and str(building.city_council_district) != str(target_district):
                     continue
 
                 # 4. Enrich with management data if missing
@@ -295,7 +304,7 @@ class ConsensusManager:
 
                 new_reports = []
                 for report in reports:
-                    unique_key = report.get("unique_key")
+                    unique_key = report.get("unique_key") or report.get("complaint_number")
                     if not unique_key or unique_key in existing_keys:
                         continue
 

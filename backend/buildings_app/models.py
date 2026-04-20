@@ -166,6 +166,8 @@ class CouncilDistrict(models.Model):
             "NYC Council committee memberships, e.g. ['Housing & Buildings (Chair)']"
         ),
     )
+    boroughs = models.JSONField(default=list, blank=True, help_text="Borough names (e.g., ['Bronx', 'Manhattan'])")
+    borough_codes = models.JSONField(default=list, blank=True, help_text="SODA borough codes (e.g., ['2', '1'])")
     last_synced = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     class Meta:

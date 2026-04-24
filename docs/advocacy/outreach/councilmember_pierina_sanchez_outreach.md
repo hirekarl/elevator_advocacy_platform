@@ -16,7 +16,7 @@ Unlike the Justin Sanchez outreach (constituent-engagement framing), this is a *
 
 **Recipient:** Councilmember Pierina Ana Sanchez
 **From:** Karl Johnson
-**Subject:** Elevator data for your Housing & Buildings Committee — District 17 pilot completed
+**Subject:** Elevator data for District 14 — 154 chronic offenders identified, dataset available
 
 ---
 
@@ -32,11 +32,13 @@ District 17 surfaced **120 chronic offenders** out of 552 buildings — building
 
 District 14 tells a more urgent story. Of 671 buildings analyzed, **154 qualify as chronic offenders** — a 23% rate. The top address, **2240 Walton Avenue** (University Heights), logged **12 complaints in the last 12 months** and 26 over three years. Two other buildings — 1726 Davidson Avenue and 1600 Sedgwick Avenue — have 3-year complaint counts of 19 and 26 respectively. The full ranked dataset is available here:
 
-https://github.com/hirekarl/elevator_advocate/blob/main/docs/advocacy/districts/district_14/district_14_data_snapshot.csv (aggregated April 24, 2026)
+District 14 report (methodology, priority targets, owner data): https://github.com/hirekarl/elevator_advocate/blob/main/docs/advocacy/districts/district_14/district_14_final_report.md
+
+Full building-level dataset for all 671 buildings — complaint counts, loss of service figures, and legal owner information from MapPLUTO — as a downloadable CSV file (aggregated April 24, 2026): https://github.com/hirekarl/elevator_advocate/blob/main/docs/advocacy/districts/district_14/district_14_data_snapshot.csv
 
 Your committee has the jurisdiction to translate this kind of data into something enforceable. The platform already calculates a "Loss of Service" metric for each building — a ratio of documented outage time to total service period. We believe this metric, refined with expert input, could serve as a standard threshold for triggering DOB audits or owner accountability actions. But we're a prototype, not a finished product, and we know the methodology needs scrutiny from people with housing policy expertise. That's part of what I'm hoping this conversation opens up.
 
-The platform's full source code and data analysis tools are publicly available on GitHub: [github.com/hirekarl/elevator_advocate](https://github.com/hirekarl/elevator_advocate). The data research scripts and Jupyter notebooks used to generate the District 17 audit are in the `scripts/data_research/` directory — everything your staff would need to examine or replicate the analysis independently.
+The platform's full source code and data analysis tools are publicly available on GitHub: https://github.com/hirekarl/elevator_advocate. The `scripts/data_research/` directory contains standalone scripts and Jupyter notebooks for exploring the NYC-wide complaint dataset. The district-level pipeline — which generated the D14 and D17 analyses — is in `backend/buildings_app/management/commands/`. Everything your staff would need to examine or replicate the analysis is there.
 
 NYC elevator complaints spike every summer — July averages 33% above the annual rate, a pattern that holds without exception in city data going back to 2018. The window to act before that spike is short.
 

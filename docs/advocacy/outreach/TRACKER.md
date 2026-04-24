@@ -1,12 +1,19 @@
 # Outreach Tracker
 
-**Last updated:** 2026-04-24 (D26→D27 pivot: Krishnan replaced by Dr. Nantasha Williams)
+**Last updated:** 2026-04-24
 
 One entry per contact. Full draft emails and meeting materials live in `contacts/<folder>/`. Update this file whenever status changes.
 
 ---
 
 ## Active
+
+### D27 — Dr. Nantasha Williams
+**Status:** AWAITING RESPONSE — email sent April 24, 2026
+**Contact:** Councilmember; Housing & Buildings Committee member (only Queens rep on committee)
+**Last action:** Email sent 2026-04-24; 231 buildings, 37 chronic (16%); top address 89-20 161 St (6/34)
+**Next action:** Await response; follow up if no reply in 2 weeks
+**Materials:** [contacts/d27_nantasha_williams/](contacts/d27_nantasha_williams/)
 
 ### D17 — Justin Sanchez
 **Status:** MEETING SCHEDULED — Thursday, May 7, 2026
@@ -26,13 +33,6 @@ One entry per contact. Full draft emails and meeting materials live in `contacts
 **Next action:** After May 7 — use warm intro if offered, else send cold email directly
 **Materials:** [contacts/d14_pierina_sanchez/](contacts/d14_pierina_sanchez/)
 
-### D27 — Dr. Nantasha Williams
-**Status:** READY TO SEND — no blockers; send after D14 outreach is in motion
-**Contact:** Councilmember; Housing & Buildings Committee member (only Queens rep on committee)
-**Last action:** Final report, CSV, and email draft all complete 2026-04-24; 231 buildings, 37 chronic (16%); top address 89-20 161 St (6/34)
-**Next action:** Send after D14 — or independently if D14 is still on hold post-May 7
-**Materials:** [contacts/d27_nantasha_williams/](contacts/d27_nantasha_williams/)
-
 ### Pursuit (Internal)
 **Status:** HOLD — send after May 7 meeting outcome
 **Contact:** Andrew Tein (Strategic Partnerships), JP Bowditch (Strategic Proposals), Carlos Godoy (Lead AI Engineer); CC: Afiya Augustine
@@ -46,6 +46,7 @@ One entry per contact. Full draft emails and meeting materials live in `contacts
 
 | Asset | File | Date |
 |---|---|---|
+| D27 — Dr. Nantasha Williams | [contacts/d27_nantasha_williams/outreach.md](contacts/d27_nantasha_williams/outreach.md) | 2026-04-24 |
 | LinkedIn post | [../../media/social_posts.md](../../media/social_posts.md) | 2026-04-24 |
 | Twitter/X thread | [../../media/social_posts.md](../../media/social_posts.md) | 2026-04-24 |
 
@@ -53,7 +54,7 @@ One entry per contact. Full draft emails and meeting materials live in `contacts
 
 ## Coalition — Not Yet Contacted
 
-Reach out after D14 and D27 are in motion. Priority order:
+Reach out after D14 is in motion. Priority order:
 
 | Priority | Member | District | Committee Role |
 |---|---|---|---|

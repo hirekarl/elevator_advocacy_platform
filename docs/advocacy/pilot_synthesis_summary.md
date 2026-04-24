@@ -1,57 +1,117 @@
-# Executive Summary: Phase 6 Advocacy Pilot & Legislative Coalition
+# Executive Summary: Advocacy Pilot & Legislative Coalition
+
+**Last updated:** April 24, 2026
 
 ## 1. The "Loss of Service" (LoS) Mandate
+
 The core mission is to convert fragmented NYC Open Data (SODA) into a verified, quantified metric for housing justice.
-- **Verification Rule:** A "two-unique-user" consensus window of 120 minutes ensures data integrity [cite: domain_logic/verification_engine.md].
-- **The Metric:** LoS % = (Total Down Time / Total Period Time) * 100.
-- **Heuristic:** Each verified "DOWN" report is assigned a 120-minute (2-hour) downtime block for calculation [cite: domain_logic/los_metrics.md].
 
-## 2. Identified High-Priority "Hotspots"
-Hotspot data comes from two complementary sources:
-1. **City-wide SODA analysis** (`scripts/data_research/district_hotspots.py`): active codes `6S` and `6M`, covering 2025–2026. Used to identify top buildings per priority district for initial outreach framing.
-2. **D17 database analysis** (full pipeline via `generate_district_reports --district 17`): 552 buildings analyzed against all-time SODA records using the **dual-window chronic filter** (1+ complaints in last 12 months AND 3+ over 3 years). 120 buildings qualified as chronic offenders as of April 24, 2026. Full results in `docs/advocacy/districts/district_17/district_17_data_snapshot.csv`.
+- **Verification Rule:** A "two-unique-user" consensus window of 120 minutes ensures data integrity.
+- **The Metric:** LoS % = (Total Down Time / Total Period Time) × 100.
+- **Heuristic:** Each SODA complaint is treated as a proxy for a 2-hour service disruption — the minimum window used to confirm an outage through tenant consensus.
+- **Known limitation:** LoS % is a complaint-frequency index, not a measured duration. SODA complaints record when a complaint was filed, not how long the elevator was down. Present as a relative risk signal, not a precise figure.
 
-⚠️ SODA community board assignments below are inferred from geography. Always confirm exact council district via geocoding before including in a briefing.
+---
 
-**D17 Top 5 (April 24, 2026 — database analysis):**
+## 2. District Analysis Status
+
+All analyses use the **dual-window chronic filter**: 1+ complaints in the last 12 months AND 3+ complaints in the last 3 years. Non-chronic buildings receive a programmatic NOMINAL summary without calling Gemini.
+
+### D17 — Justin Sanchez (Bronx) — COMPLETE
+
+- **552 buildings** analyzed; **120 chronic offenders** (22%); 432 nominal
+- Full report: `docs/advocacy/districts/district_17/district_17_final_report.md`
+- CSV: `docs/advocacy/districts/district_17/district_17_data_snapshot.csv`
 
 | Address | Complaints (12mo) | Complaints (3yr) |
-| :--- | :--- | :--- |
+|:---|:---|:---|
 | **601 East 156 St** | 8 | 24 |
 | **303 East 158 St** | 7 | 26 |
 | **1068 Franklin Ave** | 6 | 11 |
 | **390 East 158 St** | 5 | 36 |
 | **1090 Franklin Ave** | 5 | 12 |
 
-**Cross-district hotspots (SODA city-wide analysis, 2025–2026):**
+*Note: 1150 Tiffany St (cited in original April 17 outreach) was corrected — 3 complaints (12mo) / 7 (3yr), not 12.*
 
-| Address | Borough | District | Council Member | Complaints (12mo) |
-| :--- | :--- | :--- | :--- | :--- |
-| **341 East 162 St** | Bronx | 16 (CB3) | **Althea Stevens** | 20 |
-| **150 Lefferts Ave** | Brooklyn | 35 (CB9) | **Crystal Hudson** | 16 |
-| **1150 Tiffany St** | Bronx | 17 (CB2) | **Justin Sanchez** | 12 |
-| **2045 Story Ave** | Bronx | 18 (CB9) | **Amanda Farías** | 8 |
-| **509 West 155 St** | Manhattan | 10 (CB12) | **Carmen De La Rosa** | 8 |
-| **33 Saratoga Ave** | Brooklyn | 42 (CB16) | **Chris Banks** | 8 |
+### D14 — Pierina Ana Sanchez (Bronx) — COMPLETE
 
-*Note: D26 (Shekar Krishnan) has been added to the priority district list. Run `district_hotspots.py --district krishnan` for current SODA data. Full database analysis requires running `generate_district_reports --district 26` first.*
-
-**D14 (Pierina Ana Sanchez) — COMPLETE (April 24, 2026):**
-- 671 buildings, 154 chronic offenders (23%), 517 nominal
-- Top address: 2240 Walton Avenue — 12 complaints (12mo) / 26 complaints (3yr)
+- **671 buildings** analyzed; **154 chronic offenders** (23%); 517 nominal
+- Top address: **2240 Walton Avenue** — 12 complaints (12mo) / 26 complaints (3yr)
 - Full report: `docs/advocacy/districts/district_14/district_14_final_report.md`
 - CSV: `docs/advocacy/districts/district_14/district_14_data_snapshot.csv`
 
-## 3. The Outreach Strategy
-The strategy expanded from a single-district constituent approach to a multi-district coalition push:
+### D27 — Dr. Nantasha Williams (Queens) — COMPLETE
 
-- **Phase 1 (complete):** D17 pilot — Karl as Justin Sanchez’s constituent. Email sent 2026-04-17. Follow-up drafted 2026-04-24 with GitHub repo and CSV data snapshot links.
-- **Phase 2 (ready to send):** Pierina Ana Sanchez (D14) — Housing & Buildings Committee Chair. Highest-leverage single contact in the Council. D17 is proof of concept; offer to run D14 analysis. Draft at `docs/advocacy/outreach/councilmember_pierina_sanchez_outreach.md`. *Prerequisite: run `generate_district_reports --district 14` first.*
-- **Phase 3 (ready to send):** Shekar Krishnan (D26) — activated by MTA 7-train elevator demonstration (~April 21, 2026). Residential building angle is the complement, not the same fight. Draft at `docs/advocacy/outreach/councilmember_krishnan_outreach.md`. *Prerequisite: run `generate_district_reports --district 26` first.*
-- **Coalition Goal:** Sanchez (D17) leads cross-borough Bronx Power Block; Pierina Sanchez (D14) provides committee-level anchor; Krishnan (D26) opens Queens flank.
-- **Institutional Partners:** Strategic alignment with **CASA**, **Mothers on the Move (MOM)**, and **Mobilization for Justice (MFJ)**.
+- **231 buildings** analyzed; **37 chronic offenders** (16%); 194 nominal
+- Top address: **89-20 161 Street** — 6 complaints (12mo) / 34 complaints (3yr)
+- Active safety complaint on record as of March 2026: **169-28 110 Road**
+- Full report: `docs/advocacy/districts/district_27/district_27_final_report.md`
+- CSV: `docs/advocacy/districts/district_27/district_27_data_snapshot.csv`
 
-## 4. Technical Readiness & Next Steps
-- **KB Alignment:** All core logic has been decomposed into the Knowledge Base. Specialists (Elias, Maya, Kiran) are mandated to follow the "Two-Hop Protocol."
-- **Development Pivot:** Priority is now shifting to the **Member Dashboard** and **Automated Building Health Reports**.
-- **Action Item:** Send the drafted outreach email to Justin Sanchez’s office.
+| Address | Complaints (12mo) | Complaints (3yr) | Risk |
+|:---|:---|:---|:---|
+| **89-20 161 St** | 6 | 34 | CRITICAL |
+| **90-10 149 St** | 6 | 12 | HIGH |
+| **147-40 Archer Ave** | 6 | 7 | HIGH |
+| **90-10 150 St** | 5 | 12 | CRITICAL |
+| **169-28 110 Rd** | 4 | 16 | CRITICAL |
+
+### D26 — Julie Won (Queens) — DATA ONLY, NOT IN ACTIVE OUTREACH
+
+- **524 buildings** analyzed; **37 chronic offenders** (7%); 487 nominal
+- Analysis run April 24, 2026. Julie Won is not on Housing & Buildings Committee.
+- Not in current outreach plan. Data available in database if needed.
+
+---
+
+## 3. Outreach Strategy & Status
+
+All outreach materials live under `docs/advocacy/outreach/`. See `TRACKER.md` for live status.
+
+### Phase 1 — D17 constituent engagement (IN PROGRESS)
+
+- Original email sent **2026-04-17** to Justin Sanchez's office.
+- **Kevin Collado (Community Liaison) responded 2026-04-24** — invited to a virtual intro meeting.
+- **Meeting scheduled: Thursday, May 7, 2026.**
+- Follow-up email superseded by meeting. Meeting brief, notes template, and follow-up template at `contacts/d17_justin_sanchez/`.
+- **Primary ask at meeting:** warm introduction to Pierina Ana Sanchez's office (D14).
+- Justin Sanchez is NOT on Housing & Buildings; outreach framed as constituent engagement.
+
+### Phase 2 — D14 committee pitch (ON HOLD — pending May 7)
+
+- Highest-leverage contact: Pierina Ana Sanchez chairs Housing & Buildings Committee.
+- Draft complete at `contacts/d14_pierina_sanchez/outreach.md`. All data in hand.
+- **On hold:** primary ask on May 7 is a warm intro from Justin Sanchez's office. Cold-emailing before that burns the intro. Send after May 7 — use warm intro if offered, else send cold.
+
+### Phase 3 — D27 Queens committee pitch (SENT — April 24, 2026)
+
+- **Dr. Nantasha Williams** — the only Queens member on the Housing & Buildings Committee.
+- Replaces Shekar Krishnan (D25 — wrong district, no committee jurisdiction).
+- Email sent April 24, 2026. Awaiting response.
+- Draft on file at `contacts/d27_nantasha_williams/outreach.md`.
+
+### Sent
+
+- **LinkedIn post** — sent April 24, 2026
+- **Twitter/X thread** — sent April 24, 2026
+
+### Coalition — not yet contacted
+
+Reach out after D14 and D27 are in motion. All are Housing & Buildings Committee members:
+
+| Priority | Member | District | Role |
+|:---|:---|:---|:---|
+| 4 | Yusef Salaam | D9 (Harlem/West Bronx) | H&B member |
+| 5 | Shaun Abreu | D7 (Upper Manhattan) | H&B member + Transportation Chair |
+| 6 | Oswald Feliz | D15 (Bronx) | H&B member |
+| 7 | Kevin C. Riley | D12 (Norwood/Fordham) | H&B member + Land Use Chair |
+
+---
+
+## 4. Technical Readiness
+
+- **Pre-flight:** `bash backend/scripts/pre_flight.sh` — ruff format + lint, mypy, Django check, pytest. Must pass before every backend commit. Pre-commit hooks installed as of April 24, 2026.
+- **export_district_csv:** Fixed April 24, 2026 to sort chronic-first (12mo desc, 3yr desc) rather than alphabetically. Use `--output` with an absolute path.
+- **District commands:** `generate_district_reports --district <id>` (full pipeline); `export_district_csv --district <id> --output <path>` (CSV snapshot).
+- **Sprint 13 in progress:** Building Health Reports and Resident Dashboard. See `.sprints/active/sprint_13_building_health_reports.md`.
+- **Pursuit internal email:** Drafted and gitignored at `contacts/pursuit/internal_email.md`. Send after May 7 with meeting outcome framing.

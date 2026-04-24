@@ -5,16 +5,16 @@ import { useTranslation } from 'react-i18next';
 
 interface DistrictStats {
   total_buildings: number;
-  avg_loss_of_service: number;
+  chronic_offenders: number;
   active_outages: number;
 }
 
 interface Offender {
   bin: string;
   address: string;
-  management_company: string;
   owner_name: string;
-  complaint_count: number;
+  complaints_12mo: number;
+  complaints_3yr: number;
   loss_of_service: number;
 }
 
@@ -109,9 +109,9 @@ export function DistrictReport() {
           <Col md={4}>
             <Card className="h-100 border-0 shadow-sm rounded-4">
               <Card.Body className="p-4">
-                <div className="text-muted small mb-1">{t('dr_avg_los_label')}</div>
+                <div className="text-muted small mb-1">{t('dr_chronic_offenders_label')}</div>
                 <div className="h2 fw-bold mb-0" style={{ color: 'var(--c-navy)' }}>
-                  {data.stats.avg_loss_of_service}%
+                  {data.stats.chronic_offenders}
                 </div>
               </Card.Body>
             </Card>
@@ -156,11 +156,11 @@ export function DistrictReport() {
                     <span className="fw-800 text-muted" style={{ width: '1.5rem' }}>{idx + 1}</span>
                     <div>
                       <div className="fw-bold" style={{ color: 'var(--c-navy)' }}>{building.address}</div>
-                      <div className="small text-muted">{building.management_company || building.owner_name || `BIN: ${building.bin}`}</div>
+                      <div className="small text-muted">{building.owner_name || `BIN: ${building.bin}`}</div>
                     </div>
                   </div>
                   <div className="text-end">
-                    <div className="fw-bold">{building.complaint_count} {t('ds_complaints_label')}</div>
+                    <div className="fw-bold">{building.complaints_12mo} {t('ds_complaints_label')}</div>
                     <div className="small text-danger">{t('loss_of_service')}: {building.loss_of_service}%</div>
                     <Link to={`/building/${building.bin}`} className="stretched-link visually-hidden">
                       View Building

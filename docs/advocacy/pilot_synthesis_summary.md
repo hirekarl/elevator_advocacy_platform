@@ -34,7 +34,13 @@ Hotspot data comes from two complementary sources:
 | **509 West 155 St** | Manhattan | 10 (CB12) | **Carmen De La Rosa** | 8 |
 | **33 Saratoga Ave** | Brooklyn | 42 (CB16) | **Chris Banks** | 8 |
 
-*Note: D14 (Pierina Ana Sanchez) and D26 (Shekar Krishnan) have been added to the priority district list. Run `district_hotspots.py --district pierina_sanchez` and `--district krishnan` for current SODA data. Full database analysis requires running `generate_district_reports` for those districts first.*
+*Note: D26 (Shekar Krishnan) has been added to the priority district list. Run `district_hotspots.py --district krishnan` for current SODA data. Full database analysis requires running `generate_district_reports --district 26` first.*
+
+**D14 (Pierina Ana Sanchez) — COMPLETE (April 24, 2026):**
+- 671 buildings, 154 chronic offenders (23%), 517 nominal
+- Top address: 2240 Walton Avenue — 12 complaints (12mo) / 26 complaints (3yr)
+- Full report: `docs/advocacy/districts/district_14/district_14_final_report.md`
+- CSV: `docs/advocacy/districts/district_14/district_14_data_snapshot.csv`
 
 ## 3. The Outreach Strategy
 The strategy expanded from a single-district constituent approach to a multi-district coalition push:

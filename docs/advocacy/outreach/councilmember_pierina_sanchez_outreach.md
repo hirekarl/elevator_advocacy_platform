@@ -6,9 +6,9 @@
 
 Unlike the Justin Sanchez outreach (constituent-engagement framing), this is a **committee pitch**. The ask is institutional: Elevator Advocate as a data source that could inform the committee's oversight work and potentially support a "Loss of Service" standard in city housing policy.
 
-**Why now:** The D17 pilot audit is complete and demonstrates the methodology concretely. We can offer to generate a D14 report as a next step.
+**Why now:** The D17 pilot audit is complete and demonstrates the methodology concretely. The D14 analysis has now also been run (April 24, 2026) — 671 buildings, 154 chronic offenders, top address 2240 Walton Avenue (12 complaints in 12 months / 26 over 3 years). The email leads with D14 data rather than offering to run it.
 
-**Status:** Not yet contacted. Draft ready below.
+**Status:** Not yet contacted. Draft ready below. D14 prerequisite: COMPLETE.
 
 ---
 
@@ -26,9 +26,13 @@ My name is Karl Johnson. I'm a District 17 resident and a fellow at Pursuit, and
 
 It's called **Elevator Advocate** ([elevatoradvocate.nyc](https://www.elevatoradvocate.nyc)). The platform gives tenants a way to document elevator outages in real time, verify them through a two-report consensus mechanism, and generate 311 scripts and council outreach tailored to their building's specific complaint history. It's free, mobile-first, and available in English and Spanish.
 
-Over the past two weeks, I ran a pilot audit of District 17 using NYC Open Data (SODA dataset `kqwi-7ncn`). The results surfaced **120 buildings** with a documented pattern of repeated failures — buildings with at least one complaint in the last 12 months and three or more complaints over the last three years. The top address, 601 East 156 Street, has logged 8 complaints in the last year alone, against a backdrop of 24 over three years.
+I've run the same analysis for both **District 17** and **District 14**.
 
-I'd like to offer to run the same analysis for **District 14**.
+District 17 surfaced **120 chronic offenders** out of 552 buildings — buildings with at least one complaint in the last 12 months and three or more over the last three years. The top address, 601 East 156 Street, logged 8 complaints in the last year against a backdrop of 24 over three years.
+
+District 14 tells a more urgent story. Of 671 buildings analyzed, **154 qualify as chronic offenders** — a 23% rate. The top address, **2240 Walton Avenue** (University Heights), logged **12 complaints in the last 12 months** and 26 over three years. Two other buildings — 1726 Davidson Avenue and 1600 Sedgwick Avenue — have 3-year complaint counts of 19 and 26 respectively. The full ranked dataset is available here:
+
+https://github.com/hirekarl/elevator_advocate/blob/main/docs/advocacy/districts/district_14/district_14_data_snapshot.csv (aggregated April 24, 2026)
 
 Your committee has the jurisdiction to translate this kind of data into something enforceable. The platform already calculates a "Loss of Service" metric for each building — a ratio of documented outage time to total service period. We believe this metric, refined with expert input, could serve as a standard threshold for triggering DOB audits or owner accountability actions. But we're a prototype, not a finished product, and we know the methodology needs scrutiny from people with housing policy expertise. That's part of what I'm hoping this conversation opens up.
 
@@ -57,8 +61,9 @@ District 17 Resident | Pursuit AI-Native Fellow
 - No mention of the Justin Sanchez outreach (no need to reference it; if he responds and makes an intro, that's a bonus)
 
 **Before sending — prerequisite:**
-- Run `uv run python manage.py generate_district_reports --district 14` to have D14 data ready in case she responds and asks for it
-- The offer to "run the same analysis for District 14" should be deliverable within a day of a response
+- ~~Run `generate_district_reports --district 14`~~ — **COMPLETE** (April 24, 2026). 671 buildings, 154 chronic offenders.
+- CSV at `docs/advocacy/districts/district_14/district_14_data_snapshot.csv`
+- Full report at `docs/advocacy/districts/district_14/district_14_final_report.md`
 
 **Next targets after this (Housing & Buildings Committee members):**
 | Priority | Member | District | Notes |

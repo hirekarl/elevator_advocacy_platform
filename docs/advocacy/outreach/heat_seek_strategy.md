@@ -1,8 +1,8 @@
 # Heat Seek — Partnership Strategy
 
 **Last updated:** April 24, 2026
-**Status:** Research complete; outreach not yet initiated
-**Website:** heatseek.org
+**Status:** ⚠️ ON HOLD — heatseek.org shows "website expired" (Squarespace) as of April 2026. Org status unknown. Verify before any outreach.
+**Website:** heatseek.org (currently expired)
 
 ---
 

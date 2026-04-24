@@ -87,13 +87,13 @@
 
 ## Heat Seek
 
-**Website:** heatseek.org
-**Focus:** Tech nonprofit deploying IoT temperature sensors to document heating violations. Partners with 50–75 households in active tenant struggles during heat season (Oct–May).
-**Key work:** Sensors create mesh network collecting hourly temperature data; tenants use it to galvanize rent strikes, defend evictions, and negotiate settlements in housing court. Already partners with **CASA** on South Bronx deployments.
+**Website:** heatseek.org — ⚠️ **EXPIRED as of April 2026 (Squarespace "website expired" page).** Status unknown — org may have wound down, rebranded, or simply lapsed on hosting. Do not treat as an active partner until verified.
 
-**Fit for Elevator Advocate:** The closest organizational model to what Elevator Advocate does — tech-enabled data collection on building failures, integrated with tenant organizing. Heat Seek is seasonal (heat only, Oct–May); Elevator Advocate fills the year-round vertical mobility gap. **Potential peer partnership** rather than just a community partner — their tenant network and ours could be complementary without overlap.
+**What they were:** Tech nonprofit deploying IoT temperature sensors to document heating violations. Partnered with CASA on South Bronx deployments. Referenced in NYC Comptroller's 2025 "Turn Up the Heat" audit and Stanford Justice Innovation Lab.
 
-**Note:** A January 2025 CITY article connected the Parkash family (owner of 89-20 161 Street — D27's top chronic offender) to an HPD heat sensor enforcement case involving a Bronx fire. Worth tracking.
+**Why the model still matters:** The concept — tech-enabled, timestamped building failure data integrated with tenant organizing — is directly analogous to Elevator Advocate. If Heat Seek is defunct, the gap they left (sensor-based heat documentation in active tenant struggles) may represent an opening for a different kind of partnership or adjacent tool.
+
+**Next step:** Before any outreach, verify whether the org still exists under a different URL or has been absorbed by another org (Urban Justice Center and CASA are natural candidates). Do not invest further research time until status is confirmed.
 
 ---
 
@@ -127,7 +127,7 @@
 
 **Priority order for outreach (post-May 7):**
 1. **South Bronx Tenant Movement** — already using 311 strategically, no tech platform, most direct fit
-2. **Heat Seek** — peer tech org, already working with CASA in the South Bronx; potential partnership not just adoption
+2. **Heat Seek** — peer tech org concept; ⚠️ website expired April 2026, verify status before pursuing
 3. **CASA** — litigation hook ("evidence for housing court")
 4. **Mothers on the Move** — habitability / EJ framing
 5. **TakeRoot Justice** — litigation support, higher bar for data quality

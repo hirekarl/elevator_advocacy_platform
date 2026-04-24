@@ -79,7 +79,34 @@ class Command(BaseCommand):
         supervisor = Supervisor()
         manager = ConsensusManager()
 
+        skipped_nominal = 0
         for building in buildings:
+            # Dual-window filter: only generate summaries for chronic offenders.
+            # 1+ complaints in last 12 months AND 3+ in last 3 years.
+            counts = manager.get_chronic_offender_data(building)
+            if counts is None:
+                skipped_nominal += 1
+                if building.cached_executive_summary and not force:
+                    continue
+                # Write a programmatic nominal summary without calling Gemini.
+                from orchestration.schemas import ExecutiveSummary
+
+                nominal = ExecutiveSummary(
+                    headline="No recent complaint activity recorded.",
+                    risk_level="Nominal",
+                    historical_patterns="No elevator issues detected in the current analysis window.",
+                    community_sentiment="No tenant reports on record for the current period.",
+                    legal_standing="No active violations or complaints requiring intervention.",
+                    recommended_action="No action required. Residents may submit reports through the platform if issues arise.",
+                    confidence_score=1.0,
+                )
+                building.cached_executive_summary = {"en": nominal.model_dump()}
+                building.summary_last_generated = timezone.now()
+                building.save(
+                    update_fields=["cached_executive_summary", "summary_last_generated"]
+                )
+                continue
+
             if building.cached_executive_summary and not force:
                 self.stdout.write(
                     f"  Skipping {building.address} (Summary already exists)."
@@ -97,6 +124,8 @@ class Command(BaseCommand):
                 "address": building.address,
                 "verified_status": manager.get_verified_status(building),
                 "loss_of_service": manager.get_loss_of_service_percentage(building),
+                "complaints_12mo": counts["complaints_12mo"],
+                "complaints_3yr": counts["complaints_3yr"],
                 "lang": "en",
                 "reports": [
                     {"status": r.status, "reported_at": str(r.reported_at)}
@@ -129,6 +158,7 @@ class Command(BaseCommand):
 
         self.stdout.write(
             self.style.SUCCESS(
-                f"--- Phase 2 Complete: District {district_id} is ready for advocacy. ---"
+                f"--- Phase 2 Complete: District {district_id} is ready for advocacy. "
+                f"({skipped_nominal} buildings assigned nominal status without Gemini.) ---"
             )
         )

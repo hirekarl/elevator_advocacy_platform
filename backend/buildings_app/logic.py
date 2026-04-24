@@ -187,6 +187,50 @@ class ConsensusManager:
         percentage = (total_down_seconds / total_period_seconds) * 100
         return round(min(percentage, 100.0), 2)
 
+    def get_chronic_offender_data(
+        self,
+        building: Building,
+        recent_days: int = 365,
+        min_recent: int = 1,
+        history_days: int = 1095,
+        min_history: int = 3,
+    ) -> Optional[Dict[str, int]]:
+        """
+        Returns complaint counts if the building qualifies as a chronic offender, else None.
+
+        A chronic offender must clear both bars:
+        - At least min_recent complaints in the last recent_days (default: 1 in 12 months)
+        - At least min_history complaints in the last history_days (default: 3 in 3 years)
+
+        The dual-window design accounts for SODA's reporting lag (12-month window)
+        while filtering out buildings with stale historical issues but no recent activity
+        (3-year chronic bar). Returns None if either bar is not met.
+        """
+        now = timezone.now()
+
+        complaints_recent = ElevatorReport.objects.filter(
+            building=building,
+            status="DOWN",
+            reported_at__gte=now - timedelta(days=recent_days),
+        ).count()
+
+        if complaints_recent < min_recent:
+            return None
+
+        complaints_history = ElevatorReport.objects.filter(
+            building=building,
+            status="DOWN",
+            reported_at__gte=now - timedelta(days=history_days),
+        ).count()
+
+        if complaints_history < min_history:
+            return None
+
+        return {
+            "complaints_12mo": complaints_recent,
+            "complaints_3yr": complaints_history,
+        }
+
     def sync_soda_reports(
         self, building: Building, soda_reports: List[Dict[str, Any]]
     ) -> None:

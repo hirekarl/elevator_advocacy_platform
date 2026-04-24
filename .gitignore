@@ -487,3 +487,6 @@ frontend/demo/recordings/
 
 # Local presentation assets
 preso/
+
+# Internal outreach docs (not for public repo)
+docs/advocacy/outreach/pursuit_internal_outreach.md

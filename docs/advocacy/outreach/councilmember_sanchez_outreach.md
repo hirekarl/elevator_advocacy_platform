@@ -6,11 +6,41 @@
 
 He is **not** on Housing & Buildings — so this outreach is constituent-engagement framing, not committee jurisdiction. That's still valid (D17 resident reaching out about a platform for D17 tenants), but the Housing & Buildings Committee is the institutional home for elevator safety. See [Next Targets](#next-targets) below.
 
-**Status:** Email sent 2026-04-17. Awaiting response. Recommended follow-up window: 1–2 weeks.
+**Status:** Email sent 2026-04-17. Awaiting response. Follow-up sent 2026-04-24 (see below).
 
 ---
 
-## Engagement Email Draft
+## Follow-Up Email Draft (2026-04-24)
+
+**Recipient:** Councilmember Justin Sanchez
+**From:** Karl Johnson
+**Subject:** Re: Elevator Advocate — District 17 audit + a request for your team's expertise
+
+---
+
+Dear Councilmember Sanchez,
+
+I wanted to follow up on my note from last week and share something concrete.
+
+Since reaching out, I completed a **District 17 Elevator Reliability Audit** — an analysis of 552 buildings in the district with recorded complaint history in NYC Open Data. It identifies 120 buildings with a documented pattern of repeated failures: at least one complaint in the last 12 months and three or more over the past three years. The top address, 601 East 156 Street, has logged 8 complaints in the last year and 24 over three years.
+
+I'm attaching the report. I'd also like to be transparent about something: **this platform is a working prototype, and our data analysis methodology has not yet been reviewed by a housing policy expert.** That's intentional — one of the things I'm hoping to find, through conversations like this one, is a partner who can help stress-test how we measure and present these metrics. If your housing team sees gaps or has questions about how we calculate "Loss of Service," I want to hear them. Getting this right matters more than looking polished.
+
+For anyone on your team who wants to examine the methodology directly, the platform's full source code and data analysis tools are publicly available on GitHub: [github.com/hirekarl/elevator_advocate](https://github.com/hirekarl/elevator_advocate). The data research scripts and Jupyter notebooks used to generate the District 17 audit are in the `scripts/data_research/` directory. The full building-level data for all 552 buildings — including complaint counts, loss of service figures, and legal owner information from MapPLUTO — is available as a CSV (aggregated April 24, 2026): https://github.com/hirekarl/elevator_advocate/blob/main/docs/advocacy/districts/district_17/district_17_data_snapshot.csv
+
+The goal is to put verifiable, tenant-generated data in the hands of the people responsible for these buildings — before the summer heat season. I'd welcome a 20-minute conversation with you or a member of your staff.
+
+Thank you for your service to our community.
+
+In service,
+
+**Karl Johnson**
+District 17 Resident | Pursuit AI-Native Fellow
+[https://www.elevatoradvocate.nyc](https://www.elevatoradvocate.nyc)
+
+---
+
+## Original Engagement Email Draft
 
 **Recipient:** Councilmember Justin Sanchez  
 **From:** Karl Johnson  

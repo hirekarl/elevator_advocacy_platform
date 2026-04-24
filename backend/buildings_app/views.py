@@ -64,39 +64,33 @@ class DistrictViewSet(viewsets.ReadOnlyModelViewSet[CouncilDistrict]):
 
         manager = ConsensusManager()
 
-        # Aggregated Metrics
         total_buildings = buildings.count()
-        los_values = [manager.get_loss_of_service_percentage(b) for b in buildings]
-        avg_los = sum(los_values) / len(los_values) if los_values else 0.0
 
-        # Active Outages (Verified DOWN)
-        active_outages = 0
-        for b in buildings:
-            if manager.get_verified_status(b) == "DOWN":
-                active_outages += 1
+        # Active Outages (Verified DOWN in the live consensus window)
+        active_outages = sum(
+            1 for b in buildings if manager.get_verified_status(b) == "DOWN"
+        )
 
-        # Top Offenders (by complaint count in last 30 days)
-        # Using a simple sort for MVP; could be optimized with ORM annotation
+        # Chronic offenders: 1+ complaints in last 12 months AND 3+ in last 3 years.
+        # The 12-month window absorbs SODA's reporting lag; the 3-year bar excludes
+        # buildings with stale history but no recent activity.
         offender_list = []
         for b in buildings:
-            complaint_count = b.reports.filter(
-                reported_at__gte=timezone.now() - timedelta(days=30)
-            ).count()
-            if complaint_count > 0:
+            counts = manager.get_chronic_offender_data(b)
+            if counts is not None:
                 offender_list.append(
                     {
                         "bin": b.bin,
                         "address": b.address,
-                        "management_company": b.management_company
-                        or "Unknown Management",
                         "owner_name": b.owner_name or "Unknown Owner",
-                        "complaint_count": complaint_count,
+                        "complaints_12mo": counts["complaints_12mo"],
+                        "complaints_3yr": counts["complaints_3yr"],
                         "loss_of_service": manager.get_loss_of_service_percentage(b),
                     }
                 )
 
         top_offenders = sorted(
-            offender_list, key=lambda x: x["complaint_count"], reverse=True
+            offender_list, key=lambda x: x["complaints_12mo"], reverse=True
         )[:10]
 
         return Response(
@@ -109,7 +103,7 @@ class DistrictViewSet(viewsets.ReadOnlyModelViewSet[CouncilDistrict]):
                 },
                 "stats": {
                     "total_buildings": total_buildings,
-                    "avg_loss_of_service": round(avg_los, 2),
+                    "chronic_offenders": len(offender_list),
                     "active_outages": active_outages,
                 },
                 "top_offenders": top_offenders,

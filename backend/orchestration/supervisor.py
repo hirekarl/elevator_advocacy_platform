@@ -18,6 +18,25 @@ class Supervisor(WorkerAgent[ExecutiveSummary]):
         Executes all worker agents and synthesizes the results.
         Context needs: 'bin', 'address', 'verified_status', 'loss_of_service', 'lang', 'reports', 'logs'.
         """
+        los = context.get("loss_of_service", 0)
+        active_crisis = context.get("verified_status", "") in (
+            "DOWN",
+            "TRAPPED",
+            "UNSAFE",
+        )
+        complaints_12mo = context.get("complaints_12mo", 0)
+
+        if los == 0 and not active_crisis and not complaints_12mo:
+            return ExecutiveSummary(
+                headline="No recent complaint activity recorded.",
+                risk_level="Nominal",
+                historical_patterns="No elevator issues detected in the current 30-day window.",
+                community_sentiment="No tenant reports on record for the current period.",
+                legal_standing="No active violations or complaints requiring intervention.",
+                recommended_action="No action required. Residents may submit reports through the platform if issues arise.",
+                confidence_score=1.0,
+            )
+
         # 1. Initialize Workers
         soda_worker = SODAResearcher()
         community_worker = CommunityReporter()

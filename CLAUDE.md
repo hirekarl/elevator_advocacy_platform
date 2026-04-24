@@ -90,6 +90,9 @@ Include the relevant leaf-file contents in the specialist's task prompt.
 - [Sprint 13: Building Health Reports & Resident Dashboard](./.sprints/active/sprint_13_building_health_reports.md) — in progress
 - [Sprint 14: SSR and Indexability](./.sprints/active/sprint_14_ssr_and_indexability.md) — **COMPLETE** as of 2026-04-17 (`/api/data-ssr/` shipped)
 
+**Out-of-sprint sessions**:
+- [Advocacy Pipeline — 2026-04-24](./.sprints/handoffs/handoff_2026-04-24.md): Dual-window chronic filter, D17 re-analysis (552 buildings / 120 chronic), multi-district outreach (D14, D26). See handoff for full scope.
+
 ### Next Steps (Sprint 13):
 1.  **Backend Automation**: Implement `buildings_app/signals.py` to trigger report refreshes on critical status transitions.
 2.  **Comparative Analysis**: Implement `ConsensusManager.get_district_benchmarks()` to ground building health in local context.
@@ -100,6 +103,12 @@ All "High-Risk" and "Critical" health reports must be synthesized using the **hu
 - **Bronx Heat Wave (2025)**: Lethal isolation during outages.
 - **Surfside Gardens (Coney Island)**: Senior "imprisonment" due to 47+ outages/year.
 - **Sherwood Village (Queens)**: 100-year-old resident trapped for 30+ days.
+
+### Canonical Advocacy Methodology (as of 2026-04-24):
+- **Chronic offender filter**: `ConsensusManager.get_chronic_offender_data()` — 1+ complaints in 12 months AND 3+ in 3 years. This is the primary selection criterion for district analysis.
+- **LoS as proxy**: Loss of Service % is a proxy metric only (each SODA complaint = 2-hour downtime block). SODA lag means it understates actual downtime. Do not present as a precise measurement.
+- **Supervisor gate**: Zero-activity buildings (0 LoS, no crisis, 0 complaints_12mo) receive programmatic NOMINAL summaries; Gemini is only called for chronic offenders.
+- **District analysis commands**: `generate_district_reports --district <id>` (full pipeline); `export_district_csv --district <id> --output <path>` (CSV snapshot).
 
 ---
 

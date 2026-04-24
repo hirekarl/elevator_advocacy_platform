@@ -83,12 +83,31 @@ For every task, you must:
 Status updates (UP/DOWN) remain unverified until a second observation is logged by a different `user_id` for the same `elevator_id` within a rolling 2-hour window.
 
 ### B. Data Pipeline
-- **Geocoding**: Street address -> BIN via Geoclient.
-- **SODA Query**: Filter complaints by categories '81' (Inoperative) and '63' (Failed Test).
+- **Geocoding**: Street address → BIN + council district via **NYC Planning GeoSearch** (`services/geosearch.py`). Geoclient is dead — its API key is invalid and the mock was hiding bugs. Do not reference Geoclient.
+- **SODA Query** (dataset `kqwi-7ncn`): Active codes are `6S` (elevator complaint) and `6M` (elevator/escalator). Codes `81` and `63` are **retired** and must NOT be used for current/active queries. They are only used in the `hours=0` full historical sync path.
+- **Chronic offender filter**: `ConsensusManager.get_chronic_offender_data()` — 1+ complaints in 12 months AND 3+ in 3 years. This is the canonical selection criterion for district analysis. Do not use raw 30-day LoS windows as the primary filter.
+- **LoS as proxy**: Loss of Service % is a proxy metric (each SODA complaint = 2-hour downtime block). SODA lag means it understates actual downtime. Do not present as precise.
 
 ### C. Self-Evaluating AI
 The AI must predict maintenance failures (Forecast) and compare them to real-time logs (Actual).
 - **Metric**: Loss of Service % = (Total Down Time / Total Period Time) * 100.
+
+---
+
+## 3.5 Current Sprint & Handoffs
+
+**Active**: Sprint 13 — Building Health Reports & Resident Dashboard (in progress).
+See `.sprints/active/sprint_13_building_health_reports.md` for full scope.
+
+**Sprint 14** (SSR and Indexability) — COMPLETE as of 2026-04-17. `/api/data-ssr/` shipped.
+
+**Out-of-sprint sessions**:
+- [Advocacy Pipeline — 2026-04-24](./.sprints/handoffs/handoff_2026-04-24.md): Dual-window chronic filter, D17 re-analysis (552 buildings / 120 chronic), multi-district outreach (D14, D26).
+
+**Sprint 13 next steps**:
+1. `buildings_app/signals.py` — trigger report refreshes on critical status transitions.
+2. `ConsensusManager.get_district_benchmarks()` — comparative district-level analysis.
+3. `DashboardView.tsx` — resident dashboard with health visuals.
 
 ---
 

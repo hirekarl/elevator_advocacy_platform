@@ -8,13 +8,16 @@
 ---
 
 ### **1. Executive Summary: The "Loss of Service" Crisis**
-Residents at this address are experiencing a systemic failure in elevator reliability. Using verified data from **Elevator Advocate**, we have quantified the impact on tenant safety and accessibility.
+Residents at this address are experiencing a systemic failure in elevator reliability. Using verified data from **Elevator Advocate** and NYC Open Data (SODA dataset `kqwi-7ncn`), we have quantified the impact on tenant safety and accessibility.
 
-**Building Status Metrics (Last 30 Days):**
-- **Loss of Service (LoS) %:** [INSERT LoS %]
-- **Total Verified Outages:** [INSERT #]
+**Building Status Metrics:**
+- **Loss of Service (LoS) % (30d proxy):** [INSERT LoS %]
+- **Official DOB/SODA Complaints (12 months):** [INSERT #]
+- **Official DOB/SODA Complaints (3 years):** [INSERT #]
+- **Total Verified Platform Outages:** [INSERT #]
 - **Longest Single Outage:** [INSERT DURATION]
-- **Official DOB/SODA Complaints:** [INSERT #]
+
+*Note on LoS methodology: The 30-day LoS figure is a proxy metric. Each SODA complaint is treated as a 2-hour downtime block (matching our platform's consensus window). Actual downtime is likely higher — SODA complaints can lag by weeks or months due to city filing delays. The dual-window filter (1+ complaints in the last 12 months AND 3+ over 3 years) is the primary selection criterion for chronic offenders.*
 
 ---
 
@@ -28,9 +31,11 @@ Data points like "Loss of Service" translate directly into human rights violatio
 ---
 
 ### **3. The Data: "Loss of Service" (LoS) Explained**
-Unlike raw 311 complaints, our platform uses a **2-hour consensus rule** to verify outages.
-*   **Verified Data:** Status is only marked as "DOWN" when confirmed by multiple unique users or official city reports.
-*   **The Impact:** A [INSERT %]% LoS means that for [INSERT DAYS] out of the last month, residents—including seniors and neighbors with disabilities—were effectively "trapped" in their homes or denied access to their apartments.
+The platform uses a **2-hour consensus rule** to verify outages reported by tenants.
+*   **Verified Data:** Elevator status is only marked "DOWN" when confirmed by two independent users within a 2-hour rolling window, or by official city SODA records.
+*   **The 30-day LoS proxy:** Because tenant adoption is still growing, SODA complaint counts are used as a stand-in for recent outage frequency. Each complaint is treated as a 2-hour downtime block. This approach is transparent and conservative — it almost certainly *understates* actual downtime.
+*   **The Impact:** A [INSERT %]% LoS means that for [INSERT DAYS] out of the last month, residents — including seniors and neighbors with disabilities — were effectively "trapped" in their homes or denied access to their apartments.
+*   **Why dual-window matters:** A single complaint last month on a building with no other history is noise. A building with 1+ complaints in the last 12 months AND 3+ over 3 years is a chronic failure pattern — the dual-window filter is designed to surface exactly these buildings.
 
 ---
 

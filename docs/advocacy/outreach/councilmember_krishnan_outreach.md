@@ -25,7 +25,7 @@
 
 Dear Council Member Krishnan,
 
-My name is Karl Johnson. I'm a Queens resident and a fellow at Pursuit, the civic tech organization based in Long Island City, and I've been following your work on elevator accessibility closely — including the recent demonstration at the 7 train stations in Jackson Heights and Corona.
+My name is Karl Johnson. I'm a fellow at Pursuit, the civic tech organization based in Long Island City, Queens, and I've been following your work on elevator accessibility closely — including the recent demonstration at the 7 train stations in Jackson Heights and Corona.
 
 I want to share a tool that addresses the residential side of the same problem.
 

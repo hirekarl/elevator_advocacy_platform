@@ -8,10 +8,12 @@ Shows top buildings by complaint count for each of the six priority council
 districts, filtered by community board.
 
 Usage:
-    python district_hotspots.py                      # all six priority districts
-    python district_hotspots.py --district sanchez   # one councilmember
-    python district_hotspots.py --years 2024 2025    # custom year range
-    python district_hotspots.py --top 15             # more results per district
+    python district_hotspots.py                               # all priority districts
+    python district_hotspots.py --district sanchez            # one councilmember
+    python district_hotspots.py --district krishnan           # D26 Queens
+    python district_hotspots.py --district pierina_sanchez    # D14 Bronx (Housing Chair)
+    python district_hotspots.py --years 2024 2025             # custom year range
+    python district_hotspots.py --top 15                      # more results per district
 """
 
 import argparse
@@ -82,6 +84,22 @@ PRIORITY_DISTRICTS = [
         "borough": "Manhattan",
         "community_boards": ["112"],
         "neighborhoods": "Washington Heights, Inwood",
+    },
+    {
+        "key": "pierina_sanchez",
+        "councilmember": "Pierina Ana Sanchez",
+        "district": "D14",
+        "borough": "Bronx",
+        "community_boards": ["205", "206"],
+        "neighborhoods": "University Heights, Fordham, Belmont, East Tremont",
+    },
+    {
+        "key": "krishnan",
+        "councilmember": "Shekar Krishnan",
+        "district": "D26",
+        "borough": "Queens",
+        "community_boards": ["403", "404"],
+        "neighborhoods": "Jackson Heights, Elmhurst, Corona",
     },
 ]
 

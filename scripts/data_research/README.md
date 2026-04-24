@@ -36,15 +36,17 @@ python seasonal_trends.py --years 2024   # single year
 **Narrative:** *"Here are the buildings in your district that have failed their
 tenants the most in the last 12 months."*
 
-Shows the top 10 buildings by complaint count for each of the six priority council
-districts (Sanchez D17, Stevens D16, Farías D18, Banks D42, Hudson D35,
-De La Rosa D10). Use this when briefing a specific councilmember or preparing
-for a meeting with a community organization.
+Shows the top 10 buildings by complaint count for each of the eight priority council
+districts (Sanchez D17, Stevens D16, Farías D18, Pierina Ana Sanchez D14,
+Banks D42, Hudson D35, De La Rosa D10, Krishnan D26). Use this when briefing a
+specific councilmember or preparing for a meeting with a community organization.
 
 ```bash
-python district_hotspots.py                      # all six priority districts
-python district_hotspots.py --district sanchez   # one councilmember
-python district_hotspots.py --years 2024 2025    # custom year range
+python district_hotspots.py                               # all eight priority districts
+python district_hotspots.py --district sanchez            # D17 Bronx
+python district_hotspots.py --district pierina_sanchez    # D14 Bronx (Housing & Buildings Chair)
+python district_hotspots.py --district krishnan           # D26 Queens
+python district_hotspots.py --years 2024 2025             # custom year range
 ```
 
 ---

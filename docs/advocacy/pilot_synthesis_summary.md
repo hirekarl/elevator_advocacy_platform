@@ -7,12 +7,23 @@ The core mission is to convert fragmented NYC Open Data (SODA) into a verified, 
 - **Heuristic:** Each verified "DOWN" report is assigned a 120-minute (2-hour) downtime block for calculation [cite: domain_logic/los_metrics.md].
 
 ## 2. Identified High-Priority "Hotspots"
-Based on a city-wide analysis of ~10,000 elevator complaints using active SODA codes
-`6S` and `6M`, covering April 2025 – April 2026. Previous hotspot data (retired codes
-`81`/`63`) returned zero results and has been superseded entirely.
+Hotspot data comes from two complementary sources:
+1. **City-wide SODA analysis** (`scripts/data_research/district_hotspots.py`): active codes `6S` and `6M`, covering 2025–2026. Used to identify top buildings per priority district for initial outreach framing.
+2. **D17 database analysis** (full pipeline via `generate_district_reports --district 17`): 552 buildings analyzed against all-time SODA records using the **dual-window chronic filter** (1+ complaints in last 12 months AND 3+ over 3 years). 120 buildings qualified as chronic offenders as of April 24, 2026. Full results in `docs/advocacy/districts/district_17/district_17_data_snapshot.csv`.
 
-⚠️ District assignments below are inferred from community board geography. Confirm
-via NYC Council district geocoding before including in any briefing or outreach.
+⚠️ SODA community board assignments below are inferred from geography. Always confirm exact council district via geocoding before including in a briefing.
+
+**D17 Top 5 (April 24, 2026 — database analysis):**
+
+| Address | Complaints (12mo) | Complaints (3yr) |
+| :--- | :--- | :--- |
+| **601 East 156 St** | 8 | 24 |
+| **303 East 158 St** | 7 | 26 |
+| **1068 Franklin Ave** | 6 | 11 |
+| **390 East 158 St** | 5 | 36 |
+| **1090 Franklin Ave** | 5 | 12 |
+
+**Cross-district hotspots (SODA city-wide analysis, 2025–2026):**
 
 | Address | Borough | District | Council Member | Complaints (12mo) |
 | :--- | :--- | :--- | :--- | :--- |
@@ -23,13 +34,15 @@ via NYC Council district geocoding before including in any briefing or outreach.
 | **509 West 155 St** | Manhattan | 10 (CB12) | **Carmen De La Rosa** | 8 |
 | **33 Saratoga Ave** | Brooklyn | 42 (CB16) | **Chris Banks** | 8 |
 
-**Note on 341 East 162 St:** This is the strongest building in any priority district
-(20 complaints, Morrisania/CB3). CB3 is primarily D16 Stevens territory but borders
-D17 Sanchez. Geocode-confirm district assignment before briefing either member.
+*Note: D14 (Pierina Ana Sanchez) and D26 (Shekar Krishnan) have been added to the priority district list. Run `district_hotspots.py --district pierina_sanchez` and `--district krishnan` for current SODA data. Full database analysis requires running `generate_district_reports` for those districts first.*
 
-## 3. The District 17 Outreach Strategy
-Using Karl’s status as a constituent of **Justin Sanchez (D17)**, we are initiating a "Constituent-First" wedge to gain legislative sponsorship.
-- **Coalition Goal:** Sanchez to lead a cross-borough alliance with the "Public Housing Power Block" (Banks, Hudson, De La Rosa).
+## 3. The Outreach Strategy
+The strategy expanded from a single-district constituent approach to a multi-district coalition push:
+
+- **Phase 1 (complete):** D17 pilot — Karl as Justin Sanchez’s constituent. Email sent 2026-04-17. Follow-up drafted 2026-04-24 with GitHub repo and CSV data snapshot links.
+- **Phase 2 (ready to send):** Pierina Ana Sanchez (D14) — Housing & Buildings Committee Chair. Highest-leverage single contact in the Council. D17 is proof of concept; offer to run D14 analysis. Draft at `docs/advocacy/outreach/councilmember_pierina_sanchez_outreach.md`. *Prerequisite: run `generate_district_reports --district 14` first.*
+- **Phase 3 (ready to send):** Shekar Krishnan (D26) — activated by MTA 7-train elevator demonstration (~April 21, 2026). Residential building angle is the complement, not the same fight. Draft at `docs/advocacy/outreach/councilmember_krishnan_outreach.md`. *Prerequisite: run `generate_district_reports --district 26` first.*
+- **Coalition Goal:** Sanchez (D17) leads cross-borough Bronx Power Block; Pierina Sanchez (D14) provides committee-level anchor; Krishnan (D26) opens Queens flank.
 - **Institutional Partners:** Strategic alignment with **CASA**, **Mothers on the Move (MOM)**, and **Mobilization for Justice (MFJ)**.
 
 ## 4. Technical Readiness & Next Steps

@@ -20,7 +20,9 @@ He is **not** on Housing & Buildings — so this outreach is constituent-engagem
 
 Dear Councilmember Sanchez,
 
-I wanted to follow up on my note from last week and share something concrete.
+I wanted to follow up on my note from last week and share something concrete — but first, a correction.
+
+In my previous email I cited 1150 Tiffany Street as having "12 complaints in the past year." That figure came from a preliminary city-wide analysis and was wrong. The current number, from the same NYC Open Data source, is 3 complaints in the last 12 months and 7 over three years. The building is still on the district's chronic offender list, but I overstated it, and I'd rather correct it now than have your staff find the discrepancy in the data I'm sharing below.
 
 Since reaching out, I completed a **District 17 Elevator Reliability Audit** — an analysis of 552 buildings in the district with recorded complaint history in NYC Open Data. It identifies 120 buildings with a documented pattern of repeated failures: at least one complaint in the last 12 months and three or more over the past three years. The top address, 601 East 156 Street, has logged 8 complaints in the last year and 24 over three years.
 

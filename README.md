@@ -36,8 +36,8 @@ Different readers come here for different reasons. Here's where to focus.
 
 | You are… | Start here | Key links |
 |---|---|---|
-| **A local rep or staffer** | [The Stakes](#-the-stakes-why-this-matters) → [Data Research](#-data-research--insights) → [Strategic Path](#-strategic-path-forward) | [Multi-District Sync Protocol](./docs/development/multi_district_sync_protocol.md) · [Legislative Briefing Template](./docs/advocacy/outreach/legislative_briefing_template.md) · [Outreach Docs](./docs/advocacy/outreach/) |
-| **A community org or tenant advocate** | [The Mission](#-the-mission) → [How It Works](#️-how-it-works-the-data-synthesis-engine) → [Live Platform](https://elevatoradvocate.nyc) | [Pilot Synthesis](./docs/advocacy/pilot_synthesis_summary.md) · [Council Coalition Plan](./docs/advocacy/outreach/council_coalition.md) |
+| **A local rep or staffer** | [The Stakes](#-the-stakes-why-this-matters) → [Data Research](#-data-research--insights) → [Strategic Path](#-strategic-path-forward) | [Multi-District Sync Protocol](./docs/development/multi_district_sync_protocol.md) · [Legislative Briefing Template](./docs/advocacy/outreach/strategy/legislative_briefing_template.md) · [Outreach Docs](./docs/advocacy/outreach/) |
+| **A community org or tenant advocate** | [The Mission](#-the-mission) → [How It Works](#️-how-it-works-the-data-synthesis-engine) → [Live Platform](https://elevatoradvocate.nyc) | [Pilot Synthesis](./docs/advocacy/pilot_synthesis_summary.md) · [Council Coalition Plan](./docs/advocacy/outreach/strategy/council_coalition.md) |
 | **A Pursuit peer or fellow** | [Multi-Agent Development](#-multi-agent-development-how-this-was-built) → [Tech Stack](#-tech-stack) → [Getting Started](#-getting-started) | [Agent Definitions](./.claude/agents/) · [Sprint 13 Active](./.sprints/active/sprint_13_building_health_reports.md) · [Architecture Spec](./docs/spec.md) |
 | **A civic data person** | [Data Research](#-data-research--insights) → [How It Works](#️-how-it-works-the-data-synthesis-engine) → [Data Stories Page](https://elevatoradvocate.nyc/data) | [Research Scripts](./scripts/data_research/) · [Knowledge Base](./.knowledge_base/) · [SODA Dataset `kqwi-7ncn`](https://data.cityofnewyork.us/resource/kqwi-7ncn.json) |
 
@@ -117,7 +117,7 @@ graph TD
 
 ## ♿ Accessibility & Inclusive Design: The "Martha-First" Protocol
 
-Accessibility isn't a checklist—it's the reason this exists. To make sure the platform works for the seniors and residents with mobility impairments who need it most, we design for **"Martha."** She is a 72-year-old neighbor in the Bronx with limited mobility who uses a walker and an older smartphone. If it doesn't work for her, it doesn't work at all. Every design decision is tested against her three jobs: (1) tell neighbors the elevator is down, (2) call 311 to file a complaint, (3) alert her daughter.
+Accessibility isn't a checklist—it's the reason this exists. To make sure the platform works for the seniors and residents with mobility impairments who need it most, we design for **"Martha."** She is a 70-year-old neighbor in the Bronx with limited mobility who uses a walker and an older smartphone. If it doesn't work for her, it doesn't work at all. Every design decision is tested against her three jobs: (1) tell neighbors the elevator is down, (2) call 311 to file a complaint, (3) alert her daughter.
 
 ### Automated quality proof
 
@@ -279,7 +279,7 @@ Starting from `git init` on April 12, 2026, the team shipped:
 - WCAG 2.2 AA accessibility: custom contrast tokens, 6 axe-core + Playwright tests on "Martha's Journey" scenarios, Lighthouse CI (93/100 home, 100/100 /data)
 - Render.com deployment with Django task worker, gunicorn, and static React build
 
-The 62-commit log (`git log --oneline`) is the clearest artifact of how this system operates in practice.
+The commit log (`git log --oneline`) is the clearest artifact of how this system operates in practice.
 
 ---
 
@@ -346,7 +346,7 @@ Our goal is to build a **Power Block** for tenants by turning personal stories i
 
 - **Direct Briefings**: We provide Councilmembers with Loss of Service reports to trigger DOB inquiries. See the [legislative briefing template](./docs/advocacy/outreach/legislative_briefing_template.md).
 - **Legal Weight**: We are working to ensure our data is admissible in court through partnerships like **Mobilization for Justice**.
-- **Grassroots Organizing**: We align with groups like **CASA** to put data directly into the hands of tenant unions. See the [council coalition plan](./docs/council_coalition.md).
+- **Grassroots Organizing**: We align with groups like **CASA** to put data directly into the hands of tenant unions. See the [council coalition plan](./docs/advocacy/outreach/strategy/council_coalition.md).
 
 **Data is power.** When we move from anecdotes to evidence, we make sure landlords treat accessibility as a fundamental right, not a suggestion.
 
